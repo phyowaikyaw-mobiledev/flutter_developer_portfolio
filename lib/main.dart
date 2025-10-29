@@ -117,7 +117,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
               children: [
                 _buildHeroSection(isMobile),
 
-                // ✅ CHANGED: Reduced spacing between sections
                 SizedBox(height: isMobile ? 20 : 30),
                 _buildProfileSection(isMobile),
 
@@ -479,7 +478,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
             FontAwesomeIcons.github, 'https://github.com/phyowaikyaw-mobiledev', isMobile),
         SizedBox(width: isMobile ? 20 : 30),
         _buildSocialIcon(FontAwesomeIcons.linkedin,
-            'https://linkedin.com/in/developer-phyowaikyaw-872aa81a7', isMobile),
+            'https://www.linkedin.com/in/phyowaikyaw-dev', isMobile),
         SizedBox(width: isMobile ? 20 : 30),
         _buildSocialIcon(FontAwesomeIcons.facebook,
             'https://facebook.com/learnersgateway30', isMobile),
@@ -619,10 +618,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
             children: [
               _buildSectionTitle('Profile', isMobile),
               SizedBox(height: isMobile ? 20 : 30),
-
-              // ✅ FIXED: Reordered widgets for mobile view
               if (isMobile) ...[
-                // Mobile view: Profile text first
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
@@ -675,8 +671,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
                   ),
                 ),
                 SizedBox(height: 20),
-
-                // Then Current Focus
                 _buildInfoCard(
                   'Current Focus',
                   Icons.code,
@@ -703,7 +697,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
                   isMobile,
                 ),
               ] else ...[
-                // Desktop view: Keep the original Row layout
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -921,7 +914,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
 
   Widget _buildSkillsSection(bool isMobile) {
     return Container(
-      // ✅ CHANGED: Reduced vertical padding from 60/80 to 40/60
       padding: EdgeInsets.symmetric(
           vertical: isMobile ? 40 : 60, horizontal: isMobile ? 16 : 32),
       child: Center(
@@ -930,10 +922,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
           child: Column(
             children: [
               _buildSectionTitle('Technical Skills', isMobile),
-              // ✅ CHANGED: Reduced spacing from 32/48 to 20/30
               SizedBox(height: isMobile ? 20 : 30),
-
-              // Professional icon grid
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -1013,8 +1002,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
           ),
 
           const SizedBox(width: 16),
-
-          // Content Section
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1061,7 +1048,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
 
   Widget _buildProjectsSection(bool isMobile) {
     return Container(
-      // ✅ CHANGED: Reduced vertical padding from 60/100 to 40/60
       padding: EdgeInsets.symmetric(
           vertical: isMobile ? 40 : 60, horizontal: isMobile ? 20 : 40),
       child: Center(
@@ -1070,7 +1056,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
           child: Column(
             children: [
               _buildSectionTitle('Personal Projects', isMobile),
-              // ✅ CHANGED: Reduced spacing from 40/60 to 20/30
               SizedBox(height: isMobile ? 20 : 30),
               Column(
                 children: [
@@ -1092,7 +1077,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
                     isMobile,
                     status: 'In Development (65% Complete)',
                   ),
-                  // ✅ CHANGED: Reduced spacing from 30/40 to 20/25
                   SizedBox(height: isMobile ? 20 : 25),
                   _buildProjectCard(
                     'E-Commerce Mobile App',
@@ -1371,7 +1355,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
 
   Widget _buildExperienceSection(bool isMobile) {
     return Container(
-      // ✅ CHANGED: Reduced vertical padding from 60/100 to 40/60
       padding: EdgeInsets.symmetric(
           vertical: isMobile ? 40 : 60, horizontal: isMobile ? 20 : 40),
       child: Center(
@@ -1380,7 +1363,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
           child: Column(
             children: [
               _buildSectionTitle('Professional Experience', isMobile),
-              // ✅ CHANGED: Reduced spacing from 40/60 to 20/30
               SizedBox(height: isMobile ? 20 : 30),
               _buildExperienceCard(
                 'Junior Flutter Developer (Mentorship)',
@@ -1398,7 +1380,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
                 Icons.work,
                 isMobile,
               ),
-              // ✅ CHANGED: Reduced spacing from 20/30 to 15/20
               SizedBox(height: isMobile ? 15 : 20),
               _buildExperienceCard(
                 'Junior Quality Assurance Tester',
@@ -1600,7 +1581,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
 
   Widget _buildEducationSection(bool isMobile) {
     return Container(
-      // ✅ CHANGED: Reduced vertical padding from 60/100 to 40/60
       padding: EdgeInsets.symmetric(
           vertical: isMobile ? 40 : 60, horizontal: isMobile ? 20 : 40),
       child: Center(
@@ -1609,7 +1589,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
           child: Column(
             children: [
               _buildSectionTitle('Education & Training', isMobile),
-              // ✅ CHANGED: Reduced spacing from 40/60 to 20/30
               SizedBox(height: isMobile ? 20 : 30),
               _buildEducationCard(
                 'Computer Science Major',
@@ -1625,7 +1604,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
                 Icons.school,
                 isMobile,
               ),
-              // ✅ CHANGED: Reduced spacing from 20/30 to 15/20
               SizedBox(height: isMobile ? 15 : 20),
               _buildEducationCard(
                 'Professional Flutter Development Program',
@@ -1764,7 +1742,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
 
   Widget _buildAwardsSection(bool isMobile) {
     return Container(
-      // ✅ CHANGED: Reduced vertical padding from 40/80 to 30/50
       padding: EdgeInsets.symmetric(
           vertical: isMobile ? 30 : 50, horizontal: isMobile ? 20 : 40),
       child: Center(
@@ -2131,7 +2108,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
 
   Widget _buildContactSection(bool isMobile) {
     return Container(
-      // ✅ CHANGED: Reduced vertical padding from 80/120 to 50/80
       padding: EdgeInsets.symmetric(
           vertical: isMobile ? 50 : 80, horizontal: isMobile ? 20 : 40),
       decoration: BoxDecoration(
@@ -2175,10 +2151,8 @@ class _PortfolioHomeState extends State<PortfolioHome>
                       ),
                     ),
                   ),
-                  // ✅ CHANGED: Reduced spacing from 20/30 to 15/20
                   SizedBox(height: isMobile ? 15 : 20),
                   _buildSectionTitle('Get In Touch', isMobile),
-                  // ✅ CHANGED: Reduced spacing from 16/24 to 12/16
                   SizedBox(height: isMobile ? 12 : 16),
                   Text(
                     "Have a project in mind or want to collaborate?\nLet's create something amazing together!",
@@ -2192,10 +2166,8 @@ class _PortfolioHomeState extends State<PortfolioHome>
                 ],
               ),
 
-              // ✅ CHANGED: Reduced spacing from 50/70 to 30/40
               SizedBox(height: isMobile ? 30 : 40),
 
-              // Main Content Grid
               isMobile ? _buildMobileContactLayout() : _buildDesktopContactLayout(),
             ],
           ),
@@ -2208,7 +2180,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Left Side - Contact Cards
         Expanded(
           flex: 3,
           child: Column(
@@ -2222,7 +2193,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
                 const Color(0xFF3B82F6),
                 const Color(0xFF60A5FA),
               ),
-              // ✅ CHANGED: Reduced spacing from 24 to 16
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -2237,7 +2207,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
                       const Color(0xFF818CF8),
                     ),
                   ),
-                  // ✅ CHANGED: Reduced spacing from 24 to 16
                   const SizedBox(width: 16),
                   Expanded(
                     child: _buildEnhancedContactCard(
@@ -2245,7 +2214,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
                       'LinkedIn',
                       'Phyo Wai Kyaw',
                       'Let\'s connect professionally',
-                          () => _launchURL('https://linkedin.com/in/developer-phyowaikyaw-872aa81a7'),
+                          () => _launchURL('https://www.linkedin.com/in/phyowaikyaw-dev'),
                       const Color(0xFF8B5CF6),
                       const Color(0xFFA78BFA),
                     ),
@@ -2256,10 +2225,8 @@ class _PortfolioHomeState extends State<PortfolioHome>
           ),
         ),
 
-        // ✅ CHANGED: Reduced spacing from 40 to 24
         const SizedBox(width: 24),
 
-        // Right Side - Opportunity Card
         Expanded(
           flex: 2,
           child: _buildOpportunityCard(false),
@@ -2280,7 +2247,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
           const Color(0xFF3B82F6),
           const Color(0xFF60A5FA),
         ),
-        // ✅ CHANGED: Reduced spacing from 20 to 15
         const SizedBox(height: 15),
         _buildEnhancedContactCard(
           FontAwesomeIcons.github,
@@ -2297,11 +2263,10 @@ class _PortfolioHomeState extends State<PortfolioHome>
           'LinkedIn',
           'Phyo Wai Kyaw',
           'Let\'s connect professionally',
-              () => _launchURL('https://linkedin.com/in/developer-phyowaikyaw-872aa81a7'),
+              () => _launchURL('https://www.linkedin.com/in/phyowaikyaw-dev'),
           const Color(0xFF8B5CF6),
           const Color(0xFFA78BFA),
         ),
-        // ✅ CHANGED: Reduced spacing from 30 to 20
         const SizedBox(height: 20),
         _buildOpportunityCard(true),
       ],
@@ -2347,7 +2312,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
           ),
           child: Row(
             children: [
-              // Icon Container
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -2372,7 +2336,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
 
               const SizedBox(width: 20),
 
-              // Text Content
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -2405,8 +2368,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
                   ],
                 ),
               ),
-
-              // Arrow Icon
               Icon(
                 Icons.arrow_forward_ios,
                 color: primaryColor.withOpacity(0.6),
@@ -2543,79 +2504,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
     );
   }
 
-  Widget _buildContactInfo(
-      IconData icon, String title, String subtitle, VoidCallback onTap, bool isMobile) {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        bool isHovered = false;
-
-        return MouseRegion(
-          onEnter: (_) => setState(() => isHovered = true),
-          onExit: (_) => setState(() => isHovered = false),
-          child: GestureDetector(
-            onTap: onTap,
-            child: Container(
-              width: isMobile ? 160 : 200,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withOpacity(isHovered ? 0.08 : 0.05),
-                    Colors.white.withOpacity(0.02),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: isHovered
-                      ? const Color(0xFF3B82F6)
-                      : Colors.white.withOpacity(0.1),
-                  width: isHovered ? 2 : 1,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF1E40AF), Color(0xFF3B82F6)],
-                      ),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      icon,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: isMobile ? 16 : 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: isMobile ? 12 : 14,
-                      color: Colors.white.withOpacity(0.7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   Widget _buildFooter(bool isMobile) {
     return Container(
