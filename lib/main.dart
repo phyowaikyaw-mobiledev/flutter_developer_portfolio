@@ -84,7 +84,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
   }
 
   void _openGmail() {
-    final email = 'phyowaikyawdeveloper@gmail.com';
+    final email = 'phyowalkyawdeveloper@gmail.com';
     final subject = 'Portfolio Contact - Flutter Developer Opportunity';
     final body = 'Hello Phyo Wai Kyaw,\n\nI came across your portfolio and would like to connect with you regarding Flutter development opportunities.\n\nBest regards,';
 
@@ -116,28 +116,20 @@ class _PortfolioHomeState extends State<PortfolioHome>
             child: Column(
               children: [
                 _buildHeroSection(isMobile),
-
                 SizedBox(height: isMobile ? 20 : 30),
                 _buildProfileSection(isMobile),
-
                 SizedBox(height: isMobile ? 20 : 30),
                 _buildSkillsSection(isMobile),
-
                 SizedBox(height: isMobile ? 20 : 30),
                 _buildProjectsSection(isMobile),
-
                 SizedBox(height: isMobile ? 20 : 30),
                 _buildExperienceSection(isMobile),
-
                 SizedBox(height: isMobile ? 20 : 30),
                 _buildEducationSection(isMobile),
-
                 SizedBox(height: isMobile ? 20 : 30),
                 _buildAwardsSection(isMobile),
-
                 SizedBox(height: isMobile ? 20 : 30),
                 _buildContactSection(isMobile),
-
                 _buildFooter(isMobile),
               ],
             ),
@@ -198,11 +190,11 @@ class _PortfolioHomeState extends State<PortfolioHome>
                 if (!isMobile)
                   Row(
                     children: [
-                      _buildNavButton('Home', 0),
+                      _buildNavButton('Home', 50),
                       _buildNavButton('Profile', 800),
-                      _buildNavButton('Skills', 1550),
+                      _buildNavButton('Skills', 1600),
                       _buildNavButton('Projects', 2450),
-                      _buildNavButton('Experience', 4500),
+                      _buildNavButton('Experience', 4900),
                       _buildNavButton('Contact', 7600),
                     ],
                   )
@@ -218,13 +210,13 @@ class _PortfolioHomeState extends State<PortfolioHome>
                           _scrollToSection(700);
                           break;
                         case 'Skills':
-                          _scrollToSection(1700);
+                          _scrollToSection(1750);
                           break;
                         case 'Projects':
-                          _scrollToSection(3000);
+                          _scrollToSection(3050);
                           break;
                         case 'Experience':
-                          _scrollToSection(4950);
+                          _scrollToSection(5400);
                           break;
                         case 'Contact':
                           _scrollToSection(8000);
@@ -445,7 +437,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
                                   color: Colors.white70, size: 16),
                               SizedBox(width: 8),
                               Text(
-                                'Bangkok, Thailand | From Myanmar',
+                                'Chonburi, Thailand | From Myanmar',
                                 style: TextStyle(
                                   color: Colors.white70,
                                   fontSize: isMobile ? 12 : 14,
@@ -567,7 +559,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(
-          onPressed: () => _scrollToSection(6000),
+          onPressed: () => _scrollToSection(isMobile ? 8000 : 7600),
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF3B82F6),
             padding: EdgeInsets.symmetric(
@@ -586,7 +578,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
         ),
         SizedBox(width: isMobile ? 16 : 20),
         OutlinedButton(
-          onPressed: () => _scrollToSection(2200),
+          onPressed: () => _scrollToSection(isMobile ? 3050 : 2500),
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.white,
             side: const BorderSide(color: Colors.white70),
@@ -649,7 +641,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
                       ),
                       SizedBox(height: 16),
                       Text(
-                        'A passionate Junior Flutter Developer with hands-on experience in building production-level mobile applications under professional mentorship. I bring a unique perspective from my background in Quality Assurance, which helps me write cleaner, more maintainable code with strong attention to detail.',
+                        'Motivated Flutter Developer with a strong foundation in mobile application development, currently completing an intensive mentorship program with a senior Flutter developer. Demonstrated ability to build production-ready applications using Flutter, Dart, Firebase, and modern state management solutions.',
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.white.withOpacity(0.9),
@@ -658,7 +650,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
                       ),
                       SizedBox(height: 16),
                       Text(
-                        'Currently based in Bangkok, Thailand, I\'m actively seeking opportunities to contribute to meaningful projects while continuously growing as a Flutter developer.',
+                        'Proven track record of rapid learning, technical problem-solving (1st place, Oway Travel Hackathon 2020), and community leadership through tech content creation. Eager to contribute clean, well-documented code in a collaborative Agile environment.',
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.white.withOpacity(0.9),
@@ -675,23 +667,21 @@ class _PortfolioHomeState extends State<PortfolioHome>
                   'Current Focus',
                   Icons.code,
                   [
-                    'Working on E-commerce Flutter App with mentorship',
-                    'Learning State Management (BLoC, Provider, GetX)',
+                    'Building production-level applications under mentorship',
+                    'Advanced state management (GetX, BLoC, Provider)',
                     'Clean Architecture & Firebase Integration',
-                    'Creating intuitive user experiences'
+                    'Comprehensive testing strategies'
                   ],
                   isMobile,
                 ),
                 SizedBox(height: 15),
-
-                // Then Career Goal
                 _buildInfoCard(
                   'Career Goal',
                   Icons.flag,
                   [
-                    'Contributing to meaningful projects',
-                    'Continuous learning and growth',
-                    'Building production-ready applications',
+                    'Contributing to meaningful Flutter projects',
+                    'Continuous learning and professional growth',
+                    'Building scalable production-ready applications',
                     'Team collaboration and knowledge sharing'
                   ],
                   isMobile,
@@ -732,7 +722,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
                             ),
                             SizedBox(height: 20),
                             Text(
-                              'A passionate Junior Flutter Developer with hands-on experience in building production-level mobile applications under professional mentorship. I bring a unique perspective from my background in Quality Assurance, which helps me write cleaner, more maintainable code with strong attention to detail.',
+                              'Motivated Flutter Developer with a strong foundation in mobile application development, currently completing an intensive mentorship program with a senior Flutter developer. Demonstrated ability to build production-ready applications using Flutter, Dart, Firebase, and modern state management solutions.',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white.withOpacity(0.9),
@@ -741,7 +731,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
                             ),
                             SizedBox(height: 20),
                             Text(
-                              'Currently based in Bangkok, Thailand, I\'m actively seeking opportunities to contribute to meaningful projects while continuously growing as a Flutter developer.',
+                              'Proven track record of rapid learning, technical problem-solving (1st place, Oway Travel Hackathon 2020), and community leadership through tech content creation. Eager to contribute clean, well-documented code in a collaborative Agile environment.',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white.withOpacity(0.9),
@@ -763,10 +753,10 @@ class _PortfolioHomeState extends State<PortfolioHome>
                             'Current Focus',
                             Icons.code,
                             [
-                              'Working on E-commerce Flutter App with mentorship',
-                              'Learning State Management (BLoC, Provider, GetX)',
+                              'Building production-level applications under mentorship',
+                              'Advanced state management (GetX, BLoC, Provider)',
                               'Clean Architecture & Firebase Integration',
-                              'Creating intuitive user experiences'
+                              'Comprehensive testing strategies'
                             ],
                             isMobile,
                           ),
@@ -775,9 +765,9 @@ class _PortfolioHomeState extends State<PortfolioHome>
                             'Career Goal',
                             Icons.flag,
                             [
-                              'Contributing to meaningful projects',
-                              'Continuous learning and growth',
-                              'Building production-ready applications',
+                              'Contributing to meaningful Flutter projects',
+                              'Continuous learning and professional growth',
+                              'Building scalable production-ready applications',
                               'Team collaboration and knowledge sharing'
                             ],
                             isMobile,
@@ -817,9 +807,11 @@ class _PortfolioHomeState extends State<PortfolioHome>
             'Firebase',
             'GetX',
             'BLoC',
+            'Provider',
             'REST API',
-            'Git',
-            'Figma'
+            'Hive',
+            'SQLite',
+            'Git'
           ].map((tech) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
@@ -935,12 +927,12 @@ class _PortfolioHomeState extends State<PortfolioHome>
                 itemCount: 6,
                 itemBuilder: (context, index) {
                   final skills = [
-                    ['Mobile Development', Icons.phone_android, ['Flutter', 'Dart', 'Android', 'VS Code', 'Material Design'], const Color(0xFF1E40AF), const Color(0xFF3B82F6)],
-                    ['State Management', Icons.settings, ['GetX', 'BLoC', 'Provider', 'State Patterns'], const Color(0xFF3B82F6), const Color(0xFF1E40AF)],
-                    ['Backend & Services', Icons.cloud, ['Firebase', 'REST API', 'Firestore', 'FCM', 'Postman'], const Color(0xFF1E40AF), const Color(0xFF3B82F6)],
-                    ['Database & Storage', Icons.storage, ['Firestore', 'Realm', 'SQLite', 'Hive', 'Local Storage'], const Color(0xFF3B82F6), const Color(0xFF1E40AF)],
-                    ['Development Tools', Icons.build, ['Git', 'GitHub', 'Figma', 'DevTools', 'Studio'], const Color(0xFF1E40AF), const Color(0xFF3B82F6)],
-                    ['Architecture', Icons.architecture, ['MVC', 'Clean Code', 'Widgets', 'Navigation'], const Color(0xFF3B82F6), const Color(0xFF1E40AF)],
+                    ['Mobile Development', Icons.phone_android, ['Flutter', 'Dart', 'Material Design', 'Cupertino Widgets', 'Responsive UI'], const Color(0xFF1E40AF), const Color(0xFF3B82F6)],
+                    ['State Management', Icons.settings, ['GetX', 'BLoC', 'Provider', 'Riverpod (Learning)'], const Color(0xFF3B82F6), const Color(0xFF1E40AF)],
+                    ['Backend & Integration', Icons.cloud, ['Firebase', 'REST API', 'JSON Parsing', 'Postman'], const Color(0xFF1E40AF), const Color(0xFF3B82F6)],
+                    ['Database & Storage', Icons.storage, ['Firestore', 'Hive', 'SQLite', 'Realm DB', 'Local Storage'], const Color(0xFF3B82F6), const Color(0xFF1E40AF)],
+                    ['Development Tools', Icons.build, ['Git', 'GitHub', 'Android Studio', 'VS Code', 'Flutter DevTools'], const Color(0xFF1E40AF), const Color(0xFF3B82F6)],
+                    ['Architecture & Patterns', Icons.architecture, ['MVC', 'Clean Architecture', 'Repository Pattern', 'Navigation & Routing'], const Color(0xFF3B82F6), const Color(0xFF1E40AF)],
                   ];
                   return _buildIconSkillCard(
                     skills[index][0] as String,
@@ -980,7 +972,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Icon Section
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -1000,7 +991,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
             ),
             child: Icon(icon, color: Colors.white, size: 24),
           ),
-
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -1060,53 +1050,73 @@ class _PortfolioHomeState extends State<PortfolioHome>
               Column(
                 children: [
                   _buildProjectCard(
-                    'Learners Gateway - Blog Platform',
-                    'Flutter Web Application',
-                    'assets/images/learners_gateway.jpg',
-                    'Modern, responsive blog platform built with Flutter Web & Firebase for my tech education community. Features blog system with post listing, admin dashboard, real-time updates, and responsive design.',
-                    [
-                      'Flutter Web',
-                      'Firebase Auth',
-                      'Cloud Firestore',
-                      'Provider',
-                      'go_router'
-                    ],
-                    'https://learners-gateway.web.app',
-                    'https://github.com/phyowaikyaw-mobiledev/learners_gateway_website',
-                    Icons.web,
-                    isMobile,
-                    status: 'In Development (65% Complete)',
-                  ),
-                  SizedBox(height: isMobile ? 20 : 25),
-                  _buildProjectCard(
-                    'E-Commerce Mobile App',
-                    'Production-Level Application',
-                    'assets/images/ecommerce_app.jpg',
-                    'Full-featured shopping platform built under senior developer guidance. Features product catalog, shopping cart, Firebase Authentication, push notifications, and Myanmar language support.',
+                    'E-Commerce Mobile Application',
+                    'Production-Level Project Under Mentorship',
+                    'assets/images/e_commerce_shopping.jpeg',
+                    'Full-featured shopping platform built under senior developer guidance. Features product catalog, shopping cart, Firebase Authentication, Firestore integration, and responsive UI with MVC architecture.',
                     [
                       'Flutter',
+                      'Dart',
                       'Firebase',
                       'REST API',
-                      'GetX',
-                      'FCM'
+                      'Material Design'
                     ],
                     null,
                     'https://github.com/phyowaikyaw-mobiledev/e_commerce',
                     Icons.shopping_cart,
                     isMobile,
-                    status: 'Ongoing - Mentorship Project',
+                    status: 'Production-Level - Under Mentorship',
+                  ),
+                  SizedBox(height: isMobile ? 20 : 25),
+                  _buildProjectCard(
+                    'Learners Gateway Website',
+                    'Live Production Blog Platform',
+                    'assets/images/learners_gateway.jpeg',
+                    'Modern, responsive blog platform built with Flutter Web & Firebase for my tech education community. Features real-time content management, admin authentication, comment system, and responsive design deployed on Firebase Hosting.',
+                    [
+                      'Flutter Web 3.0+',
+                      'Firebase',
+                      'Provider',
+                      'go_router',
+                      'Material Design 3'
+                    ],
+                    'https://learners-gateway.web.app',
+                    'https://github.com/phyowaikyaw-mobiledev/learners_gateway_website',
+                    Icons.web,
+                    isMobile,
+                    status: 'Live Production',
+                  ),
+                  SizedBox(height: isMobile ? 20 : 25),
+                  _buildProjectCard(
+                    'EduHub LMS',
+                    'Comprehensive Learning Management System',
+                    'assets/images/lms.jpeg',
+                    'Feature-rich Learning Management System with dual-role system (Student & Teacher). Includes course management, assignment system with submission and grading, progress tracking, and offline functionality with Hive local database.',
+                    [
+                      'Flutter 3.0+',
+                      'Dart',
+                      'Firebase',
+                      'BLoC (Cubit)',
+                      'Hive'
+                    ],
+                    null,
+                    'https://github.com/phyowaikyaw-mobiledev/eduhub_lms',
+                    Icons.school,
+                    isMobile,
+                    status: 'Completed',
                   ),
                   SizedBox(height: isMobile ? 20 : 25),
                   _buildProjectCard(
                     'Pardon Diary - Note Taking App',
                     'Feature-rich Note Application',
-                    'assets/images/note_app.jpg',
-                    'Google Keep-inspired note app with local database persistence. Features CRUD operations, real-time updates, staggered grid layout, full-text search, and dark theme.',
+                    'assets/images/note_app.jpeg',
+                    'Google Keep-inspired note app with local database persistence. Features CRUD operations, real-time updates, staggered grid layout, full-text search, and dark theme support.',
                     [
                       'Flutter',
                       'Realm Database',
                       'Streams',
-                      'Material Design 3'
+                      'Material Design 3',
+                      'Local Storage'
                     ],
                     null,
                     'https://github.com/phyowaikyaw-mobiledev/pardon_diary-note',
@@ -1118,13 +1128,14 @@ class _PortfolioHomeState extends State<PortfolioHome>
                   _buildProjectCard(
                     'Ying Music - Streaming App UI',
                     'Music Player Interface',
-                    'assets/images/music_app.jpg',
-                    'Modern music streaming app UI clone inspired by Spotify and Joox. Features gradient designs, artist profiles, bottom sheet interactions, and hero animations.',
+                    'assets/images/music_app.jpeg',
+                    'Modern music streaming app UI clone inspired by Spotify and Joox. Features gradient designs, artist profiles, bottom sheet interactions, hero animations, and smooth playback controls.',
                     [
                       'Flutter',
                       'Material Design 3',
                       'Animations',
-                      'Custom Widgets'
+                      'Custom Widgets',
+                      'UI/UX Design'
                     ],
                     null,
                     'https://github.com/phyowaikyaw-mobiledev/music_app',
@@ -1136,13 +1147,14 @@ class _PortfolioHomeState extends State<PortfolioHome>
                   _buildProjectCard(
                     'SocialHub - Social Media UI Clone',
                     'Facebook-inspired Interface',
-                    'assets/images/social_app.jpg',
-                    'Facebook-inspired social media app with modern design elements. Features news feed, interactive posts, notification system, contact management, and phone integration.',
+                    'assets/images/social_app.jpeg',
+                    'Facebook-inspired social media app with modern design elements. Features news feed, interactive posts, notification system, contact management, and smooth navigation patterns.',
                     [
                       'Flutter',
                       'Material Design',
                       'Complex UI',
-                      'Navigation'
+                      'Navigation',
+                      'Custom Components'
                     ],
                     null,
                     'https://github.com/phyowaikyaw-mobiledev/social_media_ui_clone',
@@ -1231,29 +1243,29 @@ class _PortfolioHomeState extends State<PortfolioHome>
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 4),
                           decoration: BoxDecoration(
-                            color: status.contains('Development')
-                                ? Colors.orange.withOpacity(0.2)
-                                : status.contains('Ongoing')
+                            color: status.contains('Production')
+                                ? Colors.green.withOpacity(0.2)
+                                : status.contains('Mentorship')
                                 ? Colors.blue.withOpacity(0.2)
-                                : Colors.green.withOpacity(0.2),
+                                : Colors.orange.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: status.contains('Development')
-                                  ? Colors.orange
-                                  : status.contains('Ongoing')
+                              color: status.contains('Production')
+                                  ? Colors.green
+                                  : status.contains('Mentorship')
                                   ? Colors.blue
-                                  : Colors.green,
+                                  : Colors.orange,
                             ),
                           ),
                           child: Text(
                             status,
                             style: TextStyle(
                               fontSize: isMobile ? 10 : 12,
-                              color: status.contains('Development')
-                                  ? Colors.orange
-                                  : status.contains('Ongoing')
+                              color: status.contains('Production')
+                                  ? Colors.green
+                                  : status.contains('Mentorship')
                                   ? Colors.blue
-                                  : Colors.green,
+                                  : Colors.orange,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -1366,36 +1378,20 @@ class _PortfolioHomeState extends State<PortfolioHome>
               SizedBox(height: isMobile ? 20 : 30),
               _buildExperienceCard(
                 'Junior Flutter Developer (Mentorship)',
-                'Current Project',
+                'Intensive Mentorship Program',
                 '2024 - Present',
                 [
-                  'Collaborating with senior developers on production e-commerce application',
-                  'Implementing UI screens based on Figma designs and specifications',
-                  'Integrating Firebase services (Auth, Firestore, Cloud Messaging)',
-                  'Working with REST APIs for product catalog management',
-                  'Participating in code reviews and implementing feedback',
-                  'Writing clean, maintainable code following team standards'
+                  'Building production-ready applications using Flutter, Dart, and Firebase',
+                  'Implementing modern state management solutions (GetX, BLoC, Provider)',
+                  'Participating in regular code reviews with senior developer',
+                  'Learning Clean Architecture and enterprise-level standards',
+                  'Developing e-commerce application with full feature set',
+                  'Focusing on clean, well-documented code practices',
+                  'Working with REST APIs and Firebase services integration'
                 ],
-                ['Flutter', 'Dart', 'Firebase', 'REST API', 'Git'],
+                ['Flutter', 'Dart', 'Firebase', 'GetX', 'BLoC', 'Clean Architecture', 'REST API'],
                 Icons.work,
                 isMobile,
-              ),
-              SizedBox(height: isMobile ? 15 : 20),
-              _buildExperienceCard(
-                'Junior Quality Assurance Tester',
-                'Techno-Wave Software House',
-                'Feb 2024 - Sept 2024',
-                [
-                  'Executed manual test cases for mobile and web applications',
-                  'Identified and documented 100+ software defects',
-                  'Collaborated with developers in Agile/Scrum environment',
-                  'Tested REST API endpoints using Postman',
-                  'Conducted cross-browser and cross-platform testing'
-                ],
-                ['Manual Testing', 'Agile/Scrum', 'Postman', 'Jira'],
-                Icons.bug_report,
-                isMobile,
-                note: 'Company ceased operations due to political situation in Sept 2024',
               ),
             ],
           ),
@@ -1489,36 +1485,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
               ),
             ],
           ),
-          if (note.isNotEmpty) ...[
-            SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.orange.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Colors.orange.withOpacity(0.3),
-                  width: 1,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline, color: Colors.orange, size: 16),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      note,
-                      style: TextStyle(
-                        fontSize: isMobile ? 12 : 14,
-                        color: Colors.orange.withOpacity(0.9),
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
           SizedBox(height: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1588,35 +1554,36 @@ class _PortfolioHomeState extends State<PortfolioHome>
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Column(
             children: [
-              _buildSectionTitle('Education & Training', isMobile),
+              _buildSectionTitle('Education & Certifications', isMobile),
               SizedBox(height: isMobile ? 20 : 30),
               _buildEducationCard(
                 'Computer Science Major',
                 'Computer University, Mandalay (Myanmar)',
-                '2019 - 2021 (2 Years Completed)',
+                '2018 - 2021 (2nd Years Completed)',
                 [
                   'Data Structures & Algorithms',
                   'Database Management Systems',
                   'Software Engineering Principles',
                   'Object-Oriented Programming',
-                  'Computer Architecture'
+                  'Computer Architecture',
+                  'Web Development Foundations'
                 ],
                 Icons.school,
                 isMobile,
               ),
               SizedBox(height: isMobile ? 15 : 20),
               _buildEducationCard(
-                'Professional Flutter Development Program',
-                'One-on-one Mentorship with Senior Developer',
-                '2024 - Present',
+                'KMD Education Center Certifications',
+                'Various Technical Training Programs',
+                'Multiple Completion Dates',
                 [
-                  'Personalized Flutter training sessions with industry professional',
-                  'Regular code reviews emphasizing best practices and design patterns',
-                  'Collaborative work on production-level project implementations',
-                  'Professional guidance on clean code principles and maintainable architecture',
-                  'Learning enterprise-level standards from day one'
+                  'Software Engineering - Introduction Course',
+                  'Self-Development Program - Programming Fundamentals',
+                  'Computer Systems & Networking – Practical A+',
+                  'Information Technology - Microsoft Office Applications',
+                  'Microsoft PowerPoint (Advanced)'
                 ],
-                Icons.code,
+                Icons.workspace_premium,
                 isMobile,
               ),
             ],
@@ -1750,7 +1717,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
           child: Column(
             children: [
               _buildSectionTitle('Awards & Achievements', isMobile),
-              // ✅ CHANGED: Reduced spacing from 40/60 to 20/30
               SizedBox(height: isMobile ? 20 : 30),
               _buildAwardCard(isMobile),
             ],
@@ -1825,7 +1791,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'Oway Travel Hackathon 2020',
+                      'Oway Travel Hackathon 2020 Mandalay',
                       style: TextStyle(
                         fontSize: isMobile ? 16 : 22,
                         color: Colors.white,
@@ -1834,7 +1800,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
                     ),
                     SizedBox(height: 2),
                     Text(
-                      'Organized by Oway Group | Mandalay, Myanmar',
+                      'Organized by Pandeeyar Foundation | Myanmar',
                       style: TextStyle(
                         fontSize: isMobile ? 12 : 14,
                         color: Colors.white.withOpacity(0.7),
@@ -1868,7 +1834,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
                     ),
                     SizedBox(width: 10),
                     Text(
-                      'Award: AWS Cloud Credits (\$1000 value)',
+                      'Award: \$1000 AWS Cloud Credits',
                       style: TextStyle(
                         fontSize: isMobile ? 14 : 18,
                         fontWeight: FontWeight.bold,
@@ -1878,61 +1844,30 @@ class _PortfolioHomeState extends State<PortfolioHome>
                   ],
                 ),
                 SizedBox(height: isMobile ? 12 : 16),
-                _buildAwardDetail('Project', 'Travel-related application solution (hackathon challenge)', isMobile),
-                _buildAwardDetail('Team Role', 'Developer and team collaborator', isMobile),
-                SizedBox(height: isMobile ? 12 : 16),
-                Text(
-                  'Skills Demonstrated:',
-                  style: TextStyle(
-                    fontSize: isMobile ? 14 : 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    'Problem-solving',
-                    'Team Collaboration',
-                    'Rapid Prototyping',
-                    'Presentation Skills',
-                    'Time Management',
-                  ]
-                      .map((skill) => Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: isMobile ? 10 : 12,
-                      vertical: isMobile ? 6 : 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFD700).withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: const Color(0xFFFFD700).withOpacity(0.5),
-                        width: 1,
-                      ),
-                    ),
-                    child: Text(
-                      skill,
-                      style: TextStyle(
-                        fontSize: isMobile ? 11 : 13,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ))
-                      .toList(),
-                ),
+                _buildAwardDetail('Achievement', '1st Place among 20+ competing teams', isMobile),
+                _buildAwardDetail('Project', 'Developed functional travel application prototype under strict time constraints', isMobile),
+                _buildAwardDetail('Skills Demonstrated', 'Teamwork, problem-solving, rapid prototyping, and presentation skills', isMobile),
               ],
             ),
           ),
+
+          // ADDED: Hackathon Photos Section
           SizedBox(height: isMobile ? 24 : 32),
+          Text(
+            'Hackathon Memories',
+            style: TextStyle(
+              fontSize: isMobile ? 18 : 22,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFFFFD700),
+            ),
+          ),
+          SizedBox(height: isMobile ? 16 : 20),
           isMobile
               ? Column(
             children: [
               _buildHackathonImage(
                 'assets/images/hackathon_award.jpg',
-                'Hackathon Award Ceremony',
+                'Award Ceremony - Receiving 1st Place',
                 isMobile,
               ),
               SizedBox(height: 16),
@@ -1948,7 +1883,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
               Expanded(
                 child: _buildHackathonImage(
                   'assets/images/hackathon_award.jpg',
-                  'Hackathon Award Ceremony',
+                  'Award Ceremony - Receiving 1st Place',
                   isMobile,
                 ),
               ),
@@ -1962,6 +1897,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
               ),
             ],
           ),
+
           SizedBox(height: isMobile ? 16 : 20),
           Container(
             padding: EdgeInsets.all(isMobile ? 12 : 14),
@@ -1999,6 +1935,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
     );
   }
 
+//  ADDED: Helper method to display hackathon images
   Widget _buildHackathonImage(String assetPath, String caption, bool isMobile) {
     return Column(
       children: [
@@ -2057,6 +1994,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
             color: Colors.white.withOpacity(0.7),
             fontStyle: FontStyle.italic,
           ),
+          textAlign: TextAlign.center,
         ),
       ],
     );
@@ -2125,7 +2063,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Column(
             children: [
-              // Header Section
               Column(
                 children: [
                   Container(
@@ -2165,9 +2102,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
                   ),
                 ],
               ),
-
               SizedBox(height: isMobile ? 30 : 40),
-
               isMobile ? _buildMobileContactLayout() : _buildDesktopContactLayout(),
             ],
           ),
@@ -2187,7 +2122,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
               _buildEnhancedContactCard(
                 Icons.email_outlined,
                 'Email',
-                'phyowaikyawdeveloper@gmail.com',
+                'phyowalkyawdeveloper@gmail.com',
                 'Drop me an email anytime',
                 _openGmail,
                 const Color(0xFF3B82F6),
@@ -2200,7 +2135,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
                     child: _buildEnhancedContactCard(
                       FontAwesomeIcons.github,
                       'GitHub',
-                      'phyowaikyaw-mobiledev',
+                      'phyowalkyaw-mobiledev',
                       'Check out my projects',
                           () => _launchURL('https://github.com/phyowaikyaw-mobiledev'),
                       const Color(0xFF6366F1),
@@ -2224,9 +2159,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
             ],
           ),
         ),
-
         const SizedBox(width: 24),
-
         Expanded(
           flex: 2,
           child: _buildOpportunityCard(false),
@@ -2241,7 +2174,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
         _buildEnhancedContactCard(
           Icons.email_outlined,
           'Email',
-          'phyowaikyawdeveloper@gmail.com',
+          'phyowalkyawdeveloper@gmail.com',
           'Drop me an email anytime',
           _openGmail,
           const Color(0xFF3B82F6),
@@ -2251,9 +2184,9 @@ class _PortfolioHomeState extends State<PortfolioHome>
         _buildEnhancedContactCard(
           FontAwesomeIcons.github,
           'GitHub',
-          'phyowaikyaw-mobiledev',
+          'phyowalkyaw-mobiledev',
           'Check out my projects',
-              () => _launchURL('https://github.com/phyowaikyaw-mobiledev'),
+              () => _launchURL('https://github.com/phyowalkyaw-mobiledev'),
           const Color(0xFF6366F1),
           const Color(0xFF818CF8),
         ),
@@ -2333,9 +2266,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
                   size: 28,
                 ),
               ),
-
               const SizedBox(width: 20),
-
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -2431,7 +2362,7 @@ class _PortfolioHomeState extends State<PortfolioHome>
           ),
           const SizedBox(height: 12),
           Text(
-            'Currently seeking exciting roles and projects',
+            'Currently seeking exciting roles and projects where I can contribute and grow as a Flutter developer',
             style: TextStyle(
               fontSize: 15,
               color: Colors.white.withOpacity(0.7),
@@ -2439,9 +2370,9 @@ class _PortfolioHomeState extends State<PortfolioHome>
             ),
           ),
           const SizedBox(height: 24),
-          _buildOpportunityItem('💼', 'Full-time positions'),
+          _buildOpportunityItem('💼', 'Junior Flutter Developer roles'),
           const SizedBox(height: 12),
-          _buildOpportunityItem('🌏', 'Remote work'),
+          _buildOpportunityItem('🌏', 'Remote work opportunities'),
           const SizedBox(height: 12),
           _buildOpportunityItem('🚀', 'Freelance projects'),
           const SizedBox(height: 12),
@@ -2503,7 +2434,6 @@ class _PortfolioHomeState extends State<PortfolioHome>
       ],
     );
   }
-
 
   Widget _buildFooter(bool isMobile) {
     return Container(
