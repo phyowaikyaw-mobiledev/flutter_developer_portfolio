@@ -1,5 +1,5 @@
-name: junior_flutter_developer
-description: "Junior Flutter Portollio"
+name: phyowaikyaw_portfolio
+description: "PhyoWaiKyaw Portfolio"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -39,6 +39,8 @@ dependencies:
   firebase_core: ^4.5.0
   cloud_firestore: ^6.1.3
   image_picker: ^1.2.1
+  go_router: ^17.1.0
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:
