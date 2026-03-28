@@ -422,6 +422,48 @@ class _AwardCardState extends State<_AwardCard> with TickerProviderStateMixin {
                       ]),
                     ]),
                   ),
+
+                  // Subtle luxury polish: top shine + corner accents
+                  Positioned(
+                    top: 0,
+                    left: 20,
+                    right: 20,
+                    child: IgnorePointer(
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 250),
+                        opacity: _hovered ? 0.34 : 0.2,
+                        child: Container(
+                          height: 1,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.transparent,
+                                _gold.withValues(alpha: 0.65),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 12,
+                    left: 12,
+                    child: IgnorePointer(
+                      child: _CornerAccent(color: _gold, hovered: _hovered),
+                    ),
+                  ),
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: IgnorePointer(
+                      child: Transform.flip(
+                        flipX: true,
+                        child: _CornerAccent(color: _gold, hovered: _hovered),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             );
@@ -500,6 +542,50 @@ class _AwardCardState extends State<_AwardCard> with TickerProviderStateMixin {
               fontStyle: FontStyle.italic)),
     ]);
   }
+}
+
+class _CornerAccent extends StatelessWidget {
+  final Color color;
+  final bool hovered;
+
+  const _CornerAccent({required this.color, required this.hovered});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 26,
+      height: 26,
+      child: CustomPaint(
+        painter: _CornerAccentPainter(
+          color: color.withValues(alpha: hovered ? 0.75 : 0.52),
+        ),
+      ),
+    );
+  }
+}
+
+class _CornerAccentPainter extends CustomPainter {
+  final Color color;
+
+  const _CornerAccentPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.8
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    final path = Path()
+      ..moveTo(0, size.height * 0.55)
+      ..lineTo(0, 0)
+      ..lineTo(size.width * 0.55, 0);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(_CornerAccentPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 // ── Rotating gradient border painter ─────────────────────────────────────────

@@ -9,7 +9,7 @@ class TestimonialModel {
   final String text;
   final String? avatarBase64;
   final bool approved;
-  final int rating; // ← NEW: 1–5 stars
+  final int rating;
 
   TestimonialModel({
     required this.id,

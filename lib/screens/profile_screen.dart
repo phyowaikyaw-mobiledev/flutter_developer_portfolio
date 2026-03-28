@@ -23,7 +23,14 @@ class ProfileScreen extends StatelessWidget {
               constraints: const BoxConstraints(maxWidth: 1200),
               child: Column(
                 children: [
-                  SectionTitle(title: 'Profile', isMobile: isMobile),
+                  SectionTitle(
+                    title: 'Profile',
+                    isMobile: isMobile,
+                    subtitle:
+                        'Product-minded Flutter developer focused on shipping reliable mobile experiences.',
+                  ),
+                  SizedBox(height: isMobile ? 16 : 24),
+                  _recruiterSnapshot(isMobile),
                   SizedBox(height: isMobile ? 20 : 30),
                   isMobile
                       ? Column(
@@ -31,16 +38,16 @@ class ProfileScreen extends StatelessWidget {
                             _bioCard(isMobile),
                             const SizedBox(height: 20),
                             _infoCard(
-                              'Current Focus',
-                              Icons.code,
+                              'Professional Focus',
+                              Icons.work_outline,
                               _focus,
                               isMobile,
                               delay: 100,
                             ),
                             const SizedBox(height: 15),
                             _infoCard(
-                              'Career Goal',
-                              Icons.flag,
+                              'Strategic Direction',
+                              Icons.trending_up_rounded,
                               _goal,
                               isMobile,
                               delay: 200,
@@ -56,16 +63,16 @@ class ProfileScreen extends StatelessWidget {
                               child: Column(
                                 children: [
                                   _infoCard(
-                                    'Current Focus',
-                                    Icons.code,
+                                    'Professional Focus',
+                                    Icons.work_outline,
                                     _focus,
                                     isMobile,
                                     delay: 150,
                                   ),
                                   const SizedBox(height: 15),
                                   _infoCard(
-                                    'Career Goal',
-                                    Icons.flag,
+                                    'Strategic Direction',
+                                    Icons.trending_up_rounded,
                                     _goal,
                                     isMobile,
                                     delay: 300,
@@ -107,34 +114,44 @@ class ProfileScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Hello! I'm Phyo Wai Kyaw",
+              'Professional Summary',
               style: TextStyle(
-                fontSize: isMobile ? 22 : 28,
+                fontSize: isMobile ? 20 : 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
             SizedBox(height: isMobile ? 16 : 20),
             Text(
-              'Flutter Developer with 1+ year of production experience, building cross-platform mobile applications that ship to real users on Google Play & App Store. Proficient in Flutter, Dart, Firebase, REST APIs, and modern state management — writing clean, scalable code in Agile environments.',
+              'Flutter developer with production experience delivering cross-platform applications for real users on Google Play and the App Store.',
               style: TextStyle(
                 fontSize: isMobile ? 14 : 16,
-                color: Colors.white.withValues(alpha: 0.88),
+                color: Colors.white.withValues(alpha: 0.84),
+                height: 1.65,
+              ),
+            ),
+            SizedBox(height: isMobile ? 10 : 14),
+            Text(
+              'Strong in API integration, architecture discipline, and remote collaboration with engineering teams.',
+              style: TextStyle(
+                fontSize: isMobile ? 14 : 16,
+                color: Colors.white.withValues(alpha: 0.84),
                 height: 1.65,
               ),
             ),
             SizedBox(height: isMobile ? 14 : 18),
-            Text(
-              'Experienced in remote collaboration with distributed teams, delivering features independently while maintaining clear communication. Proven problem-solver — 1st Runner Up at Oway Travel Hackathon 2020 — and active tech community builder. Open to remote opportunities worldwide.',
-              style: TextStyle(
-                fontSize: isMobile ? 14 : 16,
-                color: Colors.white.withValues(alpha: 0.88),
-                height: 1.65,
-              ),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: const [
+                _ProfilePill(label: '1+ Year Production Experience'),
+                _ProfilePill(label: 'Remote Team Collaboration'),
+                _ProfilePill(label: '1st Runner Up — Oway Hackathon 2020'),
+              ],
             ),
             SizedBox(height: isMobile ? 20 : 28),
             Text(
-              'Tech Stack:',
+              'Core Stack',
               style: TextStyle(
                 fontSize: isMobile ? 16 : 18,
                 fontWeight: FontWeight.bold,
@@ -152,20 +169,110 @@ class ProfileScreen extends StatelessWidget {
                 'Flutter',
                 'Dart',
                 'Firebase',
-                'GetX',
                 'BLoC',
                 'Provider',
                 'Dio',
                 'REST API',
-                'Hive',
-                'SQLite',
+                'Clean Architecture',
                 'Git',
-                'Postman',
               ].map((t) => TechTag(label: t, isMobile: isMobile)).toList(),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _recruiterSnapshot(bool isMobile) {
+    final items = [
+      ('Primary Role', 'Flutter Developer', Icons.badge_outlined),
+      ('Experience', '1+ year production', Icons.timeline_outlined),
+      ('Work Style', 'Remote collaboration', Icons.groups_2_outlined),
+      ('Availability', 'Open to opportunities', Icons.event_available_outlined),
+    ];
+
+    return RevealAnimator(
+      delay: const Duration(milliseconds: 60),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 14 : 18,
+          vertical: isMobile ? 14 : 16,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.white.withValues(alpha: 0.055),
+              Colors.white.withValues(alpha: 0.02),
+            ],
+          ),
+          border: Border.all(
+            color: const Color(0xFF3B82F6).withValues(alpha: 0.25),
+          ),
+        ),
+        child: isMobile
+            ? Column(
+                children: items
+                    .map(
+                      (it) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: _snapshotItem(it.$1, it.$2, it.$3 as IconData),
+                      ),
+                    )
+                    .toList(),
+              )
+            : Row(
+                children: items
+                    .map(
+                      (it) => Expanded(
+                        child: _snapshotItem(it.$1, it.$2, it.$3 as IconData),
+                      ),
+                    )
+                    .toList(),
+              ),
+      ),
+    );
+  }
+
+  Widget _snapshotItem(String label, String value, IconData icon) {
+    return Row(
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: const Color(0xFF3B82F6).withValues(alpha: 0.14),
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Icon(icon, size: 17, color: const Color(0xFF93C5FD)),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.white.withValues(alpha: 0.58),
+                ),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 12.5,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -272,15 +379,40 @@ class ProfileScreen extends StatelessWidget {
   }
 
   static const _focus = [
-    'Building production apps at Root Studio Asia',
-    'REST API integration with Dio & Clean Architecture',
-    'Localization (flutter_gen-l10n)',
-    'Code reviews & Agile team workflow',
+    'Shipping production Flutter features with stable release quality',
+    'Implementing REST API workflows with maintainable architecture',
+    'Collaborating through code reviews and team delivery cycles',
+    'Improving app quality with reusable and readable code standards',
   ];
   static const _goal = [
-    'Contributing to meaningful Flutter projects',
-    'Continuous learning and professional growth',
-    'Building scalable production-ready apps',
-    'Team collaboration and knowledge sharing',
+    'Contribute to high-impact Flutter product teams',
+    'Grow toward senior-level software engineering ownership',
+    'Build scalable apps with long-term maintainability',
+    'Mentor and share engineering knowledge within teams',
   ];
+}
+
+class _ProfilePill extends StatelessWidget {
+  final String label;
+  const _ProfilePill({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFF3B82F6).withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFF60A5FA).withValues(alpha: 0.3)),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 11,
+          color: Color(0xFF93C5FD),
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
 }

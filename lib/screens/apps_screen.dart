@@ -26,30 +26,30 @@ class AppsScreen extends StatelessWidget {
           child: Center(child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1200),
             child: Column(children: [
-              SectionTitle(title: 'Production Apps', isMobile: isMobile),
-              SizedBox(height: isMobile ? 8 : 12),
-              Text('Live applications shipped to real users on Google Play & App Store',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: isMobile ? 14 : 16,
-                  color: Colors.white.withValues(alpha: 0.55))),
+              SectionTitle(
+                title: 'Production Apps',
+                isMobile: isMobile,
+                subtitle:
+                    'Real products I helped ship for business users, with performance and maintainability in mind.',
+              ),
               SizedBox(height: isMobile ? 28 : 40),
 
               _catLabel('Published & Live', Colors.green, isMobile),
               const SizedBox(height: 16),
               _two(isMobile, [
-                _AppCard(title: 'Phone King Plus — Customer', description: 'Loyalty rewards platform — earn points, track rewards & redeem exclusive offers.', iconAsset: 'assets/images/phoneking_icon.png', icon: Icons.phone_android, role: 'Core Developer', statusColor: Colors.green, companyBadge: 'Root Studio Asia', tags: ['Flutter','REST API','Material Design'], playUrl: 'https://play.google.com/store/apps/details?id=asia.rootstudio.phone_king_customer', appStoreUrl: 'https://apps.apple.com/th/app/phoneking-plus/id6757488887', gallery: ['assets/images/pk_1.png','assets/images/pk_2.png','assets/images/pk_3.png','assets/images/pk_4.png','assets/images/pk_5.png'], isMobile: isMobile, launch: _launch),
-                _AppCard(title: 'Phone King Plus — Admin', description: 'Admin panel for managing the loyalty platform — stores, rewards & users.', iconAsset: 'assets/images/phoneking_admin_icon.png', icon: Icons.admin_panel_settings, role: 'Core Developer', statusColor: Colors.green, companyBadge: 'Root Studio Asia', tags: ['Flutter','REST API','Material Design'], playUrl: 'https://play.google.com/store/apps/details?id=asia.rootstudio.phone_king_admin', appStoreUrl: 'https://apps.apple.com/th/app/phoneking-plus-admin/id6757606298', gallery: ['assets/images/pka_1.png','assets/images/pka_2.png','assets/images/pka_3.png','assets/images/pka_4.png','assets/images/pka_5.png'], isMobile: isMobile, launch: _launch),
+                _AppCard(title: 'Phone King Plus — Customer', description: 'Built loyalty flows for points, rewards redemption, and customer engagement in a production retail environment.', iconAsset: 'assets/images/phoneking_icon.png', icon: Icons.phone_android, role: 'Core Developer', statusColor: Colors.green, companyBadge: 'Root Studio Asia', tags: ['Flutter','REST API','Material Design'], impact: 'Published on both stores and actively used by real customers.', playUrl: 'https://play.google.com/store/apps/details?id=asia.rootstudio.phone_king_customer', appStoreUrl: 'https://apps.apple.com/th/app/phoneking-plus/id6757488887', gallery: ['assets/images/pk_1.png','assets/images/pk_2.png','assets/images/pk_3.png','assets/images/pk_4.png','assets/images/pk_5.png'], isMobile: isMobile, launch: _launch),
+                _AppCard(title: 'Phone King Plus — Admin', description: 'Implemented internal operations tools to manage stores, campaigns, and customer reward activity efficiently.', iconAsset: 'assets/images/phoneking_admin_icon.png', icon: Icons.admin_panel_settings, role: 'Core Developer', statusColor: Colors.green, companyBadge: 'Root Studio Asia', tags: ['Flutter','REST API','Material Design'], impact: 'Enabled staff workflows with a dedicated production admin app.', playUrl: 'https://play.google.com/store/apps/details?id=asia.rootstudio.phone_king_admin', appStoreUrl: 'https://apps.apple.com/th/app/phoneking-plus-admin/id6757606298', gallery: ['assets/images/pka_1.png','assets/images/pka_2.png','assets/images/pka_3.png','assets/images/pka_4.png','assets/images/pka_5.png'], isMobile: isMobile, launch: _launch),
               ]),
               SizedBox(height: isMobile ? 28 : 36),
               _catLabel('Launching Soon', Colors.orange, isMobile),
               const SizedBox(height: 16),
               _two(isMobile, [
-                _AppCard(title: 'DrZon Healthcare', description: 'Healthcare app connecting patients with medical services in Myanmar & Thailand.', iconAsset: 'assets/images/dr_zon.png', icon: Icons.local_hospital, role: 'Core Developer', statusColor: Colors.orange, companyBadge: 'Root Studio Asia', tags: ['Flutter','Dio','Clean Architecture','l10n'], gallery: ['assets/images/drzon_1.png','assets/images/drzon_2.png','assets/images/drzon_3.png','assets/images/drzon_4.png','assets/images/drzon_5.png','assets/images/drzon_6.png'], isMobile: isMobile, launch: _launch),
-                _AppCard(title: 'Pan Customer App', description: 'Cross-platform production shopping application built with layered architecture for scalability and maintainability.', iconAsset: 'assets/images/pan_icon.png', icon: Icons.shopping_bag, role: 'Core Developer', statusColor: Colors.orange, companyBadge: 'Root Studio Asia', tags: ['Flutter','REST API','Layered Architecture'], gallery: ['assets/images/pan.png','assets/images/pan_1.png','assets/images/pan_2.png','assets/images/pan_3.png'], isMobile: isMobile, launch: _launch),
+                _AppCard(title: 'DrZon Healthcare', description: 'Developed patient-facing healthcare journeys with localization and architecture ready for long-term feature growth.', iconAsset: 'assets/images/dr_zon.png', icon: Icons.local_hospital, role: 'Core Developer', statusColor: Colors.orange, companyBadge: 'Root Studio Asia', tags: ['Flutter','Dio','Clean Architecture','l10n'], impact: 'Prepared for regional release across Myanmar and Thailand markets.', gallery: ['assets/images/drzon_1.png','assets/images/drzon_2.png','assets/images/drzon_3.png','assets/images/drzon_4.png','assets/images/drzon_5.png','assets/images/drzon_6.png'], isMobile: isMobile, launch: _launch),
+                _AppCard(title: 'Pan Customer App', description: 'Engineered shopping flows on layered architecture to support easier scaling, testing, and long-term maintenance.', iconAsset: 'assets/images/pan_icon.png', icon: Icons.shopping_bag, role: 'Core Developer', statusColor: Colors.orange, companyBadge: 'Root Studio Asia', tags: ['Flutter','REST API','Layered Architecture'], impact: 'Designed for maintainable feature delivery in a production context.', gallery: ['assets/images/pan.png','assets/images/pan_1.png','assets/images/pan_2.png','assets/images/pan_3.png'], isMobile: isMobile, launch: _launch),
               ]),
               SizedBox(height: isMobile ? 16 : 20),
               RevealAnimator(delay: const Duration(milliseconds: 100),
-                child: _AppCard(title: 'Secure Plus CCTV', description: 'Dual-role CCTV business management app — Customer & Admin with Firebase, BLoC, push notifications & bilingual (EN/MY) support.', iconAsset: 'assets/images/secure_plus.jpg', icon: Icons.security, role: 'Freelance Developer', statusColor: Colors.orange, tags: ['Flutter','Firebase','BLoC','GoRouter','FCM','l10n'], gallery: ['assets/images/secure_plus.png','assets/images/secure_plus_1.png','assets/images/secure_plus_2.png','assets/images/secure_plus_3.png','assets/images/secure_plus_4.png','assets/images/secure_plus_5.png','assets/images/secure_plus_6.png','assets/images/secure_plus_7.png'], isMobile: isMobile, launch: _launch)),
+                child: _AppCard(title: 'Secure Plus CCTV', description: 'Delivered customer and admin workflows for a CCTV operations product with real-time Firebase-backed capabilities.', iconAsset: 'assets/images/secure_plus.jpg', icon: Icons.security, role: 'Freelance Developer', statusColor: Colors.orange, tags: ['Flutter','Firebase','BLoC','GoRouter','FCM','l10n'], impact: 'Shipped a bilingual, notification-ready app tailored for business operations.', gallery: ['assets/images/secure_plus.png','assets/images/secure_plus_1.png','assets/images/secure_plus_2.png','assets/images/secure_plus_3.png','assets/images/secure_plus_4.png','assets/images/secure_plus_5.png','assets/images/secure_plus_6.png','assets/images/secure_plus_7.png'], isMobile: isMobile, launch: _launch)),
             ]),
           )),
         ),
@@ -82,6 +82,7 @@ class AppsScreen extends StatelessWidget {
 
 class _AppCard extends StatelessWidget {
   final String title, description, role;
+  final String? impact;
   final IconData icon;
   final String? iconAsset, playUrl, appStoreUrl, companyBadge;
   final Color statusColor;
@@ -93,6 +94,7 @@ class _AppCard extends StatelessWidget {
     required this.title, required this.description, required this.icon,
     required this.role, required this.statusColor, required this.tags,
     required this.gallery, required this.isMobile, required this.launch,
+    this.impact,
     this.iconAsset, this.playUrl, this.appStoreUrl, this.companyBadge,
   });
 
@@ -102,6 +104,7 @@ class _AppCard extends StatelessWidget {
     return RevealAnimator(
       child: ShimmerCard(
         glowColor: statusColor,
+        enableEffects: true,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft, end: Alignment.bottomRight,
@@ -134,6 +137,43 @@ class _AppCard extends StatelessWidget {
           const SizedBox(height: 16),
           Text(description, style: TextStyle(fontSize: isMobile ? 13 : 14,
             color: Colors.white.withValues(alpha: 0.75), height: 1.55)),
+          if (impact != null) ...[
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+              decoration: BoxDecoration(
+                color: const Color(0xFF3B82F6).withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: const Color(0xFF60A5FA).withValues(alpha: 0.35),
+                ),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 2),
+                    child: Icon(
+                      Icons.insights_rounded,
+                      color: Color(0xFF60A5FA),
+                      size: 15,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      impact!,
+                      style: TextStyle(
+                        fontSize: isMobile ? 12 : 13,
+                        color: Colors.white.withValues(alpha: 0.84),
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: 14),
           Wrap(spacing: 6, runSpacing: 6, children: tags.map((t) => _techTag(t)).toList()),
           if (gallery.isNotEmpty) ...[

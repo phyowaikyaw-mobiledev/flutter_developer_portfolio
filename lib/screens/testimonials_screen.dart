@@ -1,14 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart';
 import '../models/testimonial_model.dart';
 import '../services/firestore_service.dart';
 import '../widgets/common/section_title.dart';
-import '../widgets/common/shimmer_card.dart';
-import '../widgets/common/reveal_animator.dart';
 
 class TestimonialsScreen extends StatefulWidget {
   const TestimonialsScreen({super.key});
@@ -22,7 +19,6 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
   final _service = FirestoreService();
   List<TestimonialModel> _testimonials = [];
   bool _loading = false;
-  bool _isMasonryExpanded = false;
 
   // Form controllers
   final _nameCtrl = TextEditingController();
@@ -30,6 +26,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
   final _companyCtrl = TextEditingController();
   final _feedbackCtrl = TextEditingController();
   bool _submitted = false, _formError = false, _submitting = false;
+  DateTime? _nextSubmitAt;
   Uint8List? _avatarBytes;
   String? _avatarBase64;
 
@@ -81,6 +78,18 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
   }
 
   Future<void> _submit() async {
+    final now = DateTime.now();
+    if (_nextSubmitAt != null && now.isBefore(_nextSubmitAt!)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please wait a moment before submitting again.'),
+          ),
+        );
+      }
+      return;
+    }
+
     final name = _nameCtrl.text.trim();
     final feedback = _feedbackCtrl.text.trim();
     if (name.isEmpty || feedback.isEmpty) {
@@ -115,6 +124,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
       await _loadTestimonials();
       setState(() {
         _submitted = true;
+        _nextSubmitAt = DateTime.now().add(const Duration(seconds: 30));
       });
       Future.delayed(const Duration(seconds: 4), () {
         if (mounted) setState(() => _submitted = false);
@@ -178,7 +188,12 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
               ),
               child: Column(
                 children: [
-                  SectionTitle(title: 'What People Say', isMobile: isMobile),
+                  SectionTitle(
+                    title: 'What People Say',
+                    isMobile: isMobile,
+                    subtitle:
+                        'Professional feedback from collaborators, clients, and teammates.',
+                  ),
                   const SizedBox(height: 12),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -190,7 +205,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                       borderRadius: BorderRadius.circular(40),
                     ),
                     child: Text(
-                      "Kind words from colleagues and clients I've worked with",
+                      'Feedback from colleagues and clients I have collaborated with',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: isMobile ? 13 : 15,
@@ -252,8 +267,8 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
 
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 16 : 24,
-        vertical: isMobile ? 16 : 20,
+        horizontal: isMobile ? 14 : 18,
+        vertical: isMobile ? 14 : 18,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -261,76 +276,127 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.white.withValues(alpha: 0.06),
-            Colors.white.withValues(alpha: 0.02),
+            const Color(0xFF1E293B).withValues(alpha: 0.45),
+            const Color(0xFF0F172A).withValues(alpha: 0.65),
           ],
         ),
         border: Border.all(
-          color: const Color(0xFF3B82F6).withValues(alpha: 0.25),
+          color: const Color(0xFF3B82F6).withValues(alpha: 0.26),
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _statItem(
-            'Testimonials',
-            total.toString(),
-            Icons.people_outline,
-            isMobile,
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
-          Container(
-            width: 1,
-            height: 40,
-            color: Colors.white.withValues(alpha: 0.1),
-          ),
-          _statItem(
-            'Companies',
-            uniqueCompanies.toString(),
-            Icons.business_outlined,
-            isMobile,
-          ),
-          Container(
-            width: 1,
-            height: 40,
-            color: Colors.white.withValues(alpha: 0.1),
-          ),
-          _statItem('Rating', '4.9 ★', Icons.star_outline, isMobile),
         ],
       ),
+      child: isMobile
+          ? Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _statMetric(
+                        'Total Reviews',
+                        total.toString(),
+                        Icons.people_outline,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _statMetric(
+                        'Companies',
+                        uniqueCompanies.toString(),
+                        Icons.business_outlined,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                _statMetric(
+                  'Source',
+                  'Live Firestore',
+                  Icons.cloud_done_outlined,
+                ),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(
+                  child: _statMetric(
+                    'Total Reviews',
+                    total.toString(),
+                    Icons.people_outline,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _statMetric(
+                    'Companies',
+                    uniqueCompanies.toString(),
+                    Icons.business_outlined,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _statMetric(
+                    'Source',
+                    'Live Firestore',
+                    Icons.cloud_done_outlined,
+                  ),
+                ),
+              ],
+            ),
     );
   }
 
-  Widget _statItem(String label, String value, IconData icon, bool isMobile) {
-    return Column(
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              color: const Color(0xFF3B82F6),
-              size: isMobile ? 18 : 20,
+  Widget _statMetric(String label, String value, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.03),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: const Color(0xFF3B82F6).withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(10),
             ),
-            const SizedBox(width: 6),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: isMobile ? 20 : 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: isMobile ? 11 : 13,
-            color: Colors.white.withValues(alpha: 0.5),
+            child: Icon(icon, color: const Color(0xFF60A5FA), size: 18),
           ),
-        ),
-      ],
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.white.withValues(alpha: 0.58),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -488,7 +554,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Share Your Experience',
+                    'Share Professional Feedback',
                     style: TextStyle(
                       fontSize: isMobile ? 20 : 24,
                       fontWeight: FontWeight.bold,
@@ -496,10 +562,10 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                     ),
                   ),
                   Text(
-                    "Worked with me? I'd love to hear from you.",
+                    'Your feedback helps recruiters and collaborators evaluate my work quality.',
                     style: TextStyle(
                       fontSize: isMobile ? 12 : 14,
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: Colors.white.withValues(alpha: 0.58),
                     ),
                   ),
                 ],
@@ -604,7 +670,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
           ),
           const SizedBox(height: 16),
           _consistentField(
-            'Your Feedback *',
+            'Your Professional Review *',
             Icons.chat_bubble_outline,
             _feedbackCtrl,
             maxLines: 5,
@@ -638,7 +704,12 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: _submitting ? null : _submit,
+              onPressed:
+                  (_submitting ||
+                      (_nextSubmitAt != null &&
+                          DateTime.now().isBefore(_nextSubmitAt!)))
+                  ? null
+                  : _submit,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
@@ -679,18 +750,24 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                             color: Colors.white,
                           ),
                         )
-                      : const Row(
+                      : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.send_rounded,
+                              (_nextSubmitAt != null &&
+                                      DateTime.now().isBefore(_nextSubmitAt!))
+                                  ? Icons.lock_clock_outlined
+                                  : Icons.send_rounded,
                               color: Colors.white,
                               size: 18,
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
-                              'Submit Testimonial',
-                              style: TextStyle(
+                              (_nextSubmitAt != null &&
+                                      DateTime.now().isBefore(_nextSubmitAt!))
+                                  ? 'Please Wait Before Next Review'
+                                  : 'Submit Review',
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
@@ -706,24 +783,40 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
           if (_submitted) ...[
             const SizedBox(height: 16),
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: Colors.green.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.green.withValues(alpha: 0.35)),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    const Color(0xFF10B981).withValues(alpha: 0.16),
+                    const Color(0xFF059669).withValues(alpha: 0.08),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: const Color(0xFF34D399).withValues(alpha: 0.45),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF10B981).withValues(alpha: 0.16),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.15),
+                      color: const Color(0xFF10B981).withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.check_rounded,
-                      color: Colors.green,
-                      size: 16,
+                      color: Color(0xFF6EE7B7),
+                      size: 17,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -732,18 +825,19 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Thank you!',
+                          'Review submitted successfully',
                           style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFA7F3D0),
+                            fontWeight: FontWeight.w700,
                             fontSize: 14,
                           ),
                         ),
                         Text(
-                          'Your testimonial has been added successfully.',
+                          'Thanks for your professional feedback. Your review is now visible in the live feed.',
                           style: TextStyle(
-                            color: Colors.green.withValues(alpha: 0.7),
+                            color: const Color(0xFFD1FAE5).withValues(alpha: 0.82),
                             fontSize: 12,
+                            height: 1.45,
                           ),
                         ),
                       ],
@@ -755,23 +849,13 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
           ],
           const SizedBox(height: 14),
           Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.lock_outline,
-                  size: 12,
-                  color: Colors.white.withValues(alpha: 0.3),
-                ),
-                const SizedBox(width: 5),
-                Text(
-                  'Your testimonial appears instantly after submitting.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white.withValues(alpha: 0.3),
-                  ),
-                ),
-              ],
+            child: Text(
+              'Reviews are published from the live Firestore feed. A short cooldown prevents duplicate submissions.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.white.withValues(alpha: 0.36),
+              ),
             ),
           ),
         ],
@@ -802,18 +886,18 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
               )
             : null,
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.04),
+        fillColor: Colors.white.withValues(alpha: 0.05),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 1.5),
+          borderSide: const BorderSide(color: Color(0xFF60A5FA), width: 1.5),
         ),
         contentPadding: EdgeInsets.symmetric(
           horizontal: maxLines > 1 ? 18 : 0,
@@ -839,7 +923,6 @@ class _KineticCardState extends State<_KineticCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   bool _isHovered = false;
-  bool _isExpanded = false;
 
   @override
   void initState() {
@@ -856,6 +939,110 @@ class _KineticCardState extends State<_KineticCard>
     super.dispose();
   }
 
+  void _openFullReview() {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 640, maxHeight: 560),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFF0F1A35),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: const Color(0xFF3B82F6).withValues(alpha: 0.35),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF3B82F6).withValues(alpha: 0.15),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.testimonial.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(),
+                    icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                    tooltip: 'Close',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 2),
+              Text(
+                '${widget.testimonial.role}${widget.testimonial.company.isNotEmpty ? ' • ${widget.testimonial.company}' : ''}',
+                style: TextStyle(
+                  color: const Color(0xFF60A5FA).withValues(alpha: 0.9),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: Colors.white.withValues(alpha: 0.08),
+              ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Text(
+                    widget.testimonial.text,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.86),
+                      fontSize: 14,
+                      height: 1.65,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  icon: const Icon(
+                    Icons.check_circle_outline,
+                    color: Color(0xFF60A5FA),
+                    size: 16,
+                  ),
+                  label: const Text(
+                    'Done',
+                    style: TextStyle(color: Color(0xFF93C5FD)),
+                  ),
+                ),
+              ),
+              Text(
+                'Press Esc to close',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.45),
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -864,41 +1051,45 @@ class _KineticCardState extends State<_KineticCard>
         return MouseRegion(
           onEnter: (_) => setState(() => _isHovered = true),
           onExit: (_) => setState(() => _isHovered = false),
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                _isExpanded = !_isExpanded;
-              });
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeOutCubic,
-              transform: Matrix4.translationValues(0, _isHovered ? -4 : 0, 0),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 320),
+            curve: Curves.easeOutCubic,
+            transform: Matrix4.translationValues(0, _isHovered ? -3 : 0, 0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withValues(alpha: 0.055),
+                  Colors.white.withValues(alpha: 0.018),
+                ],
+              ),
+              border: Border.all(
+                color: _isHovered
+                    ? const Color(0xFF3B82F6).withValues(alpha: 0.46)
+                    : const Color(0xFF3B82F6).withValues(alpha: 0.22),
+                width: _isHovered ? 1.3 : 1,
+              ),
+              boxShadow: _isHovered
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFF3B82F6).withValues(alpha: 0.14),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withValues(alpha: 0.06),
-                    Colors.white.withValues(alpha: 0.02),
-                  ],
+                border: Border(
+                  left: BorderSide(
+                    color: const Color(0xFF3B82F6).withValues(alpha: 0.55),
+                    width: 3,
+                  ),
                 ),
-                border: Border.all(
-                  color: _isHovered
-                      ? const Color(0xFF3B82F6).withValues(alpha: 0.5)
-                      : const Color(0xFF3B82F6).withValues(alpha: 0.25),
-                  width: _isHovered ? 1.5 : 1,
-                ),
-                boxShadow: _isHovered
-                    ? [
-                        BoxShadow(
-                          color: const Color(0xFF3B82F6).withValues(alpha: 0.2),
-                          blurRadius: 20,
-                          spreadRadius: 2,
-                        ),
-                      ]
-                    : null,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -906,163 +1097,117 @@ class _KineticCardState extends State<_KineticCard>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Transform.translate(
-                      offset: Offset(0, _isHovered ? -2 : 0),
-                      child: Row(
-                        children: [
-                          _ConsistentAvatar(widget.testimonial, 52),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.testimonial.name,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    shadows: _isHovered
-                                        ? [
-                                            Shadow(
-                                              color: const Color(
-                                                0xFF3B82F6,
-                                              ).withValues(alpha: 0.5),
-                                              blurRadius: 8,
-                                            ),
-                                          ]
-                                        : null,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  widget.testimonial.role,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: const Color(0xFF3B82F6),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                if (widget.testimonial.company.isNotEmpty)
-                                  Text(
-                                    widget.testimonial.company,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.white.withValues(
-                                        alpha: 0.5,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(
-                                0xFF3B82F6,
-                              ).withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: const Color(
-                                  0xFF3B82F6,
-                                ).withValues(alpha: 0.3),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  _getEmoji(),
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  _getEmotionLabel(),
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: const Color(0xFF3B82F6),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      height: 1,
-                      color: Colors.white.withValues(alpha: 0.1),
-                    ),
-                    const SizedBox(height: 16),
-                    _KineticText(
-                      text: _isExpanded
-                          ? widget.testimonial.text
-                          : (widget.testimonial.text.length > 150
-                                ? '${widget.testimonial.text.substring(0, 150)}...'
-                                : widget.testimonial.text),
-                      animation: _controller,
-                      index: widget.index,
-                    ),
-                    if (widget.testimonial.text.length > 150)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: GestureDetector(
-                          onTap: () =>
-                              setState(() => _isExpanded = !_isExpanded),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                _isExpanded ? 'Show less' : 'Read more',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: const Color(0xFF3B82F6),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              Icon(
-                                _isExpanded
-                                    ? Icons.expand_less
-                                    : Icons.expand_more,
-                                color: const Color(0xFF3B82F6),
-                                size: 16,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: _getTags().map((tag) {
-                        return Container(
+                    Row(
+                      children: [
+                        Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
+                            horizontal: 9,
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(
-                              0xFF3B82F6,
-                            ).withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            tag,
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: const Color(0xFF3B82F6),
+                            color: const Color(0xFF3B82F6).withValues(alpha: 0.14),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: const Color(0xFF60A5FA).withValues(alpha: 0.35),
                             ),
                           ),
-                        );
-                      }).toList(),
+                          child: const Text(
+                            'PROFESSIONAL FEEDBACK',
+                            style: TextStyle(
+                              fontSize: 9.5,
+                              letterSpacing: 0.6,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF93C5FD),
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        Icon(
+                          Icons.format_quote_rounded,
+                          color: const Color(0xFF3B82F6).withValues(alpha: 0.65),
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        _ConsistentAvatar(widget.testimonial, 50),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.testimonial.name,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                widget.testimonial.role,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF60A5FA),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              if (widget.testimonial.company.isNotEmpty)
+                                Text(
+                                  widget.testimonial.company,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.white.withValues(alpha: 0.56),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    Container(
+                      height: 1,
+                      color: Colors.white.withValues(alpha: 0.08),
+                    ),
+                    const SizedBox(height: 14),
+                    SizedBox(
+                      height: 118,
+                      child: _KineticText(
+                        text: widget.testimonial.text,
+                        animation: _controller,
+                        index: widget.index,
+                        maxLines: 5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        onTap: _openFullReview,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Text(
+                              'Read full review',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF60A5FA),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(width: 4),
+                            Icon(
+                              Icons.open_in_new_rounded,
+                              color: Color(0xFF60A5FA),
+                              size: 14,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -1074,37 +1219,6 @@ class _KineticCardState extends State<_KineticCard>
     );
   }
 
-  String _getEmoji() {
-    final text = widget.testimonial.text.toLowerCase();
-    if (text.contains('amazing') || text.contains('incredible')) return '🚀';
-    if (text.contains('thanks') || text.contains('grateful')) return '🙏';
-    if (text.contains('creative') || text.contains('innovative')) return '💡';
-    if (text.contains('expert') || text.contains('professional')) return '🏆';
-    return '😊';
-  }
-
-  String _getEmotionLabel() {
-    final text = widget.testimonial.text.toLowerCase();
-    if (text.contains('amazing') || text.contains('incredible'))
-      return 'Amazing';
-    if (text.contains('thanks') || text.contains('grateful')) return 'Grateful';
-    if (text.contains('creative') || text.contains('innovative'))
-      return 'Creative';
-    if (text.contains('expert') || text.contains('professional'))
-      return 'Expert';
-    return 'Great';
-  }
-
-  List<String> _getTags() {
-    final tags = <String>[];
-    final text = widget.testimonial.text.toLowerCase();
-    if (text.contains('teamwork')) tags.add('Teamwork');
-    if (text.contains('creative')) tags.add('Creative');
-    if (text.contains('fast')) tags.add('Fast');
-    if (text.contains('professional')) tags.add('Professional');
-    if (tags.isEmpty) tags.add('Great Work');
-    return tags.take(3).toList();
-  }
 }
 
 // ── Kinetic Text Widget ──────────────────────────────────────────────────────
@@ -1116,11 +1230,13 @@ class _KineticText extends StatefulWidget {
   final String text;
   final Animation<double> animation;
   final int index;
+  final int? maxLines;
 
   const _KineticText({
     required this.text,
     required this.animation,
     required this.index,
+    this.maxLines,
   });
 
   @override
@@ -1191,6 +1307,10 @@ class _KineticTextState extends State<_KineticText>
               // (was effectively justify because each word was a separate widget)
             ),
             textAlign: TextAlign.left,
+            maxLines: widget.maxLines,
+            overflow: widget.maxLines != null
+                ? TextOverflow.ellipsis
+                : TextOverflow.visible,
           ),
         ),
       ),

@@ -13,6 +13,7 @@ import '../screens/contact_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
+  errorBuilder: (context, state) => _NotFoundScreen(path: state.uri.toString()),
   routes: [
     ShellRoute(
       builder: (context, state, child) => ScaffoldWithNav(child: child),
@@ -122,28 +123,60 @@ class _PortfolioAppBarState extends State<_PortfolioAppBar>
   String _text = '';
   bool _cursor = true;
   double _opacity = 1.0;
-  Timer? _typingTimer, _cursorTimer;
+  bool _reducedMotion = false;
+  bool _typingInitialized = false;
+  Timer? _typingTimer, _cursorTimer, _reducedTimer;
 
-  final _texts = ['Phyo Wai Kyaw', 'Flutter Developer', 'Mobile Developer'];
+  final _texts = [
+    'Phyo Wai Kyaw',
+    'Flutter Developer',
+    'Mobile App Developer',
+    'Cross-platform Mobile Developer',
+  ];
   final _avatars = [
-    'assets/images/andrew.jpg',
+    'assets/images/phyo.jpg',
     'assets/images/flutter_icon.png',
     'assets/images/3.png',
+    'assets/images/flutter_icon.png',
   ];
 
   @override
   void initState() {
     super.initState();
-    _startTyping();
     _cursorTimer = Timer.periodic(
       const Duration(milliseconds: 500),
       (_) => mounted ? setState(() => _cursor = !_cursor) : null,
     );
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final shouldReduce = MediaQuery.of(context).disableAnimations;
+    if (_typingInitialized && shouldReduce == _reducedMotion) return;
+
+    _typingInitialized = true;
+    _reducedMotion = shouldReduce;
+    _typingTimer?.cancel();
+    _reducedTimer?.cancel();
+
+    if (_reducedMotion) {
+      setState(() {
+        _text = _texts[_idx];
+        _cursor = false;
+        _opacity = 1.0;
+      });
+      _startReducedMotionLoop();
+    } else {
+      setState(() => _cursor = true);
+      _startTyping();
+    }
+  }
+
   void _startTyping() {
     _typingTimer?.cancel();
-    _typingTimer = Timer.periodic(const Duration(milliseconds: 20), (t) {
+    final charDelay = _typingDelayFor(_texts[_idx]);
+    _typingTimer = Timer.periodic(Duration(milliseconds: charDelay), (t) {
       if (!mounted) {
         t.cancel();
         return;
@@ -154,17 +187,17 @@ class _PortfolioAppBarState extends State<_PortfolioAppBar>
           _text = cur.substring(0, _text.length + 1);
         } else {
           t.cancel();
-          Future.delayed(const Duration(milliseconds: 1800), () {
+          Future.delayed(_holdDurationFor(cur), () {
             if (!mounted) return;
             setState(() => _opacity = 0.0);
-            Future.delayed(const Duration(milliseconds: 350), () {
+            Future.delayed(const Duration(milliseconds: 430), () {
               if (!mounted) return;
               setState(() {
                 _idx = (_idx + 1) % _texts.length;
                 _text = '';
                 _opacity = 1.0;
               });
-              Future.delayed(const Duration(milliseconds: 80), () {
+              Future.delayed(const Duration(milliseconds: 90), () {
                 if (mounted) _startTyping();
               });
             });
@@ -174,10 +207,40 @@ class _PortfolioAppBarState extends State<_PortfolioAppBar>
     });
   }
 
+  void _startReducedMotionLoop() {
+    _reducedTimer?.cancel();
+    _reducedTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (!mounted || !_reducedMotion) return;
+      setState(() {
+        _opacity = 0.0;
+      });
+      Future.delayed(const Duration(milliseconds: 220), () {
+        if (!mounted || !_reducedMotion) return;
+        setState(() {
+          _idx = (_idx + 1) % _texts.length;
+          _text = _texts[_idx];
+          _opacity = 1.0;
+        });
+      });
+    });
+  }
+
+  int _typingDelayFor(String text) {
+    if (text == 'Phyo Wai Kyaw') return 17;
+    if (text == 'Cross-platform Mobile Developer') return 28;
+    return 24;
+  }
+
+  Duration _holdDurationFor(String text) {
+    if (text == 'Phyo Wai Kyaw') return const Duration(milliseconds: 1400);
+    return const Duration(milliseconds: 1900);
+  }
+
   @override
   void dispose() {
     _typingTimer?.cancel();
     _cursorTimer?.cancel();
+    _reducedTimer?.cancel();
     super.dispose();
   }
 
@@ -267,12 +330,13 @@ class _PortfolioAppBarState extends State<_PortfolioAppBar>
                     AnimatedOpacity(
                       opacity: _cursor ? 1.0 : 0.0,
                       duration: const Duration(milliseconds: 100),
-                      child: Text(
-                        '_',
-                        style: TextStyle(
-                          fontSize: isDesktop ? 18 : 16,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF3B82F6),
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 2),
+                        width: 2,
+                        height: isDesktop ? 19 : 17,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF60A5FA),
+                          borderRadius: BorderRadius.circular(2),
                         ),
                       ),
                     ),
@@ -614,6 +678,57 @@ class _NavBtnState extends State<_NavBtn> {
               fontWeight: active ? FontWeight.w700 : FontWeight.w500,
               fontFamily: widget.label == '~/' ? 'monospace' : null,
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NotFoundScreen extends StatelessWidget {
+  final String path;
+  const _NotFoundScreen({required this.path});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0A0E27),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.error_outline_rounded,
+                color: Color(0xFF60A5FA),
+                size: 54,
+              ),
+              const SizedBox(height: 14),
+              const Text(
+                'Page not found',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'No route matches: $path',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.62),
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 18),
+              ElevatedButton.icon(
+                onPressed: () => context.go('/'),
+                icon: const Icon(Icons.home_outlined),
+                label: const Text('Back to Home'),
+              ),
+            ],
           ),
         ),
       ),

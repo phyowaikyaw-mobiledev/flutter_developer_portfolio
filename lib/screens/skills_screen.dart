@@ -19,6 +19,7 @@ class SkillsScreen extends StatelessWidget {
       ],
       const Color(0xFF1E40AF),
       const Color(0xFF3B82F6),
+      'Core Strength',
     ],
     [
       'State Management',
@@ -26,6 +27,7 @@ class SkillsScreen extends StatelessWidget {
       ['GetX', 'BLoC', 'Provider', 'Riverpod (Learning)'],
       const Color(0xFF3B82F6),
       const Color(0xFF1E40AF),
+      'Production Ready',
     ],
     [
       'Backend & Integration',
@@ -33,6 +35,7 @@ class SkillsScreen extends StatelessWidget {
       ['Firebase', 'REST API', 'Dio', 'Retrofit', 'JSON Parsing', 'Postman'],
       const Color(0xFF1E40AF),
       const Color(0xFF3B82F6),
+      'Production Ready',
     ],
     [
       'Database & Storage',
@@ -40,6 +43,7 @@ class SkillsScreen extends StatelessWidget {
       ['Firestore', 'Hive', 'SQLite', 'Realm DB', 'Local Storage'],
       const Color(0xFF3B82F6),
       const Color(0xFF1E40AF),
+      'Working Proficiency',
     ],
     [
       'Development Tools',
@@ -47,6 +51,7 @@ class SkillsScreen extends StatelessWidget {
       ['Git', 'GitHub', 'Android Studio', 'VS Code', 'Flutter DevTools'],
       const Color(0xFF1E40AF),
       const Color(0xFF3B82F6),
+      'Daily Workflow',
     ],
     [
       'Architecture & Patterns',
@@ -59,6 +64,7 @@ class SkillsScreen extends StatelessWidget {
       ],
       const Color(0xFF3B82F6),
       const Color(0xFF1E40AF),
+      'Architecture Focus',
     ],
     [
       'AI-Augmented Dev',
@@ -66,6 +72,7 @@ class SkillsScreen extends StatelessWidget {
       ['Claude AI', 'Cursor', 'AI Code Review', 'AI Architecture'],
       const Color(0xFF6366F1),
       const Color(0xFF8B5CF6),
+      'Productivity',
     ],
   ];
 
@@ -73,8 +80,6 @@ class SkillsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final isMobile = width < 768;
-    // Use 1 column on mobile, 2 columns on tablet+desktop
-    final crossCount = isMobile ? 1 : 2;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E27),
@@ -89,15 +94,11 @@ class SkillsScreen extends StatelessWidget {
               constraints: const BoxConstraints(maxWidth: 1000),
               child: Column(
                 children: [
-                  SectionTitle(title: 'Technical Skills', isMobile: isMobile),
-                  SizedBox(height: isMobile ? 8 : 12),
-                  Text(
-                    'Technologies I work with every day',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: isMobile ? 14 : 16,
-                      color: Colors.white.withValues(alpha: 0.5),
-                    ),
+                  SectionTitle(
+                    title: 'Technical Skills',
+                    isMobile: isMobile,
+                    subtitle:
+                        'A practical stack I use to design, build, and ship production Flutter applications.',
                   ),
                   SizedBox(height: isMobile ? 24 : 36),
 
@@ -121,6 +122,7 @@ class SkillsScreen extends StatelessWidget {
                                   tags: e.value[2] as List<String>,
                                   primary: e.value[3] as Color,
                                   secondary: e.value[4] as Color,
+                                  level: e.value[5] as String,
                                 ),
                               ),
                             ),
@@ -166,6 +168,7 @@ class _TwoColumnGrid extends StatelessWidget {
                     tags: left[2] as List<String>,
                     primary: left[3] as Color,
                     secondary: left[4] as Color,
+                    level: left[5] as String,
                   ),
                 ),
               ),
@@ -180,6 +183,7 @@ class _TwoColumnGrid extends StatelessWidget {
                       tags: right[2] as List<String>,
                       primary: right[3] as Color,
                       secondary: right[4] as Color,
+                      level: right[5] as String,
                     ),
                   ),
                 )
@@ -198,12 +202,14 @@ class _TwoColumnGrid extends StatelessWidget {
 // ── Skill Card ────────────────────────────────────────────────────────────────
 class _SkillCard extends StatelessWidget {
   final String title;
+  final String level;
   final IconData icon;
   final List<String> tags;
   final Color primary, secondary;
 
   const _SkillCard({
     required this.title,
+    required this.level,
     required this.icon,
     required this.tags,
     required this.primary,
@@ -258,6 +264,24 @@ class _SkillCard extends StatelessWidget {
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: primary.withValues(alpha: 0.16),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: primary.withValues(alpha: 0.35)),
+                  ),
+                  child: Text(
+                    level,
+                    style: TextStyle(
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white.withValues(alpha: 0.9),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),

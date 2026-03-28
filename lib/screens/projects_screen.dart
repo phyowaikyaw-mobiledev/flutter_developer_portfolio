@@ -15,13 +15,14 @@ class ProjectsScreen extends StatelessWidget {
       'subtitle': 'Full-featured Shopping Platform',
       'image': 'assets/images/smile_shop.png',
       'desc':
-          'Shopping platform with product catalog, cart, Firebase Auth, Firestore & MVC architecture.',
+          'Built an end-to-end e-commerce app with auth, cart, and Firestore data flow to demonstrate production-ready Flutter architecture.',
       'tags': ['Flutter', 'Dart', 'Firebase', 'REST API'],
       'liveUrl': null,
       'github': 'https://github.com/phyowaikyaw-mobiledev/e_commerce',
       'icon': Icons.shopping_cart,
       'status': 'Individual Project',
       'statusColor': Colors.orange,
+      'featured': true,
       'gallery': [
         'assets/images/ecommerce_1.png',
         'assets/images/ecommerce_2.png',
@@ -66,7 +67,7 @@ class ProjectsScreen extends StatelessWidget {
       'subtitle': 'Live Production Blog Platform',
       'image': 'assets/images/learner_gateway.jpg',
       'desc':
-          'Blog platform with Flutter Web & Firebase — real-time content, auth, comments & responsive design.',
+          'Shipped a live Flutter Web blog platform with Firebase, enabling real-time content publishing and responsive reading experience.',
       'tags': ['Flutter Web', 'Firebase', 'Provider', 'go_router'],
       'liveUrl': 'https://learners-gateway.web.app',
       'github':
@@ -74,6 +75,7 @@ class ProjectsScreen extends StatelessWidget {
       'icon': Icons.web,
       'status': 'Live',
       'statusColor': Colors.green,
+      'featured': true,
       'gallery': <String>[], // gallery removed — live demo replaces it
     },
     {
@@ -81,13 +83,14 @@ class ProjectsScreen extends StatelessWidget {
       'subtitle': 'AI-Powered Resume Optimizer',
       'image': 'assets/images/resume_tailor.png',
       'desc':
-          'AI-powered resume optimizer using OpenAI GPT — ATS-friendly resume tailoring with PDF export.',
+          'Created an AI resume optimizer that tailors ATS-friendly content from job context and exports polished PDFs for applications.',
       'tags': ['Flutter', 'OpenAI API', 'PDF Generation', 'flutter_dotenv'],
       'liveUrl': null,
       'github': 'https://github.com/phyowaikyaw-mobiledev/resume_tailor_ai',
       'icon': Icons.auto_awesome,
       'status': 'Individual Project',
       'statusColor': Colors.orange,
+      'featured': true,
       'gallery': [
         'assets/images/resume_1.png',
         'assets/images/resume_2.png',
@@ -107,6 +110,7 @@ class ProjectsScreen extends StatelessWidget {
       'icon': Icons.music_note,
       'status': 'Individual Project',
       'statusColor': Colors.orange,
+      'featured': true,
       'gallery': [
         'assets/images/music_1.png',
         'assets/images/music_2.png',
@@ -119,7 +123,7 @@ class ProjectsScreen extends StatelessWidget {
       'subtitle': 'Learning Management System',
       'image': 'assets/images/lms.png',
       'desc':
-          'LMS with dual-role (Student & Teacher), course management, assignments & offline Hive storage.',
+          'Implemented a dual-role LMS workflow for students and teachers, including course delivery, assignments, and offline-first storage.',
       'tags': ['Flutter', 'Firebase', 'BLoC', 'Hive'],
       'liveUrl': null,
       'github': 'https://github.com/phyowaikyaw-mobiledev/eduhub_lms',
@@ -243,6 +247,13 @@ class ProjectsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 768;
+    final featuredProjects = _projects
+        .where((project) => project['featured'] == true)
+        .toList();
+    final otherProjects = _projects
+        .where((project) => project['featured'] != true)
+        .toList();
+
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E27),
       body: SingleChildScrollView(
@@ -256,11 +267,18 @@ class ProjectsScreen extends StatelessWidget {
               constraints: const BoxConstraints(maxWidth: 1200),
               child: Column(
                 children: [
-                  SectionTitle(title: 'Personal Projects', isMobile: isMobile),
-                  SizedBox(height: isMobile ? 20 : 30),
+                  SectionTitle(title: 'Apps & Projects', isMobile: isMobile),
+                  SizedBox(height: isMobile ? 20 : 26),
+                  _ProjectSectionLabel(
+                    title: 'Featured Projects',
+                    subtitle:
+                        'Selected work with strongest real-world impact and quality.',
+                    isMobile: isMobile,
+                  ),
+                  SizedBox(height: isMobile ? 14 : 18),
                   isMobile
                       ? Column(
-                          children: _projects
+                          children: featuredProjects
                               .asMap()
                               .entries
                               .map(
@@ -288,11 +306,58 @@ class ProjectsScreen extends StatelessWidget {
                                 mainAxisSpacing: 20,
                                 mainAxisExtent: 500,
                               ),
-                          itemCount: _projects.length,
+                          itemCount: featuredProjects.length,
                           itemBuilder: (_, i) => RevealAnimator(
                             delay: Duration(milliseconds: 60 * (i % 2)),
                             child: _ProjectCard(
-                              p: _projects[i],
+                              p: featuredProjects[i],
+                              isMobile: isMobile,
+                              launch: _launch,
+                            ),
+                          ),
+                        ),
+                  SizedBox(height: isMobile ? 24 : 34),
+                  _ProjectSectionLabel(
+                    title: 'Other Projects',
+                    subtitle: 'Additional apps, UI builds, and learning projects.',
+                    isMobile: isMobile,
+                  ),
+                  SizedBox(height: isMobile ? 14 : 18),
+                  isMobile
+                      ? Column(
+                          children: otherProjects
+                              .asMap()
+                              .entries
+                              .map(
+                                (e) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 16),
+                                  child: RevealAnimator(
+                                    delay: Duration(milliseconds: 50 * e.key),
+                                    child: _ProjectCard(
+                                      p: e.value,
+                                      isMobile: isMobile,
+                                      launch: _launch,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        )
+                      : GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 20,
+                                mainAxisSpacing: 20,
+                                mainAxisExtent: 500,
+                              ),
+                          itemCount: otherProjects.length,
+                          itemBuilder: (_, i) => RevealAnimator(
+                            delay: Duration(milliseconds: 60 * (i % 2)),
+                            child: _ProjectCard(
+                              p: otherProjects[i],
                               isMobile: isMobile,
                               launch: _launch,
                             ),
@@ -304,6 +369,50 @@ class ProjectsScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+class _ProjectSectionLabel extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final bool isMobile;
+
+  const _ProjectSectionLabel({
+    required this.title,
+    required this.subtitle,
+    required this.isMobile,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: isMobile ? 18 : 22,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: isMobile ? 12 : 13,
+              color: Colors.white.withValues(alpha: 0.58),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -332,6 +441,7 @@ class _ProjectCard extends StatelessWidget {
 
     return ShimmerCard(
       glowColor: color,
+      enableEffects: true,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -486,7 +596,7 @@ class _ProjectCard extends StatelessWidget {
             )
           else if (showLiveBanner)
             // Same visual footprint as a GallerySection so card height matches
-            _LivePreviewBanner(url: liveUrl!, color: color, launch: launch)
+            _LivePreviewBanner(url: liveUrl, color: color, launch: launch)
           else
             // Fallback spacer for cards with neither gallery nor live URL
             const SizedBox(height: 213),
@@ -671,9 +781,8 @@ class _LivePreviewBannerState extends State<_LivePreviewBanner> {
                 boxShadow: _hovered
                     ? [
                         BoxShadow(
-                          color: widget.color.withValues(alpha: 0.3),
-                          blurRadius: 20,
-                          spreadRadius: 1,
+                          color: widget.color.withValues(alpha: 0.16),
+                          blurRadius: 10,
                         ),
                       ]
                     : [],
@@ -706,9 +815,9 @@ class _LivePreviewBannerState extends State<_LivePreviewBanner> {
                                 ? [
                                     BoxShadow(
                                       color: widget.color.withValues(
-                                        alpha: 0.4,
+                                        alpha: 0.2,
                                       ),
-                                      blurRadius: 16,
+                                      blurRadius: 8,
                                     ),
                                   ]
                                 : [],
@@ -830,8 +939,8 @@ class _BtnState extends State<_Btn> {
             boxShadow: widget.filled && _h
                 ? [
                     BoxShadow(
-                      color: const Color(0xFF3B82F6).withValues(alpha: 0.45),
-                      blurRadius: 12,
+                      color: const Color(0xFF3B82F6).withValues(alpha: 0.2),
+                      blurRadius: 6,
                     ),
                   ]
                 : [],

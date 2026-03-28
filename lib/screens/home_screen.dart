@@ -89,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: Column(
                 children: [
                   _hero(isMobile),
+                  _proofStrip(isMobile),
                   _stats(isMobile),
                   _footer(isMobile),
                 ],
@@ -227,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         ),
                         SizedBox(height: isMobile ? 8 : 12),
                         Text(
-                          'Building Mobile Apps with Passion & Purpose',
+                          'Cross-Platform Mobile Developer focused on shipping reliable, business-ready products',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: isMobile ? 14 : 18,
@@ -243,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           children: [
                             _badge(
                               Icons.location_on,
-                              'Chonburi, Thailand | From Myanmar',
+                              'Based in Chonburi, Thailand',
                               const Color(0xFF7C3AED),
                               const Color(0xFFA78BFA),
                               isMobile,
@@ -367,7 +368,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         onTap: () => context.go('/contact'),
       ),
       HoverButton(
-        label: 'View Applications',
+        label: 'View Featured Work',
         icon: Icons.folder_open_outlined,
         isMobile: isMobile,
         filled: false,
@@ -383,6 +384,91 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     ],
   );
+
+  Widget _proofStrip(bool isMobile) {
+    final chips = [
+      (Icons.verified_rounded, 'Production Apps', '4+ live deployments'),
+      (Icons.groups_2_outlined, 'Team Collaboration', 'Cross-functional engineering'),
+      (Icons.bolt_rounded, 'Delivery Style', 'Scalable and maintainable code'),
+    ];
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: isMobile ? 20 : 40,
+        vertical: isMobile ? 6 : 10,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 14 : 18,
+        vertical: isMobile ? 14 : 16,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withValues(alpha: 0.06),
+            Colors.white.withValues(alpha: 0.02),
+          ],
+        ),
+        border: Border.all(
+          color: const Color(0xFF3B82F6).withValues(alpha: 0.22),
+        ),
+      ),
+      child: isMobile
+          ? Column(
+              children: chips
+                  .map((item) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: _proofItem(item.$1, item.$2, item.$3, isMobile),
+                      ))
+                  .toList(),
+            )
+          : Row(
+              children: chips
+                  .map(
+                    (item) => Expanded(
+                      child: _proofItem(item.$1, item.$2, item.$3, isMobile),
+                    ),
+                  )
+                  .toList(),
+            ),
+    );
+  }
+
+  Widget _proofItem(
+    IconData icon,
+    String title,
+    String value,
+    bool isMobile,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, color: const Color(0xFF60A5FA), size: isMobile ? 18 : 20),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: isMobile ? 12 : 13,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Text(
+              value,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.58),
+                fontSize: isMobile ? 11 : 12,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 
   Widget _stats(bool isMobile) {
     return RevealAnimator(
@@ -477,7 +563,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Column(
           children: [
             Text(
-              'Built with Flutter 💙 & Passion 🔥',
+              'Built with Flutter for production-quality delivery',
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.6),
                 fontSize: isMobile ? 14 : 16,

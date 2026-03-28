@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/common/section_title.dart';
-import '../widgets/common/reveal_animator.dart';
-import '../widgets/common/shimmer_card.dart';
 import '../utils/constants.dart';
 
 class ContactScreen extends StatelessWidget {
@@ -68,45 +66,54 @@ class ContactScreen extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      "💬 Let's Connect",
+                      'Professional Contact',
                       style: TextStyle(
-                        fontSize: isMobile ? 14 : 16,
+                        fontSize: isMobile ? 13 : 14,
                         color: const Color(0xFF60A5FA),
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.4,
                       ),
                     ),
                   ),
                   SizedBox(height: isMobile ? 15 : 20),
-                  SectionTitle(title: 'Get In Touch', isMobile: isMobile),
-                  SizedBox(height: isMobile ? 12 : 16),
-                  Text(
-                    "Have a project in mind or want to collaborate?\nLet's create something amazing together!",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: isMobile ? 16 : 18,
-                      color: Colors.white.withValues(alpha: 0.7),
-                      height: 1.6,
-                    ),
+                  SectionTitle(
+                    title: 'Get In Touch',
+                    isMobile: isMobile,
+                    subtitle:
+                        'Open to Flutter developer roles, product-focused teams, and meaningful collaboration opportunities.',
                   ),
                   const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.bolt,
-                        color: Colors.amber,
-                        size: isMobile ? 16 : 18,
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF3B82F6).withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: const Color(0xFF60A5FA).withValues(alpha: 0.35),
                       ),
-                      const SizedBox(width: 6),
-                      Text(
-                        'Usually responds within 24 hours',
-                        style: TextStyle(
-                          fontSize: isMobile ? 13 : 15,
-                          color: Colors.amber.withValues(alpha: 0.9),
-                          fontWeight: FontWeight.w500,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.schedule_outlined,
+                          color: const Color(0xFF93C5FD),
+                          size: isMobile ? 14 : 16,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 6),
+                        Text(
+                          'Typical response time: within 24 hours',
+                          style: TextStyle(
+                            fontSize: isMobile ? 12 : 13,
+                            color: const Color(0xFF93C5FD),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(height: isMobile ? 30 : 40),
                   isMobile ? _mobileLayout(isMobile) : _desktopLayout(isMobile),
@@ -143,8 +150,8 @@ class ContactScreen extends StatelessWidget {
                 '+66-626-509163',
                 'Call me directly',
                 () => _launch('tel:+66626509163'),
-                const Color(0xFF10B981),
-                const Color(0xFF34D399),
+                const Color(0xFF3B82F6),
+                const Color(0xFF60A5FA),
               ),
               const SizedBox(height: 16),
               Row(
@@ -156,8 +163,8 @@ class ContactScreen extends StatelessWidget {
                       'phyowaikyaw-mobiledev',
                       'Check out my projects',
                       () => _launch(AppStrings.github),
-                      const Color(0xFF6366F1),
-                      const Color(0xFF818CF8),
+                      const Color(0xFF3B82F6),
+                      const Color(0xFF60A5FA),
                       isFa: true,
                     ),
                   ),
@@ -169,8 +176,8 @@ class ContactScreen extends StatelessWidget {
                       'phyowaikyaw-dev',
                       "Let's connect professionally",
                       () => _launch(AppStrings.linkedin),
-                      const Color(0xFF8B5CF6),
-                      const Color(0xFFA78BFA),
+                      const Color(0xFF3B82F6),
+                      const Color(0xFF60A5FA),
                       isFa: true,
                     ),
                   ),
@@ -204,8 +211,8 @@ class ContactScreen extends StatelessWidget {
           '+66-626-509163',
           'Call me directly',
           () => _launch('tel:+66626509163'),
-          const Color(0xFF10B981),
-          const Color(0xFF34D399),
+          const Color(0xFF3B82F6),
+          const Color(0xFF60A5FA),
         ),
         const SizedBox(height: 15),
         _contactCard(
@@ -214,8 +221,8 @@ class ContactScreen extends StatelessWidget {
           'phyowaikyaw-mobiledev',
           'Check out my projects',
           () => _launch(AppStrings.github),
-          const Color(0xFF6366F1),
-          const Color(0xFF818CF8),
+          const Color(0xFF3B82F6),
+          const Color(0xFF60A5FA),
           isFa: true,
         ),
         const SizedBox(height: 15),
@@ -225,8 +232,8 @@ class ContactScreen extends StatelessWidget {
           'phyowaikyaw-dev',
           "Let's connect professionally",
           () => _launch(AppStrings.linkedin),
-          const Color(0xFF8B5CF6),
-          const Color(0xFFA78BFA),
+          const Color(0xFF3B82F6),
+          const Color(0xFF60A5FA),
           isFa: true,
         ),
         const SizedBox(height: 20),
@@ -375,8 +382,8 @@ class ContactScreen extends StatelessWidget {
                   0xFF3B82F6,
                 ).withValues(alpha: isHover ? 0.25 : 0.15),
                 const Color(
-                  0xFF8B5CF6,
-                ).withValues(alpha: isHover ? 0.25 : 0.15),
+                  0xFF60A5FA,
+                ).withValues(alpha: isHover ? 0.2 : 0.1),
               ],
             ),
             borderRadius: BorderRadius.circular(24),
@@ -425,7 +432,7 @@ class ContactScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'Currently seeking exciting roles and projects where I can contribute and grow as a Flutter developer',
+                'Currently open to roles and projects where I can deliver product value and continue growing as a Flutter engineer.',
                 style: TextStyle(
                   fontSize: 15,
                   color: Colors.white.withValues(alpha: 0.7),
@@ -434,20 +441,50 @@ class ContactScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               ...[
-                '💼  Flutter Developer roles',
-                '🌏  Remote work opportunities',
-                '🚀  Freelance projects',
-                '💻  Open-source contributions',
+                'Flutter developer roles (mobile/web)',
+                'Remote or hybrid collaboration opportunities',
+                'Freelance product delivery engagements',
+                'Long-term engineering growth environments',
               ].map(
                 (item) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: Text(
-                    item,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white.withValues(alpha: 0.85),
-                      fontWeight: FontWeight.w500,
-                    ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.check_circle_outline,
+                        color: Color(0xFF93C5FD),
+                        size: 15,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          item,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                ),
+                child: Text(
+                  'Preferred stack: Flutter, Firebase, REST API, scalable app architecture',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white.withValues(alpha: 0.72),
+                    height: 1.4,
                   ),
                 ),
               ),
@@ -470,9 +507,9 @@ class ContactScreen extends StatelessWidget {
                       const Icon(Icons.send, size: 20),
                       const SizedBox(width: 8),
                       const Text(
-                        'Send Message',
+                        'Send Professional Inquiry',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 15,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
