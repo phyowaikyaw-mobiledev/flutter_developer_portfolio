@@ -1,30 +1,29 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:junior_flutter_developer/main.dart';
+import 'package:phyowaikyaw_portfolio/data/production_apps.dart';
+import 'package:phyowaikyaw_portfolio/models/production_app.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('DrZon Medical Service is published with store links', () {
+    final drZon = kProductionApps.firstWhere(
+      (app) => app.title == 'DrZon Medical Service',
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(drZon.releaseStatus, AppReleaseStatus.live);
+    expect(
+      drZon.playUrl,
+      'https://play.google.com/store/apps/details?id=asia.rootstudio.drzon',
+    );
+    expect(
+      drZon.appStoreUrl,
+      'https://apps.apple.com/th/app/drzon-medical-service/id6762826790',
+    );
+    expect(drZon.isLive, isTrue);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  test('three production apps are live on stores', () {
+    final liveApps =
+        kProductionApps.where((app) => app.isLive).toList(growable: false);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(liveApps.length, 3);
   });
 }

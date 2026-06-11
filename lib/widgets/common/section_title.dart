@@ -24,6 +24,9 @@ class SectionTitle extends StatelessWidget {
             child: Text(
               title,
               textAlign: TextAlign.center,
+              softWrap: true,
+              maxLines: isMobile ? 3 : 4,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: isMobile ? 32 : 48,
                 fontWeight: FontWeight.bold,
@@ -37,6 +40,7 @@ class SectionTitle extends StatelessWidget {
             Text(
               subtitle!,
               textAlign: TextAlign.center,
+              softWrap: true,
               style: TextStyle(
                 fontSize: isMobile ? 13 : 15,
                 color: Colors.white.withValues(alpha: 0.62),
@@ -50,7 +54,11 @@ class SectionTitle extends StatelessWidget {
             height: 4,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF1E40AF), Color(0xFF3B82F6), Color(0xFF60A5FA)],
+                colors: [
+                  Color(0xFF1E40AF),
+                  Color(0xFF3B82F6),
+                  Color(0xFF60A5FA),
+                ],
               ),
               borderRadius: BorderRadius.circular(2),
               boxShadow: [

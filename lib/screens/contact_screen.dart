@@ -2,10 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/common/section_title.dart';
+import '../widgets/common/reveal_animator.dart';
 import '../utils/constants.dart';
 
 class ContactScreen extends StatelessWidget {
   const ContactScreen({super.key});
+
+  static const _emailPrimary = Color(0xFF3B82F6);
+  static const _emailSecondary = Color(0xFF60A5FA);
+  static const _phonePrimary = Color(0xFF10B981);
+  static const _phoneSecondary = Color(0xFF34D399);
+  static const _githubPrimary = Color(0xFF64748B);
+  static const _githubSecondary = Color(0xFF94A3B8);
+  static const _linkedinPrimary = Color(0xFF0A66C2);
+  static const _linkedinSecondary = Color(0xFF378FE9);
 
   void _launch(String url) async {
     final uri = Uri.parse(url);
@@ -26,7 +36,7 @@ class ContactScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 768;
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0E27),
+      backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.symmetric(
@@ -38,7 +48,7 @@ class ContactScreen extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                const Color(0xFF0F172A),
+                AppColors.surface,
                 const Color(0xFF1E293B).withValues(alpha: 0.8),
               ],
             ),
@@ -56,20 +66,20 @@ class ContactScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          const Color(0xFF3B82F6).withValues(alpha: 0.2),
-                          const Color(0xFF8B5CF6).withValues(alpha: 0.2),
+                          AppColors.primary.withValues(alpha: 0.2),
+                          AppColors.purple.withValues(alpha: 0.2),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(
-                        color: const Color(0xFF3B82F6).withValues(alpha: 0.3),
+                        color: AppColors.primary.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Text(
                       'Professional Contact',
                       style: TextStyle(
                         fontSize: isMobile ? 13 : 14,
-                        color: const Color(0xFF60A5FA),
+                        color: AppColors.primaryLight,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.4,
                       ),
@@ -80,41 +90,10 @@ class ContactScreen extends StatelessWidget {
                     title: 'Get In Touch',
                     isMobile: isMobile,
                     subtitle:
-                        'Open to Flutter developer roles, product-focused teams, and meaningful collaboration opportunities.',
+                        'Email and professional links — no inquiry form. Open to Flutter roles and product-focused teams.',
                   ),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF3B82F6).withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: const Color(0xFF60A5FA).withValues(alpha: 0.35),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.schedule_outlined,
-                          color: const Color(0xFF93C5FD),
-                          size: isMobile ? 14 : 16,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          'Typical response time: within 24 hours',
-                          style: TextStyle(
-                            fontSize: isMobile ? 12 : 13,
-                            color: const Color(0xFF93C5FD),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  const SizedBox(height: 14),
+                  _credibilityChips(isMobile),
                   SizedBox(height: isMobile ? 30 : 40),
                   isMobile ? _mobileLayout(isMobile) : _desktopLayout(isMobile),
                 ],
@@ -126,6 +105,56 @@ class ContactScreen extends StatelessWidget {
     );
   }
 
+  Widget _credibilityChips(bool isMobile) {
+    final chips = [
+      (Icons.location_on_outlined, 'Based in Chonburi, Thailand'),
+      (Icons.public_outlined, 'Open to remote / hybrid roles'),
+      (Icons.schedule_outlined, 'Typical response: within 24 hours'),
+    ];
+
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 8,
+      runSpacing: 8,
+      children: chips
+          .map(
+            (chip) => Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 12 : 14,
+                vertical: isMobile ? 7 : 8,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: AppColors.primaryLight.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    chip.$1,
+                    color: const Color(0xFF93C5FD),
+                    size: isMobile ? 13 : 14,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    chip.$2,
+                    style: TextStyle(
+                      fontSize: isMobile ? 11 : 12,
+                      color: const Color(0xFF93C5FD),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+
   Widget _desktopLayout(bool isMobile) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,60 +163,78 @@ class ContactScreen extends StatelessWidget {
           flex: 3,
           child: Column(
             children: [
-              _contactCard(
-                Icons.email_outlined,
-                'Email',
-                AppStrings.email,
-                'Drop me an email anytime',
-                _openGmail,
-                const Color(0xFF3B82F6),
-                const Color(0xFF60A5FA),
+              RevealAnimator(
+                child: _contactCard(
+                  Icons.email_outlined,
+                  'Email',
+                  AppStrings.email,
+                  'Drop me an email anytime',
+                  _openGmail,
+                  _emailPrimary,
+                  _emailSecondary,
+                  isMobile: isMobile,
+                ),
               ),
               const SizedBox(height: 16),
-              _contactCard(
-                Icons.phone_outlined,
-                'Phone',
-                '+66-626-509163',
-                'Call me directly',
-                () => _launch('tel:+66626509163'),
-                const Color(0xFF3B82F6),
-                const Color(0xFF60A5FA),
+              RevealAnimator(
+                delay: const Duration(milliseconds: 80),
+                child: _contactCard(
+                  Icons.phone_outlined,
+                  'Phone',
+                  AppStrings.phone,
+                  'Call me directly',
+                  () => _launch(AppStrings.phoneTel),
+                  _phonePrimary,
+                  _phoneSecondary,
+                  isMobile: isMobile,
+                ),
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: _contactCard(
-                      FontAwesomeIcons.github,
-                      'GitHub',
-                      'phyowaikyaw-mobiledev',
-                      'Check out my projects',
-                      () => _launch(AppStrings.github),
-                      const Color(0xFF3B82F6),
-                      const Color(0xFF60A5FA),
-                      isFa: true,
+              RevealAnimator(
+                delay: const Duration(milliseconds: 160),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _contactCard(
+                        FontAwesomeIcons.github,
+                        'GitHub',
+                        'phyowaikyaw-mobiledev',
+                        'Check out my projects',
+                        () => _launch(AppStrings.github),
+                        _githubPrimary,
+                        _githubSecondary,
+                        isFa: true,
+                        isMobile: isMobile,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _contactCard(
-                      FontAwesomeIcons.linkedin,
-                      'LinkedIn',
-                      'phyowaikyaw-dev',
-                      "Let's connect professionally",
-                      () => _launch(AppStrings.linkedin),
-                      const Color(0xFF3B82F6),
-                      const Color(0xFF60A5FA),
-                      isFa: true,
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _contactCard(
+                        FontAwesomeIcons.linkedin,
+                        'LinkedIn',
+                        'phyowaikyaw-dev',
+                        "Let's connect professionally",
+                        () => _launch(AppStrings.linkedin),
+                        _linkedinPrimary,
+                        _linkedinSecondary,
+                        isFa: true,
+                        isMobile: isMobile,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
         ),
         const SizedBox(width: 24),
-        Expanded(flex: 2, child: _opportunityCard()),
+        Expanded(
+          flex: 2,
+          child: RevealAnimator(
+            delay: const Duration(milliseconds: 120),
+            child: _opportunityCard(),
+          ),
+        ),
       ],
     );
   }
@@ -195,49 +242,67 @@ class ContactScreen extends StatelessWidget {
   Widget _mobileLayout(bool isMobile) {
     return Column(
       children: [
-        _contactCard(
-          Icons.email_outlined,
-          'Email',
-          AppStrings.email,
-          'Drop me an email anytime',
-          _openGmail,
-          const Color(0xFF3B82F6),
-          const Color(0xFF60A5FA),
+        RevealAnimator(
+          child: _contactCard(
+            Icons.email_outlined,
+            'Email',
+            AppStrings.email,
+            'Drop me an email anytime',
+            _openGmail,
+            _emailPrimary,
+            _emailSecondary,
+            isMobile: isMobile,
+          ),
         ),
         const SizedBox(height: 15),
-        _contactCard(
-          Icons.phone_outlined,
-          'Phone',
-          '+66-626-509163',
-          'Call me directly',
-          () => _launch('tel:+66626509163'),
-          const Color(0xFF3B82F6),
-          const Color(0xFF60A5FA),
+        RevealAnimator(
+          delay: const Duration(milliseconds: 80),
+          child: _contactCard(
+            Icons.phone_outlined,
+            'Phone',
+            AppStrings.phone,
+            'Call me directly',
+            () => _launch(AppStrings.phoneTel),
+            _phonePrimary,
+            _phoneSecondary,
+            isMobile: isMobile,
+          ),
         ),
         const SizedBox(height: 15),
-        _contactCard(
-          FontAwesomeIcons.github,
-          'GitHub',
-          'phyowaikyaw-mobiledev',
-          'Check out my projects',
-          () => _launch(AppStrings.github),
-          const Color(0xFF3B82F6),
-          const Color(0xFF60A5FA),
-          isFa: true,
+        RevealAnimator(
+          delay: const Duration(milliseconds: 120),
+          child: _contactCard(
+            FontAwesomeIcons.github,
+            'GitHub',
+            'phyowaikyaw-mobiledev',
+            'Check out my projects',
+            () => _launch(AppStrings.github),
+            _githubPrimary,
+            _githubSecondary,
+            isFa: true,
+            isMobile: isMobile,
+          ),
         ),
         const SizedBox(height: 15),
-        _contactCard(
-          FontAwesomeIcons.linkedin,
-          'LinkedIn',
-          'phyowaikyaw-dev',
-          "Let's connect professionally",
-          () => _launch(AppStrings.linkedin),
-          const Color(0xFF3B82F6),
-          const Color(0xFF60A5FA),
-          isFa: true,
+        RevealAnimator(
+          delay: const Duration(milliseconds: 160),
+          child: _contactCard(
+            FontAwesomeIcons.linkedin,
+            'LinkedIn',
+            'phyowaikyaw-dev',
+            "Let's connect professionally",
+            () => _launch(AppStrings.linkedin),
+            _linkedinPrimary,
+            _linkedinSecondary,
+            isFa: true,
+            isMobile: isMobile,
+          ),
         ),
         const SizedBox(height: 20),
-        _opportunityCard(),
+        RevealAnimator(
+          delay: const Duration(milliseconds: 200),
+          child: _opportunityCard(),
+        ),
       ],
     );
   }
@@ -251,6 +316,7 @@ class ContactScreen extends StatelessWidget {
     Color primary,
     Color secondary, {
     bool isFa = false,
+    required bool isMobile,
   }) {
     return _HoverCard(
       onTap: onTap,
@@ -259,11 +325,9 @@ class ContactScreen extends StatelessWidget {
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeOut,
           transform: isHover
-              ? (Matrix4.identity()
-                  ..translate(0, -4)
-                  ..scale(1.02))
+              ? (Matrix4.identity()..translate(0.0, -3.0))
               : Matrix4.identity(),
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -275,15 +339,15 @@ class ContactScreen extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: primary.withValues(alpha: isHover ? 0.6 : 0.3),
+              color: primary.withValues(alpha: isHover ? 0.55 : 0.28),
               width: 1.5,
             ),
             boxShadow: isHover
                 ? [
                     BoxShadow(
-                      color: primary.withValues(alpha: 0.4),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
+                      color: primary.withValues(alpha: 0.35),
+                      blurRadius: 16,
+                      offset: const Offset(0, 8),
                     ),
                   ]
                 : [],
@@ -292,24 +356,24 @@ class ContactScreen extends StatelessWidget {
             children: [
               AnimatedContainer(
                 duration: const Duration(milliseconds: 250),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(colors: [primary, secondary]),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(14),
                   boxShadow: isHover
                       ? [
                           BoxShadow(
-                            color: primary.withValues(alpha: 0.6),
-                            blurRadius: 16,
+                            color: primary.withValues(alpha: 0.5),
+                            blurRadius: 12,
                           ),
                         ]
                       : [],
                 ),
                 child: isFa
-                    ? FaIcon(icon as IconData, color: Colors.white, size: 28)
-                    : Icon(icon as IconData, color: Colors.white, size: 28),
+                    ? FaIcon(icon as FaIconData, color: Colors.white, size: 24)
+                    : Icon(icon as IconData, color: Colors.white, size: 24),
               ),
-              const SizedBox(width: 20),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,7 +381,7 @@ class ContactScreen extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -325,8 +389,10 @@ class ContactScreen extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       value,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: isMobile ? 13 : 14,
                         color: Colors.white.withValues(alpha: 0.9),
                         fontWeight: FontWeight.w500,
                       ),
@@ -345,12 +411,12 @@ class ContactScreen extends StatelessWidget {
               AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 transform: isHover
-                    ? (Matrix4.identity()..translate(4, 0))
+                    ? (Matrix4.identity()..translate(4.0, 0.0))
                     : Matrix4.identity(),
                 child: Icon(
                   Icons.arrow_forward_ios,
                   color: primary.withValues(alpha: 0.8),
-                  size: 18,
+                  size: 16,
                 ),
               ),
             ],
@@ -368,9 +434,7 @@ class ContactScreen extends StatelessWidget {
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeOut,
           transform: isHover
-              ? (Matrix4.identity()
-                  ..translate(0, -6)
-                  ..scale(1.02))
+              ? (Matrix4.identity()..translate(0.0, -3.0))
               : Matrix4.identity(),
           padding: const EdgeInsets.all(32),
           decoration: BoxDecoration(
@@ -378,27 +442,21 @@ class ContactScreen extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(
-                  0xFF3B82F6,
-                ).withValues(alpha: isHover ? 0.25 : 0.15),
-                const Color(
-                  0xFF60A5FA,
-                ).withValues(alpha: isHover ? 0.2 : 0.1),
+                AppColors.primary.withValues(alpha: isHover ? 0.25 : 0.15),
+                AppColors.primaryLight.withValues(alpha: isHover ? 0.2 : 0.1),
               ],
             ),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: const Color(
-                0xFF3B82F6,
-              ).withValues(alpha: isHover ? 0.7 : 0.4),
+              color: AppColors.primary.withValues(alpha: isHover ? 0.65 : 0.4),
               width: 2,
             ),
             boxShadow: isHover
                 ? [
                     BoxShadow(
-                      color: const Color(0xFF3B82F6).withValues(alpha: 0.5),
-                      blurRadius: 30,
-                      offset: const Offset(0, 12),
+                      color: AppColors.primary.withValues(alpha: 0.45),
+                      blurRadius: 24,
+                      offset: const Offset(0, 10),
                     ),
                   ]
                 : [],
@@ -410,14 +468,14 @@ class ContactScreen extends StatelessWidget {
                 duration: const Duration(milliseconds: 250),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(
-                    0xFF3B82F6,
-                  ).withValues(alpha: isHover ? 0.35 : 0.2),
+                  color: AppColors.primary.withValues(
+                    alpha: isHover ? 0.35 : 0.2,
+                  ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Icons.work_outline,
-                  color: Color(0xFF60A5FA),
+                  color: AppColors.primaryLight,
                   size: 32,
                 ),
               ),
@@ -441,7 +499,7 @@ class ContactScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               ...[
-                'Flutter developer roles (mobile/web)',
+                'Flutter developer roles — 3 apps live on both stores',
                 'Remote or hybrid collaboration opportunities',
                 'Freelance product delivery engagements',
                 'Long-term engineering growth environments',
@@ -449,6 +507,7 @@ class ContactScreen extends StatelessWidget {
                 (item) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Icon(
                         Icons.check_circle_outline,
@@ -480,7 +539,7 @@ class ContactScreen extends StatelessWidget {
                   border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
                 ),
                 child: Text(
-                  'Preferred stack: Flutter, Firebase, REST API, scalable app architecture',
+                  'Preferred stack: Flutter, Firebase, Dio, BLoC, REST API',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.white.withValues(alpha: 0.72),
@@ -494,7 +553,7 @@ class ContactScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: _openGmail,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF3B82F6),
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     shape: RoundedRectangleBorder(
@@ -507,7 +566,7 @@ class ContactScreen extends StatelessWidget {
                       const Icon(Icons.send, size: 20),
                       const SizedBox(width: 8),
                       const Text(
-                        'Send Professional Inquiry',
+                        'Email Me',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
@@ -518,6 +577,17 @@ class ContactScreen extends StatelessWidget {
                         const Icon(Icons.arrow_forward, size: 18),
                       ],
                     ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Center(
+                child: Text(
+                  'Opens Gmail with a pre-filled professional subject',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.white.withValues(alpha: 0.5),
                   ),
                 ),
               ),

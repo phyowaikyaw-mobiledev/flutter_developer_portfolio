@@ -1,12 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../data/production_apps.dart';
+import '../models/production_app.dart';
+import '../utils/constants.dart';
 import '../widgets/common/section_title.dart';
 import '../widgets/common/shimmer_card.dart';
 import '../widgets/common/reveal_animator.dart';
 import '../widgets/common/tech_tag.dart';
 import '../widgets/carousel_dialog.dart';
 
-class ExperienceScreen extends StatelessWidget {
+class ExperienceScreen extends StatefulWidget {
   const ExperienceScreen({super.key});
+
+  @override
+  State<ExperienceScreen> createState() => _ExperienceScreenState();
+}
+
+class _ExperienceScreenState extends State<ExperienceScreen> {
+  final GlobalKey _educationKey = GlobalKey();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final section = GoRouterState.of(context).uri.queryParameters['section'];
+    if (section == 'education') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ctx = _educationKey.currentContext;
+        if (ctx != null) {
+          Scrollable.ensureVisible(
+            ctx,
+            duration: const Duration(milliseconds: 420),
+            curve: Curves.easeOutCubic,
+            alignment: 0.12,
+          );
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +72,7 @@ class ExperienceScreen extends StatelessWidget {
                       workMode: 'Remote',
                       points: const [
                         'Built and released production mobile features used by active users in business applications.',
+                        'Shipped DrZon Medical Service to Google Play and the App Store — patient healthcare flows with localization for Myanmar and Thailand.',
                         'Implemented notification and API workflows with Dio to improve delivery reliability.',
                         'Applied clean architecture and repository patterns to keep feature code maintainable.',
                         'Collaborated in code reviews and sprint planning under senior-led engineering standards.',
@@ -94,12 +126,20 @@ class ExperienceScreen extends StatelessWidget {
                       accentColor: const Color(0xFF7C3AED),
                     ),
                   ),
-                  SizedBox(height: isMobile ? 40 : 60),
-                  SectionTitle(
-                    title: 'Education & Certifications',
-                    isMobile: isMobile,
-                    subtitle:
-                        'Academic foundation, ongoing professional training, and certifications that support my engineering path.',
+                  SizedBox(height: isMobile ? 28 : 36),
+                  RevealAnimator(
+                    delay: const Duration(milliseconds: 200),
+                    child: _ProductionHighlightSection(isMobile: isMobile),
+                  ),
+                  SizedBox(height: isMobile ? 32 : 48),
+                  KeyedSubtree(
+                    key: _educationKey,
+                    child: SectionTitle(
+                      title: 'Education & Certifications',
+                      isMobile: isMobile,
+                      subtitle:
+                          'Academic foundation, ongoing professional training, and certifications that support my engineering path.',
+                    ),
                   ),
                   SizedBox(height: isMobile ? 6 : 10),
                   Text(
@@ -110,60 +150,10 @@ class ExperienceScreen extends StatelessWidget {
                       color: Colors.white.withValues(alpha: 0.52),
                     ),
                   ),
-                  SizedBox(height: isMobile ? 24 : 36),
+                  SizedBox(height: isMobile ? 16 : 20),
                   RevealAnimator(
-                    child: _OngoingTrainingCard(isMobile: isMobile),
+                    child: _CollapsibleEducationSection(isMobile: isMobile),
                   ),
-                  SizedBox(height: isMobile ? 20 : 24),
-                  isMobile
-                      ? Column(
-                          children: [
-                            RevealAnimator(
-                              delay: const Duration(milliseconds: 80),
-                              child: _UniCard(isMobile: isMobile),
-                            ),
-                            const SizedBox(height: 20),
-                            RevealAnimator(
-                              delay: const Duration(milliseconds: 160),
-                              child: _KMDCard(isMobile: isMobile),
-                            ),
-                            const SizedBox(height: 20),
-                            RevealAnimator(
-                              delay: const Duration(milliseconds: 240),
-                              child: _WebDevCard(isMobile: isMobile),
-                            ),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: RevealAnimator(
-                                    delay: const Duration(milliseconds: 80),
-                                    child: _UniCard(isMobile: isMobile),
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  flex: 2,
-                                  child: RevealAnimator(
-                                    delay: const Duration(milliseconds: 120),
-                                    child: _KMDCard(isMobile: isMobile),
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: RevealAnimator(
-                                    delay: const Duration(milliseconds: 160),
-                                    child: _WebDevCard(isMobile: isMobile),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
                 ],
               ),
             ),
@@ -368,6 +358,153 @@ class _ExpCard extends StatelessWidget {
 }
 
 // ── Education shared helpers ──────────────────────────────────────────────────
+
+Future<void> _launchUrl(String url) async {
+  final uri = Uri.parse(url);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+}
+
+Widget _academicDocStrip({
+  required VoidCallback onTap,
+  required Color accent,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      _AcademicDocStripButton(onTap: onTap, accent: accent),
+      const SizedBox(height: 8),
+      Text(
+        '2nd year transcript not issued — studies paused during 2nd semester (COVID-19).',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 10.5,
+          color: Colors.white.withValues(alpha: 0.42),
+          fontStyle: FontStyle.italic,
+          height: 1.35,
+        ),
+      ),
+    ],
+  );
+}
+
+class _AcademicDocStripButton extends StatefulWidget {
+  final VoidCallback onTap;
+  final Color accent;
+
+  const _AcademicDocStripButton({
+    required this.onTap,
+    required this.accent,
+  });
+
+  @override
+  State<_AcademicDocStripButton> createState() =>
+      _AcademicDocStripButtonState();
+}
+
+class _AcademicDocStripButtonState extends State<_AcademicDocStripButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          transform: Matrix4.translationValues(0, _hovered ? -2 : 0, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                widget.accent.withValues(alpha: _hovered ? 0.16 : 0.1),
+                Colors.white.withValues(alpha: 0.03),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: widget.accent.withValues(alpha: _hovered ? 0.45 : 0.28),
+            ),
+            boxShadow: _hovered
+                ? [
+                    BoxShadow(
+                      color: widget.accent.withValues(alpha: 0.18),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : [],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: widget.accent.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: widget.accent.withValues(alpha: 0.35),
+                  ),
+                ),
+                child: Icon(
+                  Icons.picture_as_pdf_outlined,
+                  size: 20,
+                  color: widget.accent.withValues(alpha: 0.95),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Academic Records',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '1st Year Marks & Recommendation Letter',
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        color: Colors.white.withValues(alpha: 0.78),
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Verified university document (PDF)',
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        color: Colors.white.withValues(alpha: 0.45),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.open_in_new_rounded,
+                size: 16,
+                color: widget.accent.withValues(alpha: _hovered ? 1 : 0.75),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 Widget _logoBox(String asset) => Container(
   width: 72,
@@ -617,6 +754,207 @@ class _OngoingTrainingCard extends StatelessWidget {
   }
 }
 
+// ── Production highlight (compact store apps) ─────────────────────────────────
+class _ProductionHighlightSection extends StatelessWidget {
+  final bool isMobile;
+
+  const _ProductionHighlightSection({required this.isMobile});
+
+  @override
+  Widget build(BuildContext context) {
+    final liveApps = kProductionApps
+        .where((a) => a.releaseStatus == AppReleaseStatus.live)
+        .toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Featured production work',
+          style: TextStyle(
+            fontSize: isMobile ? 16 : 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          '3 apps live on Google Play and the App Store',
+          style: TextStyle(
+            fontSize: isMobile ? 12 : 13,
+            color: Colors.white.withValues(alpha: 0.55),
+          ),
+        ),
+        const SizedBox(height: 14),
+        ...liveApps.map(
+          (app) => Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: _ProductionMiniCard(app: app, isMobile: isMobile),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProductionMiniCard extends StatelessWidget {
+  final ProductionApp app;
+  final bool isMobile;
+
+  const _ProductionMiniCard({required this.app, required this.isMobile});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: app.statusColor.withValues(alpha: 0.35)),
+        gradient: LinearGradient(
+          colors: [
+            app.statusColor.withValues(alpha: 0.1),
+            Colors.white.withValues(alpha: 0.02),
+          ],
+        ),
+      ),
+      child: Row(
+        children: [
+          if (app.iconAsset != null)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(app.iconAsset!, width: 40, height: 40),
+            ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  app.title,
+                  style: TextStyle(
+                    fontSize: isMobile ? 13 : 14,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+                if (app.keyContribution != null)
+                  Text(
+                    app.keyContribution!,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.white.withValues(alpha: 0.65),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: () => context.go('/work?section=apps'),
+            child: const Text('View', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CollapsibleEducationSection extends StatefulWidget {
+  final bool isMobile;
+
+  const _CollapsibleEducationSection({required this.isMobile});
+
+  @override
+  State<_CollapsibleEducationSection> createState() =>
+      _CollapsibleEducationSectionState();
+}
+
+class _CollapsibleEducationSectionState
+    extends State<_CollapsibleEducationSection> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFF3B82F6).withValues(alpha: 0.22),
+        ),
+      ),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () => setState(() => _expanded = !_expanded),
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                children: [
+                  const Icon(Icons.school_outlined, color: Color(0xFF93C5FD)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Academic background & early training',
+                      style: TextStyle(
+                        fontSize: widget.isMobile ? 13 : 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    _expanded ? Icons.expand_less : Icons.expand_more,
+                    color: Colors.white54,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (_expanded) ...[
+            const Divider(height: 1, color: Color(0xFF1E293B)),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: widget.isMobile
+                  ? Column(
+                      children: [
+                        _UniCard(isMobile: widget.isMobile),
+                        const SizedBox(height: 16),
+                        _OngoingTrainingCard(isMobile: widget.isMobile),
+                        const SizedBox(height: 16),
+                        _KMDCard(isMobile: widget.isMobile),
+                        const SizedBox(height: 16),
+                        _WebDevCard(isMobile: widget.isMobile),
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(child: _UniCard(isMobile: widget.isMobile)),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              flex: 2,
+                              child: _KMDCard(isMobile: widget.isMobile),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: _WebDevCard(isMobile: widget.isMobile),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        _OngoingTrainingCard(isMobile: widget.isMobile),
+                      ],
+                    ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 // ── University Card ───────────────────────────────────────────────────────────
 class _UniCard extends StatelessWidget {
   final bool isMobile;
@@ -701,6 +1039,11 @@ class _UniCard extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+          const SizedBox(height: 12),
+          _academicDocStrip(
+            accent: _accent,
+            onTap: () => _launchUrl(AppStrings.universityFirstYearDocUrl),
           ),
           const SizedBox(height: 14),
           Container(height: 1, color: _accent.withValues(alpha: 0.2)),

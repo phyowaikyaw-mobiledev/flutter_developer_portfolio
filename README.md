@@ -1,16 +1,62 @@
-# junior_flutter_developer
+# Phyo Wai Kyaw — Flutter Portfolio
 
-Junior Flutter Portollio
+Live portfolio showcasing production Flutter apps, selected projects, and engineering practices.
 
-## Getting Started
+## Live
 
-This project is a starting point for a Flutter application.
+Live: [https://phyowaikyaw-portfolio.web.app](https://phyowaikyaw-portfolio.web.app)
 
-A few resources to get you started if this is your first Flutter project:
+## Production apps (store-shipped)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+| App | Google Play | App Store |
+|-----|-------------|-----------|
+| **DrZon Medical Service** (healthcare) | [Play Store](https://play.google.com/store/apps/details?id=asia.rootstudio.drzon) | [App Store (TH)](https://apps.apple.com/th/app/drzon-medical-service/id6762826790) |
+| **Phone King Plus** (retail loyalty) | [Play Store](https://play.google.com/store/apps/details?id=com.phonekingplus) | [App Store](https://apps.apple.com/app/phone-king-plus/id6738283921) |
+| **Secure Plus** (security) | In release pipeline | In release pipeline |
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Stack
+
+- **Flutter / Dart** — cross-platform mobile & web
+- **State:** BLoC / Cubit
+- **Networking:** Dio (REST)
+- **Backend:** Firebase (FCM, Firestore)
+- **Routing:** go_router
+- **Localization:** ARB / l10n
+
+## Highlights
+
+- 3 apps live on Google Play and the App Store (Myanmar / Thailand markets)
+- Paid production work at Root Studio (Jan 2026–present)
+- Architecture case study: DrZon — presentation → BLoC → repository → Dio API layer
+- Curated project showcase (featured work + learning archive)
+
+## Run locally
+
+```bash
+flutter pub get
+flutter run -d chrome   # web
+flutter run             # mobile device / emulator
+```
+
+## Tests
+
+```bash
+flutter test
+flutter analyze
+```
+
+## Structure
+
+```
+lib/
+  data/           # production apps, portfolio projects
+  models/         # typed data models
+  screens/        # home, work, experience, about, contact
+  router/         # go_router shell + navigation
+  widgets/        # shared UI
+```
+
+## Contact
+
+- **Email:** phyowaikyaw.dev@gmail.com
+- **LinkedIn / GitHub:** links on portfolio Contact page

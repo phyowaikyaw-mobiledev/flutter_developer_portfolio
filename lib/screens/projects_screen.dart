@@ -1,243 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../data/portfolio_projects.dart';
+import '../models/portfolio_project.dart';
+import '../utils/constants.dart';
 import '../widgets/common/section_title.dart';
 import '../widgets/common/shimmer_card.dart';
 import '../widgets/common/reveal_animator.dart';
 import '../widgets/common/gallery_section.dart';
 
 class ProjectsScreen extends StatelessWidget {
-  const ProjectsScreen({super.key});
+  const ProjectsScreen({super.key, this.embeddedInWork = false});
 
-  static final _projects = [
-    {
-      'title': 'Smile Shop E-Commerce',
-      'subtitle': 'Full-featured Shopping Platform',
-      'image': 'assets/images/smile_shop.png',
-      'desc':
-          'Built an end-to-end e-commerce app with auth, cart, and Firestore data flow to demonstrate production-ready Flutter architecture.',
-      'tags': ['Flutter', 'Dart', 'Firebase', 'REST API'],
-      'liveUrl': null,
-      'github': 'https://github.com/phyowaikyaw-mobiledev/e_commerce',
-      'icon': Icons.shopping_cart,
-      'status': 'Individual Project',
-      'statusColor': Colors.orange,
-      'featured': true,
-      'gallery': [
-        'assets/images/ecommerce_1.png',
-        'assets/images/ecommerce_2.png',
-        'assets/images/ecommerce_3.png',
-      ],
-    },
-    {
-      'title': 'Food Monkey',
-      'subtitle': 'Food Delivery UI App',
-      'image': 'assets/images/food_monkey.png',
-      'desc':
-          'Food delivery UI app with smooth animations, category browsing & intuitive ordering experience.',
-      'tags': ['Flutter', 'Material Design 3', 'Custom UI'],
-      'liveUrl': null,
-      'github': 'https://github.com/phyowaikyaw-mobiledev/food_monkey',
-      'icon': Icons.fastfood,
-      'status': 'Individual Project',
-      'statusColor': Colors.orange,
-      'gallery': [
-        'assets/images/food_monkey_1.png',
-        'assets/images/food_monkey_2.png',
-        'assets/images/food_monkey_3.png',
-        'assets/images/food_monkey_4.png',
-      ],
-    },
-    {
-      'title': 'Yin Store',
-      'subtitle': 'Responsive Dark E-Commerce App',
-      'image': 'assets/images/yin_store.png',
-      'desc':
-          'Responsive dark-themed e-commerce app — iPhone, MacBook, Fashion & Lifestyle categories.',
-      'tags': ['Flutter Web', 'Material Design 3', 'Responsive UI'],
-      'liveUrl': 'https://yin-store.vercel.app',
-      'github': 'https://github.com/phyowaikyaw-mobiledev/yin_store',
-      'icon': Icons.store,
-      'status': 'Live Demo',
-      'statusColor': Colors.green,
-      'gallery': <String>[], // gallery removed — live demo replaces it
-    },
-    {
-      'title': 'Learners Gateway',
-      'subtitle': 'Live Production Blog Platform',
-      'image': 'assets/images/learner_gateway.jpg',
-      'desc':
-          'Shipped a live Flutter Web blog platform with Firebase, enabling real-time content publishing and responsive reading experience.',
-      'tags': ['Flutter Web', 'Firebase', 'Provider', 'go_router'],
-      'liveUrl': 'https://learners-gateway.web.app',
-      'github':
-          'https://github.com/phyowaikyaw-mobiledev/learners_gateway_website',
-      'icon': Icons.web,
-      'status': 'Live',
-      'statusColor': Colors.green,
-      'featured': true,
-      'gallery': <String>[], // gallery removed — live demo replaces it
-    },
-    {
-      'title': 'Resume Tailor AI',
-      'subtitle': 'AI-Powered Resume Optimizer',
-      'image': 'assets/images/resume_tailor.png',
-      'desc':
-          'Created an AI resume optimizer that tailors ATS-friendly content from job context and exports polished PDFs for applications.',
-      'tags': ['Flutter', 'OpenAI API', 'PDF Generation', 'flutter_dotenv'],
-      'liveUrl': null,
-      'github': 'https://github.com/phyowaikyaw-mobiledev/resume_tailor_ai',
-      'icon': Icons.auto_awesome,
-      'status': 'Individual Project',
-      'statusColor': Colors.orange,
-      'featured': true,
-      'gallery': [
-        'assets/images/resume_1.png',
-        'assets/images/resume_2.png',
-        'assets/images/resume_4.png',
-        'assets/images/resume_3.png',
-      ],
-    },
-    {
-      'title': 'Ying Music',
-      'subtitle': 'Music Streaming App UI',
-      'image': 'assets/images/music_app1.png',
-      'desc':
-          'Modern music streaming UI with gradient design, hero animations & playback controls.',
-      'tags': ['Flutter', 'Material 3', 'Animations'],
-      'liveUrl': null,
-      'github': 'https://github.com/phyowaikyaw-mobiledev/music_app',
-      'icon': Icons.music_note,
-      'status': 'Individual Project',
-      'statusColor': Colors.orange,
-      'featured': true,
-      'gallery': [
-        'assets/images/music_1.png',
-        'assets/images/music_2.png',
-        'assets/images/music_3.png',
-        'assets/images/music_4.png',
-      ],
-    },
-    {
-      'title': 'EduHub',
-      'subtitle': 'Learning Management System',
-      'image': 'assets/images/lms.png',
-      'desc':
-          'Implemented a dual-role LMS workflow for students and teachers, including course delivery, assignments, and offline-first storage.',
-      'tags': ['Flutter', 'Firebase', 'BLoC', 'Hive'],
-      'liveUrl': null,
-      'github': 'https://github.com/phyowaikyaw-mobiledev/eduhub_lms',
-      'icon': Icons.school,
-      'status': 'Individual Project',
-      'statusColor': Colors.orange,
-      'gallery': [
-        'assets/images/lms_1.png',
-        'assets/images/lms_2.png',
-        'assets/images/lms_3.png',
-        'assets/images/lms_4.png',
-        'assets/images/lms_5.png',
-        'assets/images/lms_6.png',
-        'assets/images/lms_7.png',
-      ],
-    },
-    {
-      'title': 'Pardon Diary',
-      'subtitle': 'Feature-rich Note App',
-      'image': 'assets/images/note_app.png',
-      'desc':
-          'Google Keep-inspired note app with Realm DB, CRUD, staggered grid & full-text search.',
-      'tags': ['Flutter', 'Realm DB', 'Streams', 'Material 3'],
-      'liveUrl': null,
-      'github': 'https://github.com/phyowaikyaw-mobiledev/pardon_diary-note',
-      'icon': Icons.note_alt,
-      'status': 'Individual Project',
-      'statusColor': Colors.orange,
-      'gallery': [
-        'assets/images/note_1.png',
-        'assets/images/note_2.png',
-        'assets/images/note_3.png',
-        'assets/images/note_4.png',
-      ],
-    },
-    {
-      'title': 'SocialHub',
-      'subtitle': 'Social Media UI Clone',
-      'image': 'assets/images/social_app.png',
-      'desc':
-          'Facebook-inspired app with news feed, interactive posts, notifications & smooth navigation.',
-      'tags': ['Flutter', 'Material Design', 'Complex UI'],
-      'liveUrl': null,
-      'github':
-          'https://github.com/phyowaikyaw-mobiledev/social_media_ui_clone',
-      'icon': Icons.people,
-      'status': 'Individual Project',
-      'statusColor': Colors.orange,
-      'gallery': [
-        'assets/images/social_1.png',
-        'assets/images/social_2.png',
-        'assets/images/social_3.png',
-        'assets/images/social_4.png',
-        'assets/images/social_5.png',
-      ],
-    },
-    {
-      'title': 'Flutter Quiz App',
-      'subtitle': 'Interactive Quiz Application',
-      'image': 'assets/images/quiz_app.png',
-      'desc':
-          'Interactive quiz app with score tracking, dynamic question flow & clean Material UI.',
-      'tags': ['Flutter', 'setState', 'Material Design'],
-      'liveUrl': null,
-      'github': 'https://github.com/phyowaikyaw-mobiledev/flutter_quizz_app',
-      'icon': Icons.quiz,
-      'status': 'Individual Project',
-      'statusColor': Colors.orange,
-      'gallery': [
-        'assets/images/quiz_1.png',
-        'assets/images/quiz_2.png',
-        'assets/images/quiz_3.png',
-      ],
-    },
-    {
-      'title': 'Healthcare Plus',
-      'subtitle': 'Telemedicine Flutter App',
-      'image': 'assets/images/healthcare.png',
-      'desc':
-          'Telemedicine app with Firebase Auth, dual-role (Patient & Doctor) dashboard & real-time Firestore.',
-      'tags': ['Flutter', 'Firebase Auth', 'Firestore', 'Material Design'],
-      'liveUrl': null,
-      'github': 'https://github.com/phyowaikyaw-mobiledev/healthcare_plus',
-      'icon': Icons.local_hospital,
-      'status': 'Individual Project',
-      'statusColor': Colors.orange,
-      'gallery': [
-        'assets/images/healthcare_1.png',
-        'assets/images/healthcare_2.png',
-        'assets/images/healthcare_3.png',
-        'assets/images/healthcare_4.png',
-        'assets/images/healthcare_5.png',
-        'assets/images/healthcare_6.png',
-      ],
-    },
-    {
-      'title': 'Roll Dice App',
-      'subtitle': 'Simple Dice Roller',
-      'image': 'assets/images/roll_dice.png',
-      'desc':
-          'Simple dice roller app — beginner Flutter project with clean UI and smooth dice animation.',
-      'tags': ['Flutter', 'setState', 'Material Design'],
-      'liveUrl': null,
-      'github': 'https://github.com/phyowaikyaw-mobiledev/roll_dice_app',
-      'icon': Icons.casino,
-      'status': 'Individual Project',
-      'statusColor': Colors.orange,
-      'gallery': [
-        'assets/images/dice_1.png',
-        'assets/images/dice_3.png',
-        'assets/images/dice_2.png',
-      ],
-    },
-  ];
+  /// When shown inside [WorkScreen] tabs, skip extra top inset (shell + tab bar).
+  final bool embeddedInWork;
 
   void _launch(String url) async {
     final uri = Uri.parse(url);
@@ -247,27 +23,36 @@ class ProjectsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 768;
-    final featuredProjects = _projects
-        .where((project) => project['featured'] == true)
+    final featuredProjects =
+        kPortfolioProjects.where((project) => project.featured).toList();
+    final learningArchive = kPortfolioProjects
+        .where((project) => project.learningArchive)
         .toList();
-    final otherProjects = _projects
-        .where((project) => project['featured'] != true)
+    final otherProjects = kPortfolioProjects
+        .where((project) => !project.featured && !project.learningArchive)
         .toList();
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF0A0E27),
-      body: SingleChildScrollView(
+    final body = SingleChildScrollView(
+        primary: false,
+        physics: const AlwaysScrollableScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: isMobile ? 16 : 32,
-            vertical: isMobile ? 80 : 100,
+            vertical: embeddedInWork
+                ? (isMobile ? 20 : 28)
+                : (isMobile ? 80 : 100),
           ),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1200),
               child: Column(
                 children: [
-                  SectionTitle(title: 'Apps & Projects', isMobile: isMobile),
+                  SectionTitle(
+                    title: 'Projects & demos',
+                    isMobile: isMobile,
+                    subtitle:
+                        'Featured builds, live demos, and additional experiments.',
+                  ),
                   SizedBox(height: isMobile ? 20 : 26),
                   _ProjectSectionLabel(
                     title: 'Featured Projects',
@@ -287,7 +72,7 @@ class ProjectsScreen extends StatelessWidget {
                                   child: RevealAnimator(
                                     delay: Duration(milliseconds: 50 * e.key),
                                     child: _ProjectCard(
-                                      p: e.value,
+                                      project: e.value,
                                       isMobile: isMobile,
                                       launch: _launch,
                                     ),
@@ -310,16 +95,69 @@ class ProjectsScreen extends StatelessWidget {
                           itemBuilder: (_, i) => RevealAnimator(
                             delay: Duration(milliseconds: 60 * (i % 2)),
                             child: _ProjectCard(
-                              p: featuredProjects[i],
+                              project: featuredProjects[i],
                               isMobile: isMobile,
                               launch: _launch,
                             ),
                           ),
                         ),
+                  if (learningArchive.isNotEmpty) ...[
+                    SizedBox(height: isMobile ? 24 : 34),
+                    _ProjectSectionLabel(
+                      title: 'Learning Archive',
+                      subtitle:
+                          'UI studies and beginner projects — kept for growth context.',
+                      isMobile: isMobile,
+                    ),
+                    SizedBox(height: isMobile ? 14 : 18),
+                    isMobile
+                        ? Column(
+                            children: learningArchive
+                                .asMap()
+                                .entries
+                                .map(
+                                  (e) => Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 16),
+                                    child: RevealAnimator(
+                                      delay:
+                                          Duration(milliseconds: 50 * e.key),
+                                      child: _ProjectCard(
+                                        project: e.value,
+                                        isMobile: isMobile,
+                                        launch: _launch,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          )
+                        : GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 20,
+                              mainAxisSpacing: 20,
+                              mainAxisExtent: 500,
+                            ),
+                            itemCount: learningArchive.length,
+                            itemBuilder: (_, i) => RevealAnimator(
+                              delay: Duration(milliseconds: 60 * (i % 2)),
+                              child: _ProjectCard(
+                                project: learningArchive[i],
+                                isMobile: isMobile,
+                                launch: _launch,
+                              ),
+                            ),
+                          ),
+                  ],
                   SizedBox(height: isMobile ? 24 : 34),
                   _ProjectSectionLabel(
                     title: 'Other Projects',
-                    subtitle: 'Additional apps, UI builds, and learning projects.',
+                    subtitle:
+                        'Additional apps and experiments beyond featured work.',
                     isMobile: isMobile,
                   ),
                   SizedBox(height: isMobile ? 14 : 18),
@@ -334,7 +172,7 @@ class ProjectsScreen extends StatelessWidget {
                                   child: RevealAnimator(
                                     delay: Duration(milliseconds: 50 * e.key),
                                     child: _ProjectCard(
-                                      p: e.value,
+                                      project: e.value,
                                       isMobile: isMobile,
                                       launch: _launch,
                                     ),
@@ -357,7 +195,7 @@ class ProjectsScreen extends StatelessWidget {
                           itemBuilder: (_, i) => RevealAnimator(
                             delay: Duration(milliseconds: 60 * (i % 2)),
                             child: _ProjectCard(
-                              p: otherProjects[i],
+                              project: otherProjects[i],
                               isMobile: isMobile,
                               launch: _launch,
                             ),
@@ -368,8 +206,12 @@ class ProjectsScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
     );
+
+    if (embeddedInWork) {
+      return ColoredBox(color: AppColors.background, child: body);
+    }
+    return Scaffold(backgroundColor: AppColors.background, body: body);
   }
 }
 
@@ -419,21 +261,21 @@ class _ProjectSectionLabel extends StatelessWidget {
 
 // ─────────────────────────────────────────────────────────────────────────────
 class _ProjectCard extends StatelessWidget {
-  final Map<String, dynamic> p;
+  final PortfolioProject project;
   final bool isMobile;
   final void Function(String) launch;
 
   const _ProjectCard({
-    required this.p,
+    required this.project,
     required this.isMobile,
     required this.launch,
   });
 
   @override
   Widget build(BuildContext context) {
-    final color = p['statusColor'] as Color;
-    final gallery = p['gallery'] as List<String>;
-    final liveUrl = p['liveUrl'] as String?;
+    final color = project.statusColor;
+    final gallery = project.gallery;
+    final liveUrl = project.liveUrl;
 
     // A card has a live URL but no gallery → show the live preview banner
     // instead so the card height stays consistent with gallery cards.
@@ -467,7 +309,7 @@ class _ProjectCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
-                  p['image'] as String,
+                  project.image,
                   width: 56,
                   height: 56,
                   fit: BoxFit.cover,
@@ -481,7 +323,7 @@ class _ProjectCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
-                      p['icon'] as IconData,
+                      project.icon,
                       color: Colors.white,
                       size: 26,
                     ),
@@ -504,7 +346,7 @@ class _ProjectCard extends StatelessWidget {
                         border: Border.all(color: color.withValues(alpha: 0.6)),
                       ),
                       child: Text(
-                        p['status'] as String,
+                        project.status,
                         style: TextStyle(
                           fontSize: 10,
                           color: color,
@@ -514,7 +356,7 @@ class _ProjectCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      p['title'] as String,
+                      project.title,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -522,7 +364,7 @@ class _ProjectCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      p['subtitle'] as String,
+                      project.subtitle,
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.white.withValues(alpha: 0.5),
@@ -540,7 +382,7 @@ class _ProjectCard extends StatelessWidget {
           SizedBox(
             height: 42,
             child: Text(
-              p['desc'] as String,
+              project.desc,
               style: TextStyle(
                 fontSize: 13,
                 color: Colors.white.withValues(alpha: 0.72),
@@ -559,7 +401,7 @@ class _ProjectCard extends StatelessWidget {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: (p['tags'] as List<String>).length,
+              itemCount: project.tags.length,
               itemBuilder: (_, i) => Container(
                 margin: const EdgeInsets.only(right: 6),
                 padding: const EdgeInsets.symmetric(
@@ -574,7 +416,7 @@ class _ProjectCard extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  (p['tags'] as List<String>)[i],
+                  project.tags[i],
                   style: const TextStyle(
                     fontSize: 11,
                     color: Colors.white,
@@ -625,7 +467,7 @@ class _ProjectCard extends StatelessWidget {
                   color: Colors.white70,
                   filled: false,
                   isFa: true,
-                  onTap: () => launch(p['github'] as String),
+                  onTap: () => launch(project.github),
                 ),
               ),
             ],
@@ -951,7 +793,7 @@ class _BtnState extends State<_Btn> {
             children: [
               widget.isFa
                   ? FaIcon(
-                      widget.icon as IconData,
+                      widget.icon as FaIconData,
                       size: 13,
                       color: widget.filled ? Colors.white : widget.color,
                     )

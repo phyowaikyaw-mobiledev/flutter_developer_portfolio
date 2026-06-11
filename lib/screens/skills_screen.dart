@@ -3,8 +3,12 @@ import '../widgets/common/section_title.dart';
 import '../widgets/common/shimmer_card.dart';
 import '../widgets/common/reveal_animator.dart';
 
+import '../utils/constants.dart';
+
 class SkillsScreen extends StatelessWidget {
-  const SkillsScreen({super.key});
+  const SkillsScreen({super.key, this.embeddedInAbout = false});
+
+  final bool embeddedInAbout;
 
   static final _skills = [
     [
@@ -81,13 +85,15 @@ class SkillsScreen extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final isMobile = width < 768;
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF0A0E27),
-      body: SingleChildScrollView(
+    final body = SingleChildScrollView(
+        primary: false,
+        physics: const AlwaysScrollableScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: isMobile ? 16 : 32,
-            vertical: isMobile ? 80 : 100,
+            vertical: embeddedInAbout
+                ? (isMobile ? 20 : 28)
+                : (isMobile ? 80 : 100),
           ),
           child: Center(
             child: ConstrainedBox(
@@ -137,8 +143,12 @@ class SkillsScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
     );
+
+    if (embeddedInAbout) {
+      return ColoredBox(color: AppColors.background, child: body);
+    }
+    return Scaffold(backgroundColor: AppColors.background, body: body);
   }
 }
 

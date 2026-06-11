@@ -56,7 +56,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 768;
+    final width = MediaQuery.sizeOf(context).width;
+    final isMobile = width < 768;
+    final compactProof = width < 1100;
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E27),
       body: MouseRegion(
@@ -89,7 +91,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: Column(
                 children: [
                   _hero(isMobile),
-                  _proofStrip(isMobile),
+                  _proofStrip(
+                    isMobile: isMobile,
+                    compactProof: compactProof,
+                  ),
                   _stats(isMobile),
                   _footer(isMobile),
                 ],
@@ -226,16 +231,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
-                        SizedBox(height: isMobile ? 8 : 12),
-                        Text(
-                          'Cross-Platform Mobile Developer focused on shipping reliable, business-ready products',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: isMobile ? 14 : 18,
-                            color: Colors.white.withValues(alpha: 0.65),
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
+                        SizedBox(height: isMobile ? 10 : 14),
+                        _heroTagline(isMobile),
                         SizedBox(height: isMobile ? 12 : 16),
                         Wrap(
                           alignment: WrapAlignment.center,
@@ -264,6 +261,68 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _heroTagline(bool isMobile) {
+    final fontSize = isMobile ? 14.0 : 18.5;
+    final baseStyle = TextStyle(
+      fontSize: fontSize,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0.25,
+      height: 1.4,
+      color: Colors.white.withValues(alpha: 0.88),
+    );
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: isMobile ? 360 : 720),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 14 : 20,
+          vertical: isMobile ? 10 : 12,
+        ),
+        decoration: BoxDecoration(
+          color: const Color(0xFF3B82F6).withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(
+            color: const Color(0xFF3B82F6).withValues(alpha: 0.25),
+          ),
+        ),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text.rich(
+            TextSpan(
+              style: baseStyle,
+              children: [
+                const TextSpan(text: 'Shipped '),
+                _taglineAccent('DrZon', fontSize, const Color(0xFF14B8A6)),
+                const TextSpan(text: ' & '),
+                _taglineAccent(
+                  'Phone King Plus',
+                  fontSize,
+                  const Color(0xFFF59E0B),
+                ),
+                const TextSpan(text: ' — live on Google Play & App Store'),
+              ],
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+          ),
+        ),
+      ),
+    );
+  }
+
+  TextSpan _taglineAccent(String text, double fontSize, Color color) {
+    return TextSpan(
+      text: text,
+      style: TextStyle(
+        fontWeight: FontWeight.w700,
+        color: color,
+        fontSize: fontSize,
+        height: 1.4,
+        letterSpacing: 0.25,
       ),
     );
   }
@@ -339,13 +398,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         SizedBox(width: isMobile ? 20 : 28),
         _SocialBtn(
-          icon: FontAwesomeIcons.facebook,
-          url: AppStrings.facebook,
-          isMobile: isMobile,
-          launch: _launch,
-        ),
-        SizedBox(width: isMobile ? 20 : 28),
-        _SocialBtn(
           icon: FontAwesomeIcons.envelope,
           url: '',
           isMobile: isMobile,
@@ -372,7 +424,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         icon: Icons.folder_open_outlined,
         isMobile: isMobile,
         filled: false,
-        onTap: () => context.go('/apps'),
+        onTap: () => context.go('/work?section=apps'),
       ),
       HoverButton(
         label: 'Download CV',
@@ -385,11 +437,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ],
   );
 
-  Widget _proofStrip(bool isMobile) {
+  Widget _proofStrip({
+    required bool isMobile,
+    required bool compactProof,
+  }) {
     final chips = [
-      (Icons.verified_rounded, 'Production Apps', '4+ live deployments'),
-      (Icons.groups_2_outlined, 'Team Collaboration', 'Cross-functional engineering'),
-      (Icons.bolt_rounded, 'Delivery Style', 'Scalable and maintainable code'),
+      (Icons.verified_rounded, 'Store Releases', '3 live on both stores'),
+      (
+        Icons.groups_2_outlined,
+        'Team Delivery',
+        'Code reviews & sprint collaboration',
+      ),
+      (Icons.architecture_outlined, 'Engineering', 'Dio · BLoC · l10n · Firebase'),
     ];
     return Container(
       margin: EdgeInsets.symmetric(
@@ -397,8 +456,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         vertical: isMobile ? 6 : 10,
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 14 : 18,
-        vertical: isMobile ? 14 : 16,
+        horizontal: compactProof
+            ? (isMobile ? 10 : 14)
+            : (isMobile ? 14 : 18),
+        vertical: compactProof ? 12 : (isMobile ? 14 : 16),
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
@@ -414,59 +475,159 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           color: const Color(0xFF3B82F6).withValues(alpha: 0.22),
         ),
       ),
-      child: isMobile
-          ? Column(
-              children: chips
-                  .map((item) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: _proofItem(item.$1, item.$2, item.$3, isMobile),
-                      ))
-                  .toList(),
-            )
-          : Row(
-              children: chips
-                  .map(
-                    (item) => Expanded(
-                      child: _proofItem(item.$1, item.$2, item.$3, isMobile),
-                    ),
-                  )
-                  .toList(),
-            ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (int i = 0; i < chips.length; i++) ...[
+              if (i > 0)
+                VerticalDivider(
+                  width: compactProof ? 17 : 21,
+                  thickness: 1,
+                  indent: compactProof ? 4 : 6,
+                  endIndent: compactProof ? 4 : 6,
+                  color: const Color(0xFF3B82F6).withValues(alpha: 0.22),
+                ),
+              Expanded(
+                child: compactProof
+                    ? Align(
+                        alignment: Alignment.topCenter,
+                        child: _proofItemCompact(
+                          chips[i].$1,
+                          chips[i].$2,
+                          chips[i].$3,
+                          isMobile: isMobile,
+                        ),
+                      )
+                    : _proofItemBalanced(
+                        chips[i].$1,
+                        chips[i].$2,
+                        chips[i].$3,
+                      ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _proofItem(
+  /// Three-up strip on narrow screens: icon on top, copy centered (desktop-like, compact).
+  Widget _proofItemCompact(
     IconData icon,
     String title,
-    String value,
-    bool isMobile,
-  ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    String value, {
+    required bool isMobile,
+  }) {
+    final iconBox = isMobile ? 32.0 : 36.0;
+    final titleSize = isMobile ? 11.5 : 11.0;
+    final valueSize = isMobile ? 11.0 : 10.5;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: const Color(0xFF60A5FA), size: isMobile ? 18 : 20),
-        const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: isMobile ? 12 : 13,
-                fontWeight: FontWeight.w600,
-              ),
+        Container(
+          width: iconBox,
+          height: iconBox,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: const Color(0xFF3B82F6).withValues(alpha: 0.14),
+            border: Border.all(
+              color: const Color(0xFF60A5FA).withValues(alpha: 0.35),
             ),
-            Text(
-              value,
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.58),
-                fontSize: isMobile ? 11 : 12,
-              ),
-            ),
-          ],
+          ),
+          child: Icon(
+            icon,
+            color: const Color(0xFF60A5FA),
+            size: isMobile ? 17 : 19,
+          ),
+        ),
+        SizedBox(height: isMobile ? 7 : 8),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: titleSize,
+            fontWeight: FontWeight.w700,
+            height: 1.2,
+          ),
+        ),
+        SizedBox(height: isMobile ? 3 : 4),
+        Text(
+          value,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.58),
+            fontSize: valueSize,
+            height: 1.3,
+          ),
         ),
       ],
+    );
+  }
+
+  /// Desktop only: each [Expanded] column uses full width — icon + text align the same in all three cells.
+  Widget _proofItemBalanced(IconData icon, String title, String value) {
+    const iconSize = 36.0;
+    const gap = 10.0;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: iconSize,
+            height: iconSize,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: const Color(0xFF3B82F6).withValues(alpha: 0.14),
+              border: Border.all(
+                color: const Color(0xFF60A5FA).withValues(alpha: 0.35),
+              ),
+            ),
+            child: Icon(
+              icon,
+              color: const Color(0xFF60A5FA),
+              size: 20,
+            ),
+          ),
+          SizedBox(width: gap),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.62),
+                    fontSize: 12,
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -502,18 +663,40 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _statItem(1, '+', 'Year\nExperience', isMobile),
-            _divider(),
-            _statItem(12, '+', 'Projects\nBuilt', isMobile),
-            _divider(),
-            _statItem(1, '', 'Hackathon\nWin', isMobile),
-            _divider(),
-            _statItem(4, '+', 'Production\nApps', isMobile),
-          ],
-        ),
+        child: isMobile
+            ? Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _statItem(3, '', 'Live Store\nApps', isMobile),
+                      _divider(),
+                      _statItem(2, '', 'In Release\nPipeline', isMobile),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _statItem(12, '+', 'Projects\n& Demos', isMobile),
+                      _divider(),
+                      _statItem(1, '', 'Hackathon\nAward', isMobile),
+                    ],
+                  ),
+                ],
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _statItem(3, '', 'Live Store\nApps', isMobile),
+                  _divider(),
+                  _statItem(2, '', 'In Release\nPipeline', isMobile),
+                  _divider(),
+                  _statItem(12, '+', 'Projects\n& Demos', isMobile),
+                  _divider(),
+                  _statItem(1, '', 'Hackathon\nAward', isMobile),
+                ],
+              ),
       ),
     );
   }
@@ -578,7 +761,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             ),
             const SizedBox(height: 20),
-            _socials(isMobile),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 12,
+              runSpacing: 10,
+              children: [
+                HoverButton(
+                  label: 'View Work',
+                  icon: Icons.folder_open_outlined,
+                  isMobile: isMobile,
+                  filled: false,
+                  accent: true,
+                  onTap: () => context.go('/work?section=apps'),
+                ),
+                HoverButton(
+                  label: 'Download CV',
+                  icon: Icons.download_outlined,
+                  isMobile: isMobile,
+                  filled: false,
+                  accent: true,
+                  onTap: () => _launch(AppStrings.cvUrl),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -633,7 +838,7 @@ class _PulseDotState extends State<_PulseDot>
 
 // ── Social Button ─────────────────────────────────────────────────────────────
 class _SocialBtn extends StatefulWidget {
-  final IconData icon;
+  final FaIconData icon;
   final String url;
   final bool isMobile;
   final void Function(String) launch;

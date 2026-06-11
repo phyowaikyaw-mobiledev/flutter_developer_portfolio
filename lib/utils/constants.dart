@@ -12,8 +12,12 @@ class AppColors {
 
 class AppStrings {
   static const email    = 'phyowalkyawdeveloper@gmail.com';
+  static const phone    = '+66-626-509163';
+  static const phoneTel = 'tel:+66626509163';
   static const github   = 'https://github.com/phyowaikyaw-mobiledev';
   static const linkedin = 'https://www.linkedin.com/in/phyowaikyaw-dev';
   static const facebook = 'https://facebook.com/learnersgateway30';
   static const cvUrl    = 'https://drive.google.com/file/d/1ZeB1Dbe9t7l79XY_vOO1INeplqLwX-LO/view?usp=drive_link';
+  static const universityFirstYearDocUrl =
+      'https://drive.google.com/file/d/1j2ehBE5y-GhenuZbmv2N7wBQi4e6wolK/view?usp=drive_link';
 }

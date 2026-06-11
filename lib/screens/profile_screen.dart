@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
+import '../utils/constants.dart';
 import '../widgets/common/section_title.dart';
 import '../widgets/common/shimmer_card.dart';
 import '../widgets/common/reveal_animator.dart';
-import '../widgets/common/tech_tag.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  const ProfileScreen({super.key, this.embeddedInAbout = false});
+
+  final bool embeddedInAbout;
 
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 768;
-    return Scaffold(
-      backgroundColor: const Color(0xFF0A0E27),
-      body: SingleChildScrollView(
+    final body = SingleChildScrollView(
+        primary: false,
+        physics: const AlwaysScrollableScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: isMobile ? 20 : 40,
-            vertical: isMobile ? 80 : 100,
+            vertical: embeddedInAbout
+                ? (isMobile ? 20 : 28)
+                : (isMobile ? 80 : 100),
           ),
           child: Center(
             child: ConstrainedBox(
@@ -87,8 +91,12 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
     );
+
+    if (embeddedInAbout) {
+      return ColoredBox(color: AppColors.background, child: body);
+    }
+    return Scaffold(backgroundColor: AppColors.background, body: body);
   }
 
   Widget _bioCard(bool isMobile) {
@@ -123,7 +131,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             SizedBox(height: isMobile ? 16 : 20),
             Text(
-              'Flutter developer with production experience delivering cross-platform applications for real users on Google Play and the App Store.',
+              'Flutter developer with production experience shipping apps to Google Play and the App Store — including DrZon Medical Service (healthcare) and Phone King Plus (retail loyalty).',
               style: TextStyle(
                 fontSize: isMobile ? 14 : 16,
                 color: Colors.white.withValues(alpha: 0.84),
@@ -144,38 +152,11 @@ class ProfileScreen extends StatelessWidget {
               spacing: 8,
               runSpacing: 8,
               children: const [
-                _ProfilePill(label: '1+ Year Production Experience'),
-                _ProfilePill(label: 'Remote Team Collaboration'),
-                _ProfilePill(label: '1st Runner Up — Oway Hackathon 2020'),
+                _ProfilePill(label: 'Paid production since Jan 2026'),
+                _ProfilePill(label: '3 apps live on both stores'),
+                _ProfilePill(label: 'Remote sprint collaboration'),
+                _ProfilePill(label: 'Hackathon Runner-up 2020'),
               ],
-            ),
-            SizedBox(height: isMobile ? 20 : 28),
-            Text(
-              'Core Stack',
-              style: TextStyle(
-                fontSize: isMobile ? 16 : 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 12),
-            // FIX: clipBehavior: Clip.none — prevents Wrap from clipping
-            // tag borders at row edges (especially bottom-left of new rows)
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              clipBehavior: Clip.none,
-              children: [
-                'Flutter',
-                'Dart',
-                'Firebase',
-                'BLoC',
-                'Provider',
-                'Dio',
-                'REST API',
-                'Clean Architecture',
-                'Git',
-              ].map((t) => TechTag(label: t, isMobile: isMobile)).toList(),
             ),
           ],
         ),
@@ -186,7 +167,7 @@ class ProfileScreen extends StatelessWidget {
   Widget _recruiterSnapshot(bool isMobile) {
     final items = [
       ('Primary Role', 'Flutter Developer', Icons.badge_outlined),
-      ('Experience', '1+ year production', Icons.timeline_outlined),
+      ('Experience', 'Paid prod · Jan 2026', Icons.timeline_outlined),
       ('Work Style', 'Remote collaboration', Icons.groups_2_outlined),
       ('Availability', 'Open to opportunities', Icons.event_available_outlined),
     ];
@@ -379,16 +360,16 @@ class ProfileScreen extends StatelessWidget {
   }
 
   static const _focus = [
-    'Shipping production Flutter features with stable release quality',
-    'Implementing REST API workflows with maintainable architecture',
-    'Collaborating through code reviews and team delivery cycles',
-    'Improving app quality with reusable and readable code standards',
+    'Shipping store-ready Flutter features with review-ready PRs',
+    'REST API integration with Dio and repository-layer discipline',
+    'Remote sprint delivery with code reviews and senior-led standards',
+    'Localization and maintainable module structure for product growth',
   ];
   static const _goal = [
-    'Contribute to high-impact Flutter product teams',
-    'Grow toward senior-level software engineering ownership',
-    'Build scalable apps with long-term maintainability',
-    'Mentor and share engineering knowledge within teams',
+    'Deliver reliable Flutter features for international product teams',
+    'Ship documented API contracts and test-friendly module boundaries',
+    'Contribute to team quality through reviews and consistent Git workflow',
+    'Grow ownership of features from implementation through store release',
   ];
 }
 

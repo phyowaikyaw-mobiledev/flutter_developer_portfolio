@@ -1,14 +1,11 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../screens/home_screen.dart';
-import '../screens/profile_screen.dart';
-import '../screens/skills_screen.dart';
-import '../screens/apps_screen.dart';
-import '../screens/projects_screen.dart';
+import '../screens/about_screen.dart';
+import '../screens/work_screen.dart';
 import '../screens/experience_screen.dart';
-import '../screens/awards_screen.dart';
-import '../screens/testimonials_screen.dart';
 import '../screens/contact_screen.dart';
 
 final appRouter = GoRouter(
@@ -23,32 +20,28 @@ final appRouter = GoRouter(
           pageBuilder: (c, s) => _slide(s, const HomeScreen()),
         ),
         GoRoute(
-          path: '/profile',
-          pageBuilder: (c, s) => _slide(s, const ProfileScreen()),
+          path: '/about',
+          pageBuilder: (c, s) => _slide(s, const AboutScreen()),
         ),
+        GoRoute(path: '/profile', redirect: (c, s) => '/about?section=profile'),
+        GoRoute(path: '/skills', redirect: (c, s) => '/about?section=skills'),
         GoRoute(
-          path: '/skills',
-          pageBuilder: (c, s) => _slide(s, const SkillsScreen()),
+          path: '/work',
+          pageBuilder: (c, s) => _slide(s, const WorkScreen()),
         ),
-        GoRoute(
-          path: '/apps',
-          pageBuilder: (c, s) => _slide(s, const AppsScreen()),
-        ),
+        GoRoute(path: '/apps', redirect: (c, s) => '/work?section=apps'),
         GoRoute(
           path: '/projects',
-          pageBuilder: (c, s) => _slide(s, const ProjectsScreen()),
+          redirect: (c, s) => '/work?section=projects',
         ),
         GoRoute(
           path: '/experience',
           pageBuilder: (c, s) => _slide(s, const ExperienceScreen()),
         ),
-        GoRoute(
-          path: '/awards',
-          pageBuilder: (c, s) => _slide(s, const AwardsScreen()),
-        ),
+        GoRoute(path: '/awards', redirect: (c, s) => '/work?section=awards'),
         GoRoute(
           path: '/testimonials',
-          pageBuilder: (c, s) => _slide(s, const TestimonialsScreen()),
+          redirect: (c, s) => '/about?section=testimonials',
         ),
         GoRoute(
           path: '/contact',
@@ -96,15 +89,26 @@ class ScaffoldWithNav extends StatelessWidget {
 // ── Nav items list ────────────────────────────────────────────────────────────
 const _navItems = [
   ('~/', '/'),
-  ('Profile', '/profile'),
-  ('Skills', '/skills'),
-  ('Apps', '/apps'),
-  ('Projects', '/projects'),
+  ('Work', '/work'),
   ('Experience', '/experience'),
-  ('Awards', '/awards'),
-  ('Testimonials', '/testimonials'),
+  ('About', '/about'),
   ('Contact', '/contact'),
 ];
+
+bool _navMatches(Uri loc, String target) {
+  switch (target) {
+    case '/':
+      return loc.path == '/' || loc.path.isEmpty;
+    case '/work':
+      return loc.path == '/work';
+    case '/experience':
+      return loc.path == '/experience';
+    case '/about':
+      return loc.path == '/about';
+    default:
+      return loc.path == target;
+  }
+}
 
 // ── AppBar ────────────────────────────────────────────────────────────────────
 class _PortfolioAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -117,36 +121,41 @@ class _PortfolioAppBar extends StatefulWidget implements PreferredSizeWidget {
   State<_PortfolioAppBar> createState() => _PortfolioAppBarState();
 }
 
-class _PortfolioAppBarState extends State<_PortfolioAppBar>
-    with SingleTickerProviderStateMixin {
+class _PortfolioAppBarState extends State<_PortfolioAppBar> {
+  static const _staticTitle = 'Phyo Wai Kyaw · Flutter Developer';
+  static const _nameText = 'Phyo Wai Kyaw';
+  static const _roleTexts = ['Flutter Developer', 'Mobile Developer'];
+
   int _idx = 0;
-  String _text = '';
-  bool _cursor = true;
+  int _roleIdx = 0;
+
+  String get _currentTarget =>
+      _idx == 0 ? _nameText : _roleTexts[_roleIdx];
+
+  String get _brandAvatarAsset {
+    if (_reducedMotion || _idx == 0) return 'assets/images/phyo.jpg';
+    return _roleIdx == 0
+        ? 'assets/images/flutter_icon.png'
+        : 'assets/images/3.png';
+  }
+  String _displayText = '';
+  bool _showCaret = false;
+  bool _caretVisible = true;
   double _opacity = 1.0;
   bool _reducedMotion = false;
   bool _typingInitialized = false;
-  Timer? _typingTimer, _cursorTimer, _reducedTimer;
 
-  final _texts = [
-    'Phyo Wai Kyaw',
-    'Flutter Developer',
-    'Mobile App Developer',
-    'Cross-platform Mobile Developer',
-  ];
-  final _avatars = [
-    'assets/images/phyo.jpg',
-    'assets/images/flutter_icon.png',
-    'assets/images/3.png',
-    'assets/images/flutter_icon.png',
-  ];
+  Timer? _typingTimer;
+  Timer? _caretTimer;
+  Timer? _holdTimer;
 
   @override
   void initState() {
     super.initState();
-    _cursorTimer = Timer.periodic(
-      const Duration(milliseconds: 500),
-      (_) => mounted ? setState(() => _cursor = !_cursor) : null,
-    );
+    _caretTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
+      if (!mounted || !_showCaret) return;
+      setState(() => _caretVisible = !_caretVisible);
+    });
   }
 
   @override
@@ -157,91 +166,186 @@ class _PortfolioAppBarState extends State<_PortfolioAppBar>
 
     _typingInitialized = true;
     _reducedMotion = shouldReduce;
-    _typingTimer?.cancel();
-    _reducedTimer?.cancel();
+    _cancelTypingTimers();
 
     if (_reducedMotion) {
       setState(() {
-        _text = _texts[_idx];
-        _cursor = false;
+        _displayText = _staticTitle;
+        _showCaret = false;
         _opacity = 1.0;
       });
-      _startReducedMotionLoop();
-    } else {
-      setState(() => _cursor = true);
-      _startTyping();
+      return;
     }
+
+    setState(() {
+      _idx = 0;
+      _roleIdx = 0;
+      _displayText = '';
+      _showCaret = true;
+      _opacity = 1.0;
+    });
+    _startTypingCurrent();
   }
 
-  void _startTyping() {
+  void _cancelTypingTimers() {
     _typingTimer?.cancel();
-    final charDelay = _typingDelayFor(_texts[_idx]);
-    _typingTimer = Timer.periodic(Duration(milliseconds: charDelay), (t) {
-      if (!mounted) {
-        t.cancel();
-        return;
-      }
-      final cur = _texts[_idx];
-      setState(() {
-        if (_text.length < cur.length) {
-          _text = cur.substring(0, _text.length + 1);
-        } else {
+    _holdTimer?.cancel();
+  }
+
+  int _charDelayFor(int index) => index == 0 ? 22 : 26;
+
+  void _startTypingCurrent() {
+    if (_reducedMotion || !mounted) return;
+
+    _typingTimer?.cancel();
+    _holdTimer?.cancel();
+
+    _typingTimer = Timer.periodic(
+      Duration(milliseconds: _charDelayFor(_idx)),
+      (t) {
+        if (!mounted || _reducedMotion) {
           t.cancel();
-          Future.delayed(_holdDurationFor(cur), () {
-            if (!mounted) return;
-            setState(() => _opacity = 0.0);
-            Future.delayed(const Duration(milliseconds: 430), () {
-              if (!mounted) return;
-              setState(() {
-                _idx = (_idx + 1) % _texts.length;
-                _text = '';
-                _opacity = 1.0;
-              });
-              Future.delayed(const Duration(milliseconds: 90), () {
-                if (mounted) _startTyping();
-              });
-            });
-          });
+          return;
         }
-      });
-    });
-  }
-
-  void _startReducedMotionLoop() {
-    _reducedTimer?.cancel();
-    _reducedTimer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (!mounted || !_reducedMotion) return;
-      setState(() {
-        _opacity = 0.0;
-      });
-      Future.delayed(const Duration(milliseconds: 220), () {
-        if (!mounted || !_reducedMotion) return;
+        final target = _currentTarget;
         setState(() {
-          _idx = (_idx + 1) % _texts.length;
-          _text = _texts[_idx];
-          _opacity = 1.0;
+          if (_displayText.length < target.length) {
+            _displayText = target.substring(0, _displayText.length + 1);
+            _showCaret = true;
+          } else {
+            t.cancel();
+            _showCaret = false;
+            _holdTimer = Timer(
+              const Duration(milliseconds: 2200),
+              _fadeToNextPhrase,
+            );
+          }
         });
+      },
+    );
+  }
+
+  void _fadeToNextPhrase() {
+    if (!mounted || _reducedMotion) return;
+    setState(() => _opacity = 0.0);
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (!mounted || _reducedMotion) return;
+      setState(() {
+        if (_idx == 0) {
+          _idx = 1;
+        } else {
+          _idx = 0;
+          _roleIdx = (_roleIdx + 1) % _roleTexts.length;
+        }
+        _displayText = '';
+        _opacity = 1.0;
+        _showCaret = true;
       });
+      _startTypingCurrent();
     });
-  }
-
-  int _typingDelayFor(String text) {
-    if (text == 'Phyo Wai Kyaw') return 17;
-    if (text == 'Cross-platform Mobile Developer') return 28;
-    return 24;
-  }
-
-  Duration _holdDurationFor(String text) {
-    if (text == 'Phyo Wai Kyaw') return const Duration(milliseconds: 1400);
-    return const Duration(milliseconds: 1900);
   }
 
   @override
   void dispose() {
-    _typingTimer?.cancel();
-    _cursorTimer?.cancel();
-    _reducedTimer?.cancel();
+    _cancelTypingTimers();
+    _caretTimer?.cancel();
     super.dispose();
+  }
+
+  Widget _caret(bool isDesktop) {
+    return AnimatedOpacity(
+      opacity: _caretVisible ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 100),
+      child: Text(
+        '|',
+        style: TextStyle(
+          fontSize: isDesktop ? 17 : 15,
+          fontWeight: FontWeight.w300,
+          color: const Color(0xFF60A5FA),
+        ),
+      ),
+    );
+  }
+
+  Widget _typingTitle({required bool isDesktop}) {
+    if (_reducedMotion) {
+      return Text(
+        _staticTitle,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: isDesktop ? 17 : 15,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      );
+    }
+
+    final isRole = _idx == 1;
+    return SizedBox(
+      width: isDesktop ? 210 : 168,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: AnimatedOpacity(
+          opacity: _opacity,
+          duration: const Duration(milliseconds: 400),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Text(
+                  _displayText,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: isDesktop ? 17 : 15,
+                    fontWeight: isRole ? FontWeight.w600 : FontWeight.bold,
+                    color: isRole ? const Color(0xFF93C5FD) : Colors.white,
+                  ),
+                ),
+              ),
+              if (_showCaret) _caret(isDesktop),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _brandAvatar() {
+    final asset = _brandAvatarAsset;
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      child: Container(
+        key: ValueKey(asset),
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: const LinearGradient(
+            colors: [Color(0xFF1E40AF), Color(0xFF3B82F6)],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF3B82F6).withValues(alpha: 0.4),
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: ClipOval(
+          child: Image.asset(
+            asset,
+            width: 40,
+            height: 40,
+            fit: BoxFit.cover,
+            alignment: Alignment.center,
+            errorBuilder: (_, __, ___) =>
+                const Icon(Icons.person, color: Colors.white, size: 22),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -252,7 +356,7 @@ class _PortfolioAppBarState extends State<_PortfolioAppBar>
     //   768–1100 → tablet → hamburger menu  ← FIX
     //   > 1100 → desktop → full nav row
     final isDesktop = width >= 1100;
-    final loc = GoRouterState.of(context).uri.toString();
+    final uri = GoRouterState.of(context).uri;
 
     return Container(
       decoration: BoxDecoration(
@@ -272,90 +376,131 @@ class _PortfolioAppBarState extends State<_PortfolioAppBar>
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: isDesktop ? 28 : 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // ── Logo ──
-              GestureDetector(
-                onTap: () => context.go('/'),
-                child: Row(
-                  children: [
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 400),
-                      child: Container(
-                        key: ValueKey(_idx),
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF1E40AF), Color(0xFF3B82F6)],
+          padding: EdgeInsets.symmetric(horizontal: isDesktop ? 28 : 12),
+          child: isDesktop
+              ? LayoutBuilder(
+                  builder: (context, constraints) {
+                    final w = constraints.maxWidth;
+                    final leftBand = (w * 0.34).clamp(
+                      320.0,
+                      440.0,
+                    ); // typing + avatar
+                    final showTrailingContact = w >= 1240;
+                    final desktopNavItems = showTrailingContact
+                        ? _navItems
+                            .where((e) => e.$2 != '/contact')
+                            .toList()
+                        : _navItems;
+
+                    return SizedBox(
+                      height: 52,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Positioned.fill(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  left: leftBand + 6,
+                                  right: showTrailingContact ? 168 : 10,
+                                ),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      for (final e in desktopNavItems)
+                                        _NavBtn(
+                                          label: e.$1,
+                                          route: e.$2,
+                                          currentUri: uri,
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(
-                                0xFF3B82F6,
-                              ).withValues(alpha: 0.4),
-                              blurRadius: 10,
+                          Positioned(
+                            left: 0,
+                            top: 0,
+                            bottom: 0,
+                            child: GestureDetector(
+                              onTap: () => context.go('/'),
+                              child: SizedBox(
+                                width: leftBand,
+                                child: Row(
+                                  children: [
+                                    _brandAvatar(),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          alignment: Alignment.centerLeft,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              _typingTitle(isDesktop: true),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (showTrailingContact)
+                            Positioned(
+                              right: 0,
+                              top: 0,
+                              bottom: 0,
+                              child: Center(
+                                child: _DesktopContactCta(currentUri: uri),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                )
+              : Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => context.go('/'),
+                        child: Row(
+                          children: [
+                            _brandAvatar(),
+                            const SizedBox(width: 10),
+                            Flexible(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerLeft,
+                                      child: _typingTitle(isDesktop: false),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                        child: ClipOval(
-                          child: Image.asset(
-                            _avatars[_idx],
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => const Icon(
-                              Icons.person,
-                              color: Colors.white,
-                              size: 22,
-                            ),
-                          ),
-                        ),
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    AnimatedOpacity(
-                      opacity: _opacity,
-                      duration: const Duration(milliseconds: 350),
-                      child: Text(
-                        _text,
-                        style: TextStyle(
-                          fontSize: isDesktop ? 18 : 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    AnimatedOpacity(
-                      opacity: _cursor ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 100),
-                      child: Container(
-                        margin: const EdgeInsets.only(left: 2),
-                        width: 2,
-                        height: isDesktop ? 19 : 17,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF60A5FA),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ),
+                    const SizedBox(width: 6),
+                    _HamburgerMenu(currentUri: uri),
                   ],
                 ),
-              ),
-
-              // ── Nav: desktop full row / tablet+mobile hamburger ──
-              if (isDesktop)
-                Row(
-                  children: [
-                    for (final e in _navItems)
-                      _NavBtn(label: e.$1, route: e.$2, current: loc),
-                  ],
-                )
-              else
-                _HamburgerMenu(currentLoc: loc),
-            ],
-          ),
         ),
       ),
     );
@@ -364,9 +509,9 @@ class _PortfolioAppBarState extends State<_PortfolioAppBar>
 
 // ── Hamburger menu (mobile + tablet) ─────────────────────────────────────────
 class _HamburgerMenu extends StatefulWidget {
-  final String currentLoc;
+  final Uri currentUri;
 
-  const _HamburgerMenu({required this.currentLoc});
+  const _HamburgerMenu({required this.currentUri});
 
   @override
   State<_HamburgerMenu> createState() => _HamburgerMenuState();
@@ -481,7 +626,7 @@ class _HamburgerMenuState extends State<_HamburgerMenu>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: _navItems.map((e) {
-                            final active = widget.currentLoc == e.$2;
+                            final active = _navMatches(widget.currentUri, e.$2);
                             return _DropdownItem(
                               label: e.$1,
                               route: e.$2,
@@ -615,14 +760,136 @@ class _DropdownItemState extends State<_DropdownItem> {
   }
 }
 
+// ── Desktop-only CTA (replaces duplicate "Contact" in center nav) ─────────────
+class _DesktopContactCta extends StatefulWidget {
+  final Uri currentUri;
+
+  const _DesktopContactCta({required this.currentUri});
+
+  @override
+  State<_DesktopContactCta> createState() => _DesktopContactCtaState();
+}
+
+class _DesktopContactCtaState extends State<_DesktopContactCta> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final active = _navMatches(widget.currentUri, '/contact');
+    return Tooltip(
+      message: 'Email & professional links',
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _hover = true),
+        onExit: (_) => setState(() => _hover = false),
+        child: GestureDetector(
+          onTap: () => context.go('/contact'),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(22),
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFF38BDF8),
+                  Color(0xFF3B82F6),
+                  Color(0xFF8B5CF6),
+                ],
+                stops: [0.0, 0.5, 1.0],
+              ),
+              boxShadow: [
+                if (_hover || active)
+                  BoxShadow(
+                    color: const Color(0xFF3B82F6).withValues(
+                      alpha: active ? 0.42 : 0.28,
+                    ),
+                    blurRadius: active ? 18 : 12,
+                    offset: const Offset(0, 3),
+                  ),
+              ],
+            ),
+            padding: const EdgeInsets.all(1.25),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.75),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: active
+                      ? [
+                          const Color(0xFF1D4ED8).withValues(alpha: 0.55),
+                          const Color(0xFF312E81).withValues(alpha: 0.72),
+                        ]
+                      : [
+                          const Color(0xFF0F172A).withValues(alpha: 0.96),
+                          const Color(0xFF0A0E27).withValues(alpha: 0.98),
+                        ],
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
+                    width: 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          (_hover || active)
+                              ? const Color(0xFF67E8F9)
+                              : const Color(0xFF7DD3FC),
+                          const Color(0xFF2563EB),
+                        ],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF38BDF8).withValues(
+                            alpha: active ? 0.85 : 0.45,
+                          ),
+                          blurRadius: active ? 10 : 5,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Get in touch',
+                    style: TextStyle(
+                      color: (_hover || active)
+                          ? Colors.white
+                          : const Color(0xFFE2E8F0),
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.4,
+                      height: 1.1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // ── Nav Button (desktop only) ─────────────────────────────────────────────────
 class _NavBtn extends StatefulWidget {
-  final String label, route, current;
+  final String label, route;
+  final Uri currentUri;
 
   const _NavBtn({
     required this.label,
     required this.route,
-    required this.current,
+    required this.currentUri,
   });
 
   @override
@@ -634,7 +901,7 @@ class _NavBtnState extends State<_NavBtn> {
 
   @override
   Widget build(BuildContext context) {
-    final active = widget.current == widget.route;
+    final active = _navMatches(widget.currentUri, widget.route);
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _h = true),

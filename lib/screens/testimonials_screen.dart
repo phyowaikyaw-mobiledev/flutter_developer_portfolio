@@ -7,8 +7,34 @@ import '../models/testimonial_model.dart';
 import '../services/firestore_service.dart';
 import '../widgets/common/section_title.dart';
 
+Color _testimonialAccentColor(int index) {
+  const colors = [Color(0xFF3B82F6), Color(0xFF8B5CF6), Color(0xFF06B6D4)];
+  return colors[index % colors.length];
+}
+
+String _testimonialChipLabel(TestimonialModel t, int index) {
+  final r = t.role.toLowerCase();
+  if (r.contains('client')) return 'CLIENT';
+  if (r.contains('manager') || r.contains('lead')) return 'LEADERSHIP';
+  if (r.contains('mentor')) return 'MENTOR';
+  return ['PEER REVIEW', 'ENDORSEMENT', 'COLLABORATION'][index % 3];
+}
+
+const _verifiedBannerMessage =
+    'Feedback from collaborators and teammates I have worked with — '
+    'each review is personally verified before publishing';
+
+/// Decoded avatar bytes cache — avoids re-decoding base64 on every rebuild.
+final _decodedAvatarCache = <String, Uint8List>{};
+
+Uint8List _cachedAvatarBytes(String id, String base64) {
+  return _decodedAvatarCache.putIfAbsent(id, () => base64Decode(base64));
+}
+
 class TestimonialsScreen extends StatefulWidget {
-  const TestimonialsScreen({super.key});
+  const TestimonialsScreen({super.key, this.embeddedInAbout = false});
+
+  final bool embeddedInAbout;
 
   @override
   State<TestimonialsScreen> createState() => _TestimonialsScreenState();
@@ -32,7 +58,20 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
 
   // Scroll controller for floating action button
   final ScrollController _scrollController = ScrollController();
-  bool _showFloatingButton = false;
+  final GlobalKey _formSectionKey = GlobalKey();
+  final ValueNotifier<bool> _showFab = ValueNotifier(false);
+
+  void _scrollToForm() {
+    final ctx = _formSectionKey.currentContext;
+    if (ctx != null) {
+      Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeOutCubic,
+        alignment: 0.12,
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -42,9 +81,10 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
   }
 
   void _onScroll() {
-    setState(() {
-      _showFloatingButton = _scrollController.offset > 200;
-    });
+    final show = _scrollController.offset > 200;
+    if (_showFab.value != show) {
+      _showFab.value = show;
+    }
   }
 
   Future<void> _loadTestimonials() async {
@@ -136,13 +176,14 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
         curve: Curves.easeOutCubic,
       );
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to submit. Please try again.'),
             backgroundColor: Colors.red,
           ),
         );
+      }
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
@@ -150,6 +191,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
 
   @override
   void dispose() {
+    _showFab.dispose();
     _scrollController.dispose();
     _nameCtrl.dispose();
     _roleCtrl.dispose();
@@ -161,33 +203,26 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 768;
-    return Scaffold(
-      backgroundColor: const Color(0xFF0A0E27),
-      floatingActionButton: _showFloatingButton && !isMobile
-          ? _MorphingFab(
-              onTap: () {
-                _scrollController.animateTo(
-                  0,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeOutCubic,
-                );
-              },
-            )
-          : null,
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            // Header Section
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                isMobile ? 16 : 32,
-                isMobile ? 80 : 100,
-                isMobile ? 16 : 32,
-                0,
-              ),
-              child: Column(
-                children: [
+    final topPad = widget.embeddedInAbout
+        ? (isMobile ? 20.0 : 28.0)
+        : (isMobile ? 80.0 : 100.0);
+
+    final scrollBody = SingleChildScrollView(
+      controller: _scrollController,
+      primary: false,
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              isMobile ? 16 : 32,
+              topPad,
+              isMobile ? 16 : 32,
+              0,
+            ),
+            child: Column(
+              children: [
+                if (!widget.embeddedInAbout) ...[
                   SectionTitle(
                     title: 'What People Say',
                     isMobile: isMobile,
@@ -195,53 +230,48 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                         'Professional feedback from collaborators, clients, and teammates.',
                   ),
                   const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    child: Text(
-                      'Feedback from colleagues and clients I have collaborated with',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: isMobile ? 13 : 15,
-                        color: Colors.white.withValues(alpha: 0.7),
-                      ),
+                ],
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  child: Text(
+                    _verifiedBannerMessage,
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                    style: TextStyle(
+                      fontSize: isMobile ? 13 : 15,
+                      color: Colors.white.withValues(alpha: 0.7),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            const SizedBox(height: 40),
-
-            // Masonry Grid (Testimonials First)
-            if (_loading)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 80),
-                child: CircularProgressIndicator(color: Color(0xFF3B82F6)),
-              )
-            else if (_testimonials.isEmpty)
+          ),
+          const SizedBox(height: 40),
+          if (_loading)
+            _TestimonialsLoadingSkeleton(isMobile: isMobile)
+          else if (_testimonials.isNotEmpty) ...[
+            _buildMasonryGrid(isMobile, _testimonials, firstIndex: 0),
+            const SizedBox(height: 48),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 32),
-                child: _emptyState(isMobile),
-              )
-            else
-              _buildMasonryGrid(isMobile),
-
-            // Stats Dashboard (After Testimonials)
-            if (_testimonials.isNotEmpty) ...[
-              const SizedBox(height: 48),
-              _buildStatsDashboard(isMobile),
-            ],
-
-            const SizedBox(height: 48),
-
-            // Form Section
+                child: _buildStatsDashboard(isMobile),
+              ),
+          ] else
             Padding(
+              padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 32),
+              child: _emptyState(isMobile),
+            ),
+          const SizedBox(height: 48),
+          KeyedSubtree(
+            key: _formSectionKey,
+            child: Padding(
               padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 32),
               child: Center(
                 child: ConstrainedBox(
@@ -250,10 +280,45 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                 ),
               ),
             ),
-            const SizedBox(height: 60),
-          ],
-        ),
+          ),
+          const SizedBox(height: 60),
+        ],
       ),
+    );
+
+    if (widget.embeddedInAbout) {
+      return ColoredBox(color: const Color(0xFF0A0E27), child: scrollBody);
+    }
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: _showFab,
+      builder: (context, showFab, _) {
+        return Scaffold(
+          backgroundColor: const Color(0xFF0A0E27),
+          floatingActionButton: !showFab
+              ? null
+              : isMobile
+              ? FloatingActionButton(
+                  onPressed: _scrollToForm,
+                  backgroundColor: const Color(0xFF2563EB),
+                  tooltip: 'Share feedback',
+                  child: const Icon(
+                    Icons.edit_note_rounded,
+                    color: Colors.white,
+                  ),
+                )
+              : _MorphingFab(
+                  onTap: () {
+                    _scrollController.animateTo(
+                      0,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeOutCubic,
+                    );
+                  },
+                ),
+          body: scrollBody,
+        );
+      },
     );
   }
 
@@ -315,9 +380,11 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                 ),
                 const SizedBox(height: 10),
                 _statMetric(
-                  'Source',
-                  'Live Firestore',
-                  Icons.cloud_done_outlined,
+                  'Verified reviews',
+                  'Live',
+                  Icons.verified_outlined,
+                  tooltip:
+                      'Each review is personally verified in Firestore before it appears here.',
                 ),
               ],
             )
@@ -341,9 +408,11 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                 const SizedBox(width: 12),
                 Expanded(
                   child: _statMetric(
-                    'Source',
-                    'Live Firestore',
-                    Icons.cloud_done_outlined,
+                    'Verified reviews',
+                    'Live',
+                    Icons.verified_outlined,
+                    tooltip:
+                        'Each review is personally verified in Firestore before it appears here.',
                   ),
                 ),
               ],
@@ -351,8 +420,13 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
     );
   }
 
-  Widget _statMetric(String label, String value, IconData icon) {
-    return Container(
+  Widget _statMetric(
+    String label,
+    String value,
+    IconData icon, {
+    String? tooltip,
+  }) {
+    final box = Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.03),
@@ -398,15 +472,31 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
         ],
       ),
     );
+    if (tooltip == null) return box;
+    return Tooltip(
+      message: tooltip,
+      waitDuration: const Duration(milliseconds: 400),
+      child: box,
+    );
   }
 
-  Widget _buildMasonryGrid(bool isMobile) {
+  Widget _buildMasonryGrid(
+    bool isMobile,
+    List<TestimonialModel> items, {
+    required int firstIndex,
+  }) {
+    if (items.isEmpty) return const SizedBox.shrink();
+
     if (isMobile) {
       return Column(
-        children: List.generate(_testimonials.length, (i) {
+        children: List.generate(items.length, (i) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: _KineticCard(testimonial: _testimonials[i], index: i),
+            child: _KineticCard(
+              key: ValueKey(items[i].id),
+              testimonial: items[i],
+              index: firstIndex + i,
+            ),
           );
         }),
       );
@@ -415,44 +505,54 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
     final List<TestimonialModel> leftColumn = [];
     final List<TestimonialModel> rightColumn = [];
 
-    for (int i = 0; i < _testimonials.length; i++) {
+    for (int i = 0; i < items.length; i++) {
       if (i % 2 == 0) {
-        leftColumn.add(_testimonials[i]);
+        leftColumn.add(items[i]);
       } else {
-        rightColumn.add(_testimonials[i]);
+        rightColumn.add(items[i]);
       }
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              children: List.generate(leftColumn.length, (i) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: _KineticCard(testimonial: leftColumn[i], index: i * 2),
-                );
-              }),
-            ),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1200),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  children: List.generate(leftColumn.length, (i) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: _KineticCard(
+                        key: ValueKey(leftColumn[i].id),
+                        testimonial: leftColumn[i],
+                        index: firstIndex + i * 2,
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              const SizedBox(width: 20),
+              Expanded(
+                child: Column(
+                  children: List.generate(rightColumn.length, (i) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: _KineticCard(
+                        key: ValueKey(rightColumn[i].id),
+                        testimonial: rightColumn[i],
+                        index: firstIndex + i * 2 + 1,
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 20),
-          Expanded(
-            child: Column(
-              children: List.generate(rightColumn.length, (i) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: _KineticCard(
-                    testimonial: rightColumn[i],
-                    index: i * 2 + 1,
-                  ),
-                );
-              }),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -528,6 +628,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
@@ -550,25 +651,36 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                 ),
               ),
               const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Share Professional Feedback',
-                    style: TextStyle(
-                      fontSize: isMobile ? 20 : 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Share Professional Feedback',
+                      style: TextStyle(
+                        fontSize: isMobile ? 20 : 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'Your feedback helps recruiters and collaborators evaluate my work quality.',
-                    style: TextStyle(
-                      fontSize: isMobile ? 12 : 14,
-                      color: Colors.white.withValues(alpha: 0.58),
+                    Text(
+                      'Your feedback helps recruiters and collaborators evaluate my work quality.',
+                      style: TextStyle(
+                        fontSize: isMobile ? 12 : 14,
+                        color: Colors.white.withValues(alpha: 0.58),
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 6),
+                    Text(
+                      'New submissions are reviewed before they appear on this page.',
+                      style: TextStyle(
+                        fontSize: isMobile ? 11 : 12,
+                        color: const Color(0xFF93C5FD).withValues(alpha: 0.85),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -692,9 +804,14 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                     size: 16,
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    'Please fill in your name and feedback.',
-                    style: TextStyle(color: Colors.red.shade400, fontSize: 13),
+                  Expanded(
+                    child: Text(
+                      'Please fill in your name and feedback.',
+                      style: TextStyle(
+                        color: Colors.red.shade400,
+                        fontSize: 13,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -762,16 +879,21 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                               size: 18,
                             ),
                             const SizedBox(width: 10),
-                            Text(
-                              (_nextSubmitAt != null &&
-                                      DateTime.now().isBefore(_nextSubmitAt!))
-                                  ? 'Please Wait Before Next Review'
-                                  : 'Submit Review',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                                letterSpacing: 0.5,
+                            Flexible(
+                              child: Text(
+                                (_nextSubmitAt != null &&
+                                        DateTime.now().isBefore(_nextSubmitAt!))
+                                    ? 'Please Wait Before Next Review'
+                                    : 'Submit Review',
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                  letterSpacing: 0.5,
+                                ),
                               ),
                             ),
                           ],
@@ -835,7 +957,9 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                         Text(
                           'Thanks for your professional feedback. Your review is now visible in the live feed.',
                           style: TextStyle(
-                            color: const Color(0xFFD1FAE5).withValues(alpha: 0.82),
+                            color: const Color(
+                              0xFFD1FAE5,
+                            ).withValues(alpha: 0.82),
                             fontSize: 12,
                             height: 1.45,
                           ),
@@ -913,7 +1037,11 @@ class _KineticCard extends StatefulWidget {
   final TestimonialModel testimonial;
   final int index;
 
-  const _KineticCard({required this.testimonial, required this.index});
+  const _KineticCard({
+    super.key,
+    required this.testimonial,
+    required this.index,
+  });
 
   @override
   State<_KineticCard> createState() => _KineticCardState();
@@ -980,7 +1108,10 @@ class _KineticCardState extends State<_KineticCard>
                   ),
                   IconButton(
                     onPressed: () => Navigator.of(dialogContext).pop(),
-                    icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      color: Colors.white70,
+                    ),
                     tooltip: 'Close',
                   ),
                 ],
@@ -1045,6 +1176,15 @@ class _KineticCardState extends State<_KineticCard>
 
   @override
   Widget build(BuildContext context) {
+    const pad = 20.0;
+    const avatarSize = 50.0;
+    const nameSize = 16.0;
+    const quoteH = 120.0;
+    const quoteLines = 5;
+    const radius = 20.0;
+    final accent = _testimonialAccentColor(widget.index);
+    final chipLabel = _testimonialChipLabel(widget.testimonial, widget.index);
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -1056,7 +1196,7 @@ class _KineticCardState extends State<_KineticCard>
             curve: Curves.easeOutCubic,
             transform: Matrix4.translationValues(0, _isHovered ? -3 : 0, 0),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(radius),
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -1067,14 +1207,14 @@ class _KineticCardState extends State<_KineticCard>
               ),
               border: Border.all(
                 color: _isHovered
-                    ? const Color(0xFF3B82F6).withValues(alpha: 0.46)
-                    : const Color(0xFF3B82F6).withValues(alpha: 0.22),
-                width: _isHovered ? 1.3 : 1,
+                    ? accent.withValues(alpha: 0.5)
+                    : accent.withValues(alpha: 0.28),
+                width: _isHovered ? 1.35 : 1,
               ),
               boxShadow: _isHovered
                   ? [
                       BoxShadow(
-                        color: const Color(0xFF3B82F6).withValues(alpha: 0.14),
+                        color: accent.withValues(alpha: 0.14),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       ),
@@ -1083,16 +1223,16 @@ class _KineticCardState extends State<_KineticCard>
             ),
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(radius),
                 border: Border(
                   left: BorderSide(
-                    color: const Color(0xFF3B82F6).withValues(alpha: 0.55),
+                    color: accent.withValues(alpha: 0.75),
                     width: 3,
                   ),
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(pad),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -1105,26 +1245,60 @@ class _KineticCardState extends State<_KineticCard>
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF3B82F6).withValues(alpha: 0.14),
+                            color: accent.withValues(alpha: 0.14),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: const Color(0xFF60A5FA).withValues(alpha: 0.35),
+                              color: accent.withValues(alpha: 0.45),
                             ),
                           ),
-                          child: const Text(
-                            'PROFESSIONAL FEEDBACK',
+                          child: Text(
+                            chipLabel,
                             style: TextStyle(
                               fontSize: 9.5,
                               letterSpacing: 0.6,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF93C5FD),
+                              color: accent.withValues(alpha: 0.95),
                             ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 7,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF10B981).withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: const Color(0xFF10B981).withValues(alpha: 0.4),
+                            ),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.verified,
+                                color: Color(0xFF34D399),
+                                size: 11,
+                              ),
+                              SizedBox(width: 3),
+                              Text(
+                                'VERIFIED',
+                                style: TextStyle(
+                                  fontSize: 8.5,
+                                  letterSpacing: 0.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF34D399),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         const Spacer(),
                         Icon(
                           Icons.format_quote_rounded,
-                          color: const Color(0xFF3B82F6).withValues(alpha: 0.65),
+                          color: accent.withValues(alpha: 0.65),
                           size: 20,
                         ),
                       ],
@@ -1132,7 +1306,7 @@ class _KineticCardState extends State<_KineticCard>
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        _ConsistentAvatar(widget.testimonial, 50),
+                        _ConsistentAvatar(widget.testimonial, avatarSize),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
@@ -1140,8 +1314,10 @@ class _KineticCardState extends State<_KineticCard>
                             children: [
                               Text(
                                 widget.testimonial.name,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                  fontSize: 16,
+                                  fontSize: nameSize,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.white,
                                 ),
@@ -1149,6 +1325,8 @@ class _KineticCardState extends State<_KineticCard>
                               const SizedBox(height: 3),
                               Text(
                                 widget.testimonial.role,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: Color(0xFF60A5FA),
@@ -1158,6 +1336,8 @@ class _KineticCardState extends State<_KineticCard>
                               if (widget.testimonial.company.isNotEmpty)
                                 Text(
                                   widget.testimonial.company,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 11,
                                     color: Colors.white.withValues(alpha: 0.56),
@@ -1175,12 +1355,12 @@ class _KineticCardState extends State<_KineticCard>
                     ),
                     const SizedBox(height: 14),
                     SizedBox(
-                      height: 118,
+                      height: quoteH,
                       child: _KineticText(
                         text: widget.testimonial.text,
                         animation: _controller,
                         index: widget.index,
-                        maxLines: 5,
+                        maxLines: quoteLines,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -1218,7 +1398,6 @@ class _KineticCardState extends State<_KineticCard>
       },
     );
   }
-
 }
 
 // ── Kinetic Text Widget ──────────────────────────────────────────────────────
@@ -1327,47 +1506,205 @@ class _ConsistentAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: testimonial.avatarBase64 == null
-            ? LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  const Color(0xFF3B82F6).withValues(alpha: 0.3),
-                  const Color(0xFF1E40AF).withValues(alpha: 0.3),
-                ],
+    return RepaintBoundary(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: testimonial.avatarBase64 == null
+              ? LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    const Color(0xFF3B82F6).withValues(alpha: 0.3),
+                    const Color(0xFF1E40AF).withValues(alpha: 0.3),
+                  ],
+                )
+              : null,
+          border: Border.all(color: const Color(0xFF3B82F6), width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF3B82F6).withValues(alpha: 0.2),
+              blurRadius: 12,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: testimonial.avatarBase64 != null
+            ? ClipOval(
+                child: Image.memory(
+                  _cachedAvatarBytes(
+                    testimonial.id,
+                    testimonial.avatarBase64!,
+                  ),
+                  fit: BoxFit.cover,
+                  gaplessPlayback: true,
+                  width: size,
+                  height: size,
+                ),
               )
-            : null,
-        border: Border.all(color: const Color(0xFF3B82F6), width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF3B82F6).withValues(alpha: 0.2),
-            blurRadius: 12,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: testimonial.avatarBase64 != null
-          ? ClipOval(
-              child: Image.memory(
-                base64Decode(testimonial.avatarBase64!),
-                fit: BoxFit.cover,
-              ),
-            )
-          : Center(
-              child: Text(
-                testimonial.initials,
-                style: TextStyle(
-                  color: const Color(0xFF3B82F6),
-                  fontWeight: FontWeight.bold,
-                  fontSize: size * 0.35,
+            : Center(
+                child: Text(
+                  testimonial.initials,
+                  style: TextStyle(
+                    color: const Color(0xFF3B82F6),
+                    fontWeight: FontWeight.bold,
+                    fontSize: size * 0.35,
+                  ),
                 ),
               ),
+      ),
+    );
+  }
+}
+
+// ── Loading skeleton (testimonial-shaped placeholders) ─────────────────────
+class _TestimonialsLoadingSkeleton extends StatefulWidget {
+  final bool isMobile;
+
+  const _TestimonialsLoadingSkeleton({required this.isMobile});
+
+  @override
+  State<_TestimonialsLoadingSkeleton> createState() =>
+      _TestimonialsLoadingSkeletonState();
+}
+
+class _TestimonialsLoadingSkeletonState
+    extends State<_TestimonialsLoadingSkeleton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _c;
+
+  @override
+  void initState() {
+    super.initState();
+    _c = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  Widget _shimmerBar(double height, {double? width}) {
+    return AnimatedBuilder(
+      animation: _c,
+      builder: (_, __) {
+        final t = _c.value;
+        return Container(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            gradient: LinearGradient(
+              begin: Alignment(-1.2 + 2.4 * t, 0),
+              end: Alignment(-0.2 + 2.4 * t, 0),
+              colors: [
+                const Color(0xFF1E293B).withValues(alpha: 0.55),
+                const Color(0xFF3B82F6).withValues(alpha: 0.2),
+                const Color(0xFF1E293B).withValues(alpha: 0.55),
+              ],
+              stops: const [0.35, 0.5, 0.65],
             ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _skeletonCard() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.symmetric(
+        horizontal: widget.isMobile ? 16 : 0,
+        vertical: 8,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFF3B82F6).withValues(alpha: 0.18),
+        ),
+        color: Colors.white.withValues(alpha: 0.03),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              SizedBox(width: 130, child: _shimmerBar(22)),
+              const Spacer(),
+              SizedBox(width: 22, child: _shimmerBar(22)),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 50,
+                height: 50,
+                child: _shimmerBar(50, width: 50),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _shimmerBar(14),
+                    const SizedBox(height: 8),
+                    _shimmerBar(12),
+                    const SizedBox(height: 8),
+                    FractionallySizedBox(
+                      widthFactor: 0.55,
+                      child: _shimmerBar(10),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          _shimmerBar(2),
+          const SizedBox(height: 14),
+          _shimmerBar(12),
+          const SizedBox(height: 8),
+          _shimmerBar(12),
+          const SizedBox(height: 8),
+          FractionallySizedBox(widthFactor: 0.92, child: _shimmerBar(10)),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.isMobile) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 8, bottom: 32),
+        child: Column(
+          children: List.generate(3, (_) => _skeletonCard()),
+        ),
+      );
+    }
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1200),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(32, 8, 32, 32),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: _skeletonCard()),
+              const SizedBox(width: 20),
+              Expanded(child: _skeletonCard()),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
