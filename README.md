@@ -12,6 +12,7 @@ Live: [https://phyowaikyaw-portfolio.web.app](https://phyowaikyaw-portfolio.web.
 |-----|-------------|-----------|
 | **DrZon Medical Service** (healthcare) | [Play Store](https://play.google.com/store/apps/details?id=asia.rootstudio.drzon) | [App Store (TH)](https://apps.apple.com/th/app/drzon-medical-service/id6762826790) |
 | **Phone King Plus** (retail loyalty) | [Play Store](https://play.google.com/store/apps/details?id=com.phonekingplus) | [App Store](https://apps.apple.com/app/phone-king-plus/id6738283921) |
+| **VIE Pharma** (pharmaceutical sales) | In release pipeline | In release pipeline |
 | **Secure Plus** (security) | In release pipeline | In release pipeline |
 
 ## Stack

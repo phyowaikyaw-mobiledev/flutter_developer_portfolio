@@ -105,6 +105,35 @@ const kProductionApps = <ProductionApp>[
     releaseStatus: AppReleaseStatus.launchingSoon,
   ),
   ProductionApp(
+    title: 'VIE Pharma',
+    description:
+        'Multi-role pharmaceutical platform for Myanmar — Promoter and Admin apps with order, commission, gift rewards, and MR reporting across four user roles.',
+    keyContribution:
+        'Shared UI library across two apps with four role-based home flows, OTP auth, adaptive shell, and Burmese localization.',
+    iconAsset: 'assets/images/vie_icon.png',
+    icon: Icons.medical_services,
+    role: 'Flutter Developer',
+    statusColor: Color(0xFF5B67AE),
+    companyBadge: 'Root Studio Asia',
+    tags: [
+      'Flutter',
+      'Provider',
+      'REST API',
+      'Multi-role Auth',
+      'Material 3',
+      'l10n',
+    ],
+    impact:
+        'In release pipeline — end-to-end order, commission, and reporting workflows for four user roles across two apps from a shared Flutter codebase.',
+    gallery: [
+      'assets/images/vie_1.png',
+      'assets/images/vie_2.png',
+      'assets/images/vie_3.png',
+      'assets/images/vie_4.png',
+    ],
+    releaseStatus: AppReleaseStatus.launchingSoon,
+  ),
+  ProductionApp(
     title: 'Secure Plus CCTV',
     description:
         'Delivered customer and admin workflows for a CCTV operations product with real-time Firebase-backed capabilities.',
