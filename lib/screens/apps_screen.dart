@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../data/production_apps.dart';
 import '../models/production_app.dart';
 import '../utils/constants.dart';
+import '../theme/portfolio_theme.dart';
 import '../widgets/common/section_title.dart';
 import '../widgets/common/status_badge.dart';
 import '../widgets/common/gallery_section.dart';
@@ -25,6 +26,9 @@ class AppsScreen extends StatelessWidget {
     final isMobile = MediaQuery.of(context).size.width < 768;
     final liveApps = kProductionApps
         .where((a) => a.releaseStatus == AppReleaseStatus.live)
+        .toList();
+    final inReviewApps = kProductionApps
+        .where((a) => a.releaseStatus == AppReleaseStatus.inReview)
         .toList();
     final launchingApps = kProductionApps
         .where(
@@ -64,6 +68,12 @@ class AppsScreen extends StatelessWidget {
                 _catLabel('Published & Live', Colors.green, isMobile),
                 const SizedBox(height: 16),
                 _appGrid(isMobile, liveApps),
+                if (inReviewApps.isNotEmpty) ...[
+                  SizedBox(height: isMobile ? 28 : 36),
+                  _catLabel('In Review', Colors.amber, isMobile),
+                  const SizedBox(height: 16),
+                  _appGrid(isMobile, inReviewApps),
+                ],
                 SizedBox(height: isMobile ? 28 : 36),
                 _catLabel('Launching Soon', Colors.orange, isMobile),
                 const SizedBox(height: 16),
@@ -198,19 +208,12 @@ class _AppCardState extends State<_AppCard> {
   Widget build(BuildContext context) {
     return RevealAnimator(
       child: ShimmerCard(
-        glowColor: app.statusColor,
+        glowColor: AppColors.primary,
         enableEffects: true,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white.withValues(alpha: 0.07),
-              Colors.white.withValues(alpha: 0.02),
-            ],
-          ),
+          color: context.portfolio.cardBg,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: app.statusColor.withValues(alpha: 0.3)),
+          border: Border.all(color: context.portfolio.border),
         ),
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -249,7 +252,7 @@ class _AppCardState extends State<_AppCard> {
                         runSpacing: 4,
                         children: [
                           StatusBadge(
-                            label: app.isLive ? 'Live' : 'Launching Soon',
+                            label: app.releaseStatus.label,
                             color: app.statusColor,
                           ),
                           StatusBadge(
@@ -353,7 +356,7 @@ class _AppCardState extends State<_AppCard> {
                         icon: const Icon(Icons.play_arrow, size: 16),
                         label: const Text(
                           'Play Store',
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(fontSize: PortfolioFontSizes.secondary),
                         ),
                       ),
                     ),
@@ -374,7 +377,7 @@ class _AppCardState extends State<_AppCard> {
                         icon: const Icon(Icons.apple, size: 16),
                         label: const Text(
                           'App Store',
-                          style: TextStyle(fontSize: 13),
+                          style: TextStyle(fontSize: PortfolioFontSizes.secondary),
                         ),
                       ),
                     ),
@@ -395,7 +398,7 @@ class _AppCardState extends State<_AppCard> {
                   _showGallery
                       ? 'Hide screenshots'
                       : 'View screenshots (${app.gallery.length})',
-                  style: const TextStyle(fontSize: 13),
+                  style: const TextStyle(fontSize: PortfolioFontSizes.secondary),
                 ),
                 style: TextButton.styleFrom(
                   foregroundColor: AppColors.primaryLight,
@@ -405,7 +408,7 @@ class _AppCardState extends State<_AppCard> {
                 const SizedBox(height: 8),
                 GallerySection(
                   images: app.gallery,
-                  accentColor: app.statusColor,
+                  accentColor: AppColors.primary,
                   isMobile: isMobile,
                 ),
               ],

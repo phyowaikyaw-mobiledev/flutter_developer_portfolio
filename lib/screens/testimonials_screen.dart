@@ -1,23 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../utils/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart';
 import '../models/testimonial_model.dart';
 import '../services/firestore_service.dart';
+import '../utils/testimonial_relationship.dart';
 import '../widgets/common/section_title.dart';
 
 Color _testimonialAccentColor(int index) {
   const colors = [Color(0xFF3B82F6), Color(0xFF8B5CF6), Color(0xFF06B6D4)];
   return colors[index % colors.length];
-}
-
-String _testimonialChipLabel(TestimonialModel t, int index) {
-  final r = t.role.toLowerCase();
-  if (r.contains('client')) return 'CLIENT';
-  if (r.contains('manager') || r.contains('lead')) return 'LEADERSHIP';
-  if (r.contains('mentor')) return 'MENTOR';
-  return ['PEER REVIEW', 'ENDORSEMENT', 'COLLABORATION'][index % 3];
 }
 
 const _verifiedBannerMessage =
@@ -452,7 +446,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                 Text(
                   label,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: PortfolioFontSizes.caption,
                     color: Colors.white.withValues(alpha: 0.58),
                     fontWeight: FontWeight.w500,
                   ),
@@ -719,7 +713,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                           Text(
                             'Photo',
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: PortfolioFontSizes.caption,
                               color: Colors.white.withValues(alpha: 0.6),
                             ),
                           ),
@@ -733,7 +727,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
             child: Text(
               'Profile Photo (Optional)',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: PortfolioFontSizes.label,
                 color: Colors.white.withValues(alpha: 0.4),
               ),
             ),
@@ -809,7 +803,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                       'Please fill in your name and feedback.',
                       style: TextStyle(
                         color: Colors.red.shade400,
-                        fontSize: 13,
+                        fontSize: PortfolioFontSizes.secondary,
                       ),
                     ),
                   ),
@@ -960,7 +954,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
                             color: const Color(
                               0xFFD1FAE5,
                             ).withValues(alpha: 0.82),
-                            fontSize: 12,
+                            fontSize: PortfolioFontSizes.label,
                             height: 1.45,
                           ),
                         ),
@@ -977,7 +971,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen>
               'Reviews are published from the live Firestore feed. A short cooldown prevents duplicate submissions.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: PortfolioFontSizes.label,
                 color: Colors.white.withValues(alpha: 0.36),
               ),
             ),
@@ -1121,7 +1115,7 @@ class _KineticCardState extends State<_KineticCard>
                 '${widget.testimonial.role}${widget.testimonial.company.isNotEmpty ? ' • ${widget.testimonial.company}' : ''}',
                 style: TextStyle(
                   color: const Color(0xFF60A5FA).withValues(alpha: 0.9),
-                  fontSize: 12,
+                  fontSize: PortfolioFontSizes.label,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -1164,7 +1158,7 @@ class _KineticCardState extends State<_KineticCard>
                 'Press Esc to close',
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.45),
-                  fontSize: 11,
+                  fontSize: PortfolioFontSizes.caption,
                 ),
               ),
             ],
@@ -1183,7 +1177,7 @@ class _KineticCardState extends State<_KineticCard>
     const quoteLines = 5;
     const radius = 20.0;
     final accent = _testimonialAccentColor(widget.index);
-    final chipLabel = _testimonialChipLabel(widget.testimonial, widget.index);
+    final chipLabel = testimonialRelationshipLabel(widget.testimonial).toUpperCase();
 
     return AnimatedBuilder(
       animation: _controller,
@@ -1328,7 +1322,7 @@ class _KineticCardState extends State<_KineticCard>
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                  fontSize: 12,
+                                  fontSize: PortfolioFontSizes.label,
                                   color: Color(0xFF60A5FA),
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -1339,7 +1333,7 @@ class _KineticCardState extends State<_KineticCard>
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: PortfolioFontSizes.caption,
                                     color: Colors.white.withValues(alpha: 0.56),
                                   ),
                                 ),
@@ -1374,7 +1368,7 @@ class _KineticCardState extends State<_KineticCard>
                             Text(
                               'Read full review',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: PortfolioFontSizes.label,
                                 color: Color(0xFF60A5FA),
                                 fontWeight: FontWeight.w600,
                               ),

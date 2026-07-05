@@ -18,6 +18,20 @@ void main() {
       'https://apps.apple.com/th/app/drzon-medical-service/id6762826790',
     );
     expect(drZon.isLive, isTrue);
+    expect(drZon.slug, 'drzon-medical-service');
+    expect(productionAppBySlug('drzon-medical-service'), drZon);
+  });
+
+  test('TeeXpress is in review without store links', () {
+    final teeXpress = kProductionApps.firstWhere(
+      (app) => app.title == 'TeeXpress',
+    );
+
+    expect(teeXpress.releaseStatus, AppReleaseStatus.inReview);
+    expect(teeXpress.playUrl, isNull);
+    expect(teeXpress.appStoreUrl, isNull);
+    expect(teeXpress.isLive, isFalse);
+    expect(teeXpress.gallery, contains('assets/images/teexpress_1.png'));
   });
 
   test('three production apps are live on stores', () {

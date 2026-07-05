@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
+import '../theme/portfolio_theme.dart';
 import '../widgets/common/section_title.dart';
 import '../widgets/common/shimmer_card.dart';
 import '../widgets/common/reveal_animator.dart';
@@ -12,6 +13,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 768;
+    final p = context.portfolio;
     final body = SingleChildScrollView(
         primary: false,
         physics: const AlwaysScrollableScrollPhysics(),
@@ -34,15 +36,16 @@ class ProfileScreen extends StatelessWidget {
                         'Product-minded Flutter developer focused on shipping reliable mobile experiences.',
                   ),
                   SizedBox(height: isMobile ? 16 : 24),
-                  _recruiterSnapshot(isMobile),
+                  _quickOverview(context, isMobile),
                   SizedBox(height: isMobile ? 20 : 30),
                   isMobile
                       ? Column(
                           children: [
-                            _bioCard(isMobile),
+                            _bioCard(context, isMobile),
                             const SizedBox(height: 20),
                             _infoCard(
-                              'Professional Focus',
+                              context,
+                              'Focus areas',
                               Icons.work_outline,
                               _focus,
                               isMobile,
@@ -50,7 +53,8 @@ class ProfileScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 15),
                             _infoCard(
-                              'Strategic Direction',
+                              context,
+                              "What I'm looking for",
                               Icons.trending_up_rounded,
                               _goal,
                               isMobile,
@@ -61,13 +65,14 @@ class ProfileScreen extends StatelessWidget {
                       : Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(flex: 2, child: _bioCard(isMobile)),
+                            Expanded(flex: 2, child: _bioCard(context, isMobile)),
                             const SizedBox(width: 40),
                             Expanded(
                               child: Column(
                                 children: [
                                   _infoCard(
-                                    'Professional Focus',
+                                    context,
+                                    'Focus areas',
                                     Icons.work_outline,
                                     _focus,
                                     isMobile,
@@ -75,7 +80,8 @@ class ProfileScreen extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 15),
                                   _infoCard(
-                                    'Strategic Direction',
+                                    context,
+                                    "What I'm looking for",
                                     Icons.trending_up_rounded,
                                     _goal,
                                     isMobile,
@@ -94,28 +100,20 @@ class ProfileScreen extends StatelessWidget {
     );
 
     if (embeddedInAbout) {
-      return ColoredBox(color: AppColors.background, child: body);
+      return ColoredBox(color: p.background, child: body);
     }
-    return Scaffold(backgroundColor: AppColors.background, body: body);
+    return Scaffold(backgroundColor: p.background, body: body);
   }
 
-  Widget _bioCard(bool isMobile) {
+  Widget _bioCard(BuildContext context, bool isMobile) {
+    final p = context.portfolio;
     return RevealAnimator(
       child: ShimmerCard(
-        glowColor: const Color(0xFF3B82F6),
+        glowColor: AppColors.primary,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white.withValues(alpha: 0.06),
-              Colors.white.withValues(alpha: 0.02),
-            ],
-          ),
+          color: p.cardBg,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: const Color(0xFF3B82F6).withValues(alpha: 0.3),
-          ),
+          border: Border.all(color: p.border),
         ),
         padding: EdgeInsets.all(isMobile ? 24 : 40),
         child: Column(
@@ -126,7 +124,7 @@ class ProfileScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: isMobile ? 20 : 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: p.textPrimary,
               ),
             ),
             SizedBox(height: isMobile ? 16 : 20),
@@ -134,7 +132,7 @@ class ProfileScreen extends StatelessWidget {
               'Flutter developer with production experience shipping apps to Google Play and the App Store — including DrZon Medical Service (healthcare) and Phone King Plus (retail loyalty).',
               style: TextStyle(
                 fontSize: isMobile ? 14 : 16,
-                color: Colors.white.withValues(alpha: 0.84),
+                color: p.textPrimary.withValues(alpha: 0.84),
                 height: 1.65,
               ),
             ),
@@ -143,7 +141,7 @@ class ProfileScreen extends StatelessWidget {
               'Strong in API integration, architecture discipline, and remote collaboration with engineering teams.',
               style: TextStyle(
                 fontSize: isMobile ? 14 : 16,
-                color: Colors.white.withValues(alpha: 0.84),
+                color: p.textPrimary.withValues(alpha: 0.84),
                 height: 1.65,
               ),
             ),
@@ -152,10 +150,8 @@ class ProfileScreen extends StatelessWidget {
               spacing: 8,
               runSpacing: 8,
               children: const [
-                _ProfilePill(label: 'Paid production since Jan 2026'),
                 _ProfilePill(label: '3 apps live on both stores'),
                 _ProfilePill(label: 'Remote sprint collaboration'),
-                _ProfilePill(label: 'Hackathon Runner-up 2020'),
               ],
             ),
           ],
@@ -164,10 +160,11 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _recruiterSnapshot(bool isMobile) {
+  Widget _quickOverview(BuildContext context, bool isMobile) {
+    final p = context.portfolio;
     final items = [
       ('Primary Role', 'Flutter Developer', Icons.badge_outlined),
-      ('Experience', 'Paid prod · Jan 2026', Icons.timeline_outlined),
+      ('Experience', 'Root Studio · Jul 2024 – Jul 2026', Icons.timeline_outlined),
       ('Work Style', 'Remote collaboration', Icons.groups_2_outlined),
       ('Availability', 'Open to opportunities', Icons.event_available_outlined),
     ];
@@ -182,17 +179,8 @@ class ProfileScreen extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white.withValues(alpha: 0.055),
-              Colors.white.withValues(alpha: 0.02),
-            ],
-          ),
-          border: Border.all(
-            color: const Color(0xFF3B82F6).withValues(alpha: 0.25),
-          ),
+          color: p.cardBg,
+          border: Border.all(color: p.border),
         ),
         child: isMobile
             ? Column(
@@ -200,7 +188,7 @@ class ProfileScreen extends StatelessWidget {
                     .map(
                       (it) => Padding(
                         padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: _snapshotItem(it.$1, it.$2, it.$3 as IconData),
+                        child: _snapshotItem(context, it.$1, it.$2, it.$3),
                       ),
                     )
                     .toList(),
@@ -209,7 +197,7 @@ class ProfileScreen extends StatelessWidget {
                 children: items
                     .map(
                       (it) => Expanded(
-                        child: _snapshotItem(it.$1, it.$2, it.$3 as IconData),
+                        child: _snapshotItem(context, it.$1, it.$2, it.$3),
                       ),
                     )
                     .toList(),
@@ -218,7 +206,13 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _snapshotItem(String label, String value, IconData icon) {
+  Widget _snapshotItem(
+    BuildContext context,
+    String label,
+    String value,
+    IconData icon,
+  ) {
+    final p = context.portfolio;
     return Row(
       children: [
         Container(
@@ -238,15 +232,15 @@ class ProfileScreen extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.58),
+                  fontSize: PortfolioFontSizes.caption,
+                  color: p.textMuted,
                 ),
               ),
               Text(
                 value,
-                style: const TextStyle(
-                  fontSize: 12.5,
-                  color: Colors.white,
+                style: TextStyle(
+                  fontSize: PortfolioFontSizes.label,
+                  color: p.textPrimary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -258,29 +252,22 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _infoCard(
+    BuildContext context,
     String title,
     IconData icon,
     List<String> pts,
     bool isMobile, {
     int delay = 0,
   }) {
+    final portfolio = context.portfolio;
     return RevealAnimator(
       delay: Duration(milliseconds: delay),
       child: ShimmerCard(
-        glowColor: const Color(0xFF3B82F6),
+        glowColor: AppColors.primary,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white.withValues(alpha: 0.06),
-              Colors.white.withValues(alpha: 0.02),
-            ],
-          ),
+          color: portfolio.cardBg,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: const Color(0xFF3B82F6).withValues(alpha: 0.3),
-          ),
+          border: Border.all(color: portfolio.border),
         ),
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -296,19 +283,13 @@ class ProfileScreen extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF1E40AF), Color(0xFF3B82F6)],
-                      ),
-                      // FIX: uniform borderRadius(10) on all corners — no clipping
+                      color: AppColors.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF3B82F6).withValues(alpha: 0.4),
-                          blurRadius: 8,
-                        ),
-                      ],
+                      border: Border.all(
+                        color: AppColors.primary.withValues(alpha: 0.3),
+                      ),
                     ),
-                    child: Icon(icon, color: Colors.white, size: 16),
+                    child: Icon(icon, color: AppColors.primary, size: 16),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -317,14 +298,14 @@ class ProfileScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: isMobile ? 16 : 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: portfolio.textPrimary,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 14),
             ...pts.map(
-              (p) => Padding(
+              (point) => Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -334,17 +315,17 @@ class ProfileScreen extends StatelessWidget {
                       width: 6,
                       height: 6,
                       decoration: const BoxDecoration(
-                        color: Color(0xFF3B82F6),
+                        color: AppColors.primary,
                         shape: BoxShape.circle,
                       ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        p,
+                        point,
                         style: TextStyle(
                           fontSize: isMobile ? 12 : 14,
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: portfolio.textPrimary.withValues(alpha: 0.8),
                           height: 1.45,
                         ),
                       ),
@@ -389,7 +370,7 @@ class _ProfilePill extends StatelessWidget {
       child: Text(
         label,
         style: const TextStyle(
-          fontSize: 11,
+          fontSize: PortfolioFontSizes.caption,
           color: Color(0xFF93C5FD),
           fontWeight: FontWeight.w600,
         ),

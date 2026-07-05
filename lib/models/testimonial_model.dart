@@ -10,6 +10,8 @@ class TestimonialModel {
   final String? avatarBase64;
   final bool approved;
   final int rating;
+  /// Optional Firestore override, e.g. "Colleague", "Client", "Mentor".
+  final String relationship;
 
   TestimonialModel({
     required this.id,
@@ -20,6 +22,7 @@ class TestimonialModel {
     this.avatarBase64,
     this.approved = false,
     this.rating = 5,
+    this.relationship = '',
   });
 
   String get initials {
@@ -49,6 +52,7 @@ class TestimonialModel {
     'avatarBase64': avatarBase64,
     'approved': approved,
     'rating': rating,
+    'relationship': relationship,
   };
 
   factory TestimonialModel.fromMap(Map<String, dynamic> map) =>
@@ -61,5 +65,6 @@ class TestimonialModel {
         avatarBase64: map['avatarBase64'],
         approved: map['approved'] ?? false,
         rating: map['rating'] ?? 5,
+        relationship: map['relationship'] ?? '',
       );
 }

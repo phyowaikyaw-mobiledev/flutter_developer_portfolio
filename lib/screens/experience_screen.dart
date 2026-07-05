@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../data/production_apps.dart';
 import '../models/production_app.dart';
 import '../utils/constants.dart';
+import '../theme/portfolio_theme.dart';
 import '../widgets/common/section_title.dart';
 import '../widgets/common/shimmer_card.dart';
 import '../widgets/common/reveal_animator.dart';
@@ -42,8 +43,9 @@ class _ExperienceScreenState extends State<ExperienceScreen> {
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 768;
+    final p = context.portfolio;
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0E27),
+      backgroundColor: p.background,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(
@@ -64,15 +66,15 @@ class _ExperienceScreenState extends State<ExperienceScreen> {
                   SizedBox(height: isMobile ? 20 : 30),
                   RevealAnimator(
                     child: _ExpCard(
-                      title: 'Junior Flutter Developer',
+                      title: 'Flutter Developer',
                       company: 'Root Studio Asia — Yangon, Myanmar (Remote)',
-                      period: 'Jan 2026 – Present',
+                      period: 'Jul 2024 – Jul 2026',
                       impactSummary:
-                          'Shipping production Flutter features for real users across business-focused mobile products.',
+                          'Shipped production Flutter features for business mobile products used by real customers.',
                       workMode: 'Remote',
                       points: const [
                         'Built and released production mobile features used by active users in business applications.',
-                        'Shipped DrZon Medical Service to Google Play and the App Store — patient healthcare flows with localization for Myanmar and Thailand.',
+                        'Shipped DrZon Medical Service to Google Play and the App Store — patient healthcare flows with localization for Myanmar and English.',
                         'Implemented notification and API workflows with Dio to improve delivery reliability.',
                         'Applied clean architecture and repository patterns to keep feature code maintainable.',
                         'Collaborated in code reviews and sprint planning under senior-led engineering standards.',
@@ -90,40 +92,7 @@ class _ExperienceScreenState extends State<ExperienceScreen> {
                       icon: Icons.work,
                       logoAsset: 'assets/images/rootstudio_logo.jpg',
                       isMobile: isMobile,
-                      accentColor: const Color(0xFF3B82F6),
-                    ),
-                  ),
-                  SizedBox(height: isMobile ? 15 : 20),
-                  RevealAnimator(
-                    delay: const Duration(milliseconds: 150),
-                    child: _ExpCard(
-                      title: 'Independent Product Development (Mentored)',
-                      company:
-                          'Senior Developer Mentorship + Independent Projects',
-                      period: '2024 – 2025',
-                      impactSummary:
-                          'Built a strong product engineering foundation through mentorship, shipping multiple portfolio-ready apps.',
-                      workMode: 'Learning Phase',
-                      points: const [
-                        'Completed structured Flutter and Dart mentorship with continuous technical feedback cycles.',
-                        'Delivered 12+ hands-on apps across e-commerce, LMS, healthcare, and social domains.',
-                        'Practiced GetX, BLoC, and Provider through implementation-focused product work.',
-                        'Applied clean architecture, REST API integration, and Firebase in practical scenarios.',
-                        'Used iterative review loops to improve engineering quality and delivery consistency.',
-                        'Transitioned from foundational learning to production-ready development discipline.',
-                      ],
-                      tags: const [
-                        'Flutter',
-                        'Dart',
-                        'REST API',
-                        'Firebase',
-                        'BLoC',
-                        'Provider',
-                        'Clean Architecture',
-                      ],
-                      icon: Icons.menu_book,
-                      isMobile: isMobile,
-                      accentColor: const Color(0xFF7C3AED),
+                      certificateUrl: AppStrings.employmentCertificateUrl,
                     ),
                   ),
                   SizedBox(height: isMobile ? 28 : 36),
@@ -147,7 +116,7 @@ class _ExperienceScreenState extends State<ExperienceScreen> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: isMobile ? 13 : 15,
-                      color: Colors.white.withValues(alpha: 0.52),
+                      color: p.textMuted,
                     ),
                   ),
                   SizedBox(height: isMobile ? 16 : 20),
@@ -172,8 +141,8 @@ class _ExpCard extends StatelessWidget {
   final List<String> points, tags;
   final IconData icon;
   final String? logoAsset;
+  final String? certificateUrl;
   final bool isMobile;
-  final Color accentColor;
 
   const _ExpCard({
     required this.title,
@@ -185,26 +154,22 @@ class _ExpCard extends StatelessWidget {
     required this.tags,
     required this.icon,
     required this.isMobile,
-    required this.accentColor,
     this.logoAsset,
+    this.certificateUrl,
   });
 
   @override
   Widget build(BuildContext context) {
+    final p = context.portfolio;
+    const accent = AppColors.primary;
+
     return ShimmerCard(
-      glowColor: accentColor,
+      glowColor: accent,
       enableEffects: true,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            accentColor.withValues(alpha: 0.08),
-            Colors.white.withValues(alpha: 0.02),
-          ],
-        ),
+        color: p.cardBg,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: accentColor.withValues(alpha: 0.3)),
+        border: Border.all(color: p.border),
       ),
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -220,9 +185,9 @@ class _ExpCard extends StatelessWidget {
                         width: 52,
                         height: 52,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _iconBox(accentColor),
+                        errorBuilder: (_, __, ___) => _iconBox(icon, accent),
                       )
-                    : _iconBox(accentColor),
+                    : _iconBox(icon, accent),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -234,7 +199,7 @@ class _ExpCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: isMobile ? 18 : 20,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: p.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -242,7 +207,7 @@ class _ExpCard extends StatelessWidget {
                       company,
                       style: TextStyle(
                         fontSize: isMobile ? 13 : 14,
-                        color: Colors.white.withValues(alpha: 0.65),
+                        color: p.textMuted,
                       ),
                     ),
                   ],
@@ -254,9 +219,9 @@ class _ExpCard extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.15),
+                  color: accent.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: accentColor.withValues(alpha: 0.6)),
+                  border: Border.all(color: accent.withValues(alpha: 0.35)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,7 +230,7 @@ class _ExpCard extends StatelessWidget {
                       period,
                       style: TextStyle(
                         fontSize: isMobile ? 11 : 12,
-                        color: Colors.white,
+                        color: p.textPrimary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -274,7 +239,7 @@ class _ExpCard extends StatelessWidget {
                       workMode,
                       style: TextStyle(
                         fontSize: isMobile ? 10 : 11,
-                        color: Colors.white.withValues(alpha: 0.75),
+                        color: p.textMuted,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -288,15 +253,15 @@ class _ExpCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
+              color: accent.withValues(alpha: 0.06),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.09)),
+              border: Border.all(color: p.border),
             ),
             child: Text(
               impactSummary,
               style: TextStyle(
                 fontSize: isMobile ? 12 : 13,
-                color: Colors.white.withValues(alpha: 0.82),
+                color: p.textPrimary.withValues(alpha: 0.85),
                 height: 1.45,
                 fontWeight: FontWeight.w500,
               ),
@@ -313,8 +278,8 @@ class _ExpCard extends StatelessWidget {
                     margin: const EdgeInsets.only(top: 7),
                     width: 6,
                     height: 6,
-                    decoration: BoxDecoration(
-                      color: accentColor,
+                    decoration: const BoxDecoration(
+                      color: accent,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -324,7 +289,7 @@ class _ExpCard extends StatelessWidget {
                       pt,
                       style: TextStyle(
                         fontSize: isMobile ? 14 : 15,
-                        color: Colors.white.withValues(alpha: 0.82),
+                        color: p.textPrimary.withValues(alpha: 0.85),
                         height: 1.45,
                       ),
                     ),
@@ -341,19 +306,30 @@ class _ExpCard extends StatelessWidget {
                 .map((t) => TechTag(label: t, isMobile: isMobile))
                 .toList(),
           ),
+          if (certificateUrl != null) ...[
+            const SizedBox(height: 16),
+            _AcademicDocStripButton(
+              onTap: () => _launchUrl(certificateUrl!),
+              accent: accent,
+              title: 'Certificate of Service',
+              subtitle: 'Root Studio employment verification',
+              hint: 'Verified employment document (PDF)',
+            ),
+          ],
         ],
       ),
     );
   }
 
-  Widget _iconBox(Color color) => Container(
+  Widget _iconBox(IconData iconData, Color color) => Container(
     width: 52,
     height: 52,
     decoration: BoxDecoration(
-      gradient: LinearGradient(colors: [color, color.withValues(alpha: 0.6)]),
+      color: color.withValues(alpha: 0.15),
       borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: color.withValues(alpha: 0.35)),
     ),
-    child: Icon(icon, color: Colors.white, size: 26),
+    child: Icon(iconData, color: color, size: 26),
   );
 }
 
@@ -366,21 +342,38 @@ Future<void> _launchUrl(String url) async {
   }
 }
 
+BoxDecoration _eduCardDecoration(BuildContext context) {
+  final p = context.portfolio;
+  return BoxDecoration(
+    color: p.cardBg,
+    borderRadius: BorderRadius.circular(20),
+    border: Border.all(color: p.border),
+  );
+}
+
 Widget _academicDocStrip({
+  required BuildContext context,
   required VoidCallback onTap,
   required Color accent,
 }) {
+  final p = context.portfolio;
   return Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      _AcademicDocStripButton(onTap: onTap, accent: accent),
+      _AcademicDocStripButton(
+        onTap: onTap,
+        accent: accent,
+        title: 'Academic Records',
+        subtitle: '1st Year Marks & Recommendation Letter',
+        hint: 'Verified university document (PDF)',
+      ),
       const SizedBox(height: 8),
       Text(
         '2nd year transcript not issued — studies paused during 2nd semester (COVID-19).',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 10.5,
-          color: Colors.white.withValues(alpha: 0.42),
+          color: p.textMuted,
           fontStyle: FontStyle.italic,
           height: 1.35,
         ),
@@ -392,10 +385,16 @@ Widget _academicDocStrip({
 class _AcademicDocStripButton extends StatefulWidget {
   final VoidCallback onTap;
   final Color accent;
+  final String title;
+  final String subtitle;
+  final String hint;
 
   const _AcademicDocStripButton({
     required this.onTap,
     required this.accent,
+    this.title = 'Academic Records',
+    this.subtitle = '1st Year Marks & Recommendation Letter',
+    this.hint = 'Verified university document (PDF)',
   });
 
   @override
@@ -408,6 +407,7 @@ class _AcademicDocStripButtonState extends State<_AcademicDocStripButton> {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.portfolio;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
@@ -419,14 +419,7 @@ class _AcademicDocStripButtonState extends State<_AcademicDocStripButton> {
           transform: Matrix4.translationValues(0, _hovered ? -2 : 0, 0),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                widget.accent.withValues(alpha: _hovered ? 0.16 : 0.1),
-                Colors.white.withValues(alpha: 0.03),
-              ],
-            ),
+            color: widget.accent.withValues(alpha: _hovered ? 0.1 : 0.06),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: widget.accent.withValues(alpha: _hovered ? 0.45 : 0.28),
@@ -464,29 +457,29 @@ class _AcademicDocStripButtonState extends State<_AcademicDocStripButton> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Academic Records',
+                    Text(
+                      widget.title,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: PortfolioFontSizes.secondary,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: p.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '1st Year Marks & Recommendation Letter',
+                      widget.subtitle,
                       style: TextStyle(
-                        fontSize: 11.5,
-                        color: Colors.white.withValues(alpha: 0.78),
+                        fontSize: PortfolioFontSizes.caption,
+                        color: p.textPrimary.withValues(alpha: 0.78),
                         height: 1.3,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Verified university document (PDF)',
+                      widget.hint,
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: Colors.white.withValues(alpha: 0.45),
+                        color: p.textMuted,
                       ),
                     ),
                   ],
@@ -529,24 +522,27 @@ Widget _logoBox(String asset) => Container(
   ),
 );
 
-Widget _dateRow(String t) => Row(
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    Icon(
-      Icons.calendar_today_outlined,
-      size: 12,
-      color: Colors.white.withValues(alpha: 0.35),
-    ),
-    const SizedBox(width: 4),
-    Text(
-      t,
-      style: TextStyle(
-        fontSize: 12,
-        color: Colors.white.withValues(alpha: 0.45),
+Widget _dateRow(BuildContext context, String t) {
+  final p = context.portfolio;
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Icon(
+        Icons.calendar_today_outlined,
+        size: 12,
+        color: p.textMuted,
       ),
-    ),
-  ],
-);
+      const SizedBox(width: 4),
+      Text(
+        t,
+        style: TextStyle(
+          fontSize: PortfolioFontSizes.label,
+          color: p.textMuted,
+        ),
+      ),
+    ],
+  );
+}
 
 Widget _pill(String label, Color color) => Container(
   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -557,33 +553,36 @@ Widget _pill(String label, Color color) => Container(
   ),
   child: Text(
     label,
-    style: TextStyle(fontSize: 11, color: color, fontWeight: FontWeight.w600),
+    style: TextStyle(fontSize: PortfolioFontSizes.caption, color: color, fontWeight: FontWeight.w600),
   ),
 );
 
-Widget _checkItem(String text) => Padding(
-  padding: const EdgeInsets.only(bottom: 7),
-  child: Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Icon(
-        Icons.check_circle_outline,
-        size: 14,
-        color: Color(0xFF3B82F6),
-      ),
-      const SizedBox(width: 8),
-      Expanded(
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 13,
-            color: Colors.white.withValues(alpha: 0.8),
+Widget _checkItem(BuildContext context, String text) {
+  final p = context.portfolio;
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 7),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Icon(
+          Icons.check_circle_outline,
+          size: 14,
+          color: AppColors.primary,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: PortfolioFontSizes.secondary,
+              color: p.textPrimary.withValues(alpha: 0.85),
+            ),
           ),
         ),
-      ),
-    ],
-  ),
-);
+      ],
+    ),
+  );
+}
 
 // ── Ongoing training (Ruby Learner) ───────────────────────────────────────────
 /// Logo file: add [assets/images/ruby_learner.png] to the project (see pubspec assets).
@@ -597,27 +596,22 @@ class _OngoingTrainingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.portfolio;
     return ShimmerCard(
       glowColor: _ruby,
       enableEffects: true,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            _ruby.withValues(alpha: 0.1),
-            Colors.white.withValues(alpha: 0.02),
-          ],
-        ),
+        color: p.cardBg,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: _ruby.withValues(alpha: 0.28)),
       ),
       padding: EdgeInsets.all(isMobile ? 22 : 28),
-      child: isMobile ? _mobileLayout() : _desktopLayout(),
+      child: isMobile ? _mobileLayout(context) : _desktopLayout(context),
     );
   }
 
-  Widget _mobileLayout() {
+  Widget _mobileLayout(BuildContext context) {
+    final p = context.portfolio;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -635,28 +629,29 @@ class _OngoingTrainingCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        const Text(
+        Text(
           'Flutter Advanced Class (2026)',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: p.textPrimary,
           ),
         ),
         const SizedBox(height: 6),
-        _formatDescription(TextAlign.center),
+        _formatDescription(context, TextAlign.center),
         const SizedBox(height: 10),
-        _dateRow('~4–5 months (estimated)'),
+        _dateRow(context, '~4–5 months (estimated)'),
         const SizedBox(height: 14),
         Container(height: 1, color: _ruby.withValues(alpha: 0.2)),
         const SizedBox(height: 14),
-        ..._coverageBullets(),
+        ..._coverageBullets(context),
       ],
     );
   }
 
-  Widget _desktopLayout() {
+  Widget _desktopLayout(BuildContext context) {
+    final p = context.portfolio;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -677,22 +672,22 @@ class _OngoingTrainingCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
+              Text(
                 'Flutter Advanced Class (2026)',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: p.textPrimary,
                 ),
               ),
               const SizedBox(height: 6),
-              _formatDescription(TextAlign.start),
+              _formatDescription(context, TextAlign.start),
               const SizedBox(height: 8),
-              _dateRow('~4–5 months (estimated)'),
+              _dateRow(context, '~4–5 months (estimated)'),
               const SizedBox(height: 14),
               Container(height: 1, color: _ruby.withValues(alpha: 0.2)),
               const SizedBox(height: 14),
-              ..._coverageBullets(),
+              ..._coverageBullets(context),
             ],
           ),
         ),
@@ -718,7 +713,7 @@ class _OngoingTrainingCard extends StatelessWidget {
           child: const Text(
             'In progress',
             style: TextStyle(
-              fontSize: 11,
+              fontSize: PortfolioFontSizes.caption,
               color: Color(0xFF6EE7B7),
               fontWeight: FontWeight.w600,
             ),
@@ -730,19 +725,20 @@ class _OngoingTrainingCard extends StatelessWidget {
     );
   }
 
-  Widget _formatDescription(TextAlign align) {
+  Widget _formatDescription(BuildContext context, TextAlign align) {
+    final p = context.portfolio;
     return Text(
       'Weekend live sessions (Sat & Sun, Zoom) with pre-recorded lesson materials, Q&A, and revision with the instructor. Weekly assignments are issued and reviewed by the instructor to reinforce progress.',
       textAlign: align,
       style: TextStyle(
         fontSize: isMobile ? 12 : 13,
-        color: Colors.white.withValues(alpha: 0.62),
+        color: p.textMuted,
         height: 1.45,
       ),
     );
   }
 
-  List<Widget> _coverageBullets() {
+  List<Widget> _coverageBullets(BuildContext context) {
     const items = [
       'Format: Pre-recorded lessons plus live Zoom on weekends for questions, review, and revision with the instructor.',
       'Assessment: Structured weekly assignments with instructor review and feedback on submissions.',
@@ -750,7 +746,7 @@ class _OngoingTrainingCard extends StatelessWidget {
       'Curriculum includes advanced topics such as LLM-related concepts, AI agents, and on-device AI as presented in the program.',
       'Currently enrolled; modules and details may expand as the provider updates the course.',
     ];
-    return items.map(_checkItem).toList();
+    return items.map((item) => _checkItem(context, item)).toList();
   }
 }
 
@@ -762,6 +758,7 @@ class _ProductionHighlightSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.portfolio;
     final liveApps = kProductionApps
         .where((a) => a.releaseStatus == AppReleaseStatus.live)
         .toList();
@@ -774,7 +771,7 @@ class _ProductionHighlightSection extends StatelessWidget {
           style: TextStyle(
             fontSize: isMobile ? 16 : 18,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: p.textPrimary,
           ),
         ),
         const SizedBox(height: 6),
@@ -782,7 +779,7 @@ class _ProductionHighlightSection extends StatelessWidget {
           '3 apps live on Google Play and the App Store',
           style: TextStyle(
             fontSize: isMobile ? 12 : 13,
-            color: Colors.white.withValues(alpha: 0.55),
+            color: p.textMuted,
           ),
         ),
         const SizedBox(height: 14),
@@ -805,17 +802,13 @@ class _ProductionMiniCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.portfolio;
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: app.statusColor.withValues(alpha: 0.35)),
-        gradient: LinearGradient(
-          colors: [
-            app.statusColor.withValues(alpha: 0.1),
-            Colors.white.withValues(alpha: 0.02),
-          ],
-        ),
+        border: Border.all(color: p.border),
+        color: p.cardBg,
       ),
       child: Row(
         children: [
@@ -834,15 +827,15 @@ class _ProductionMiniCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: isMobile ? 13 : 14,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: p.textPrimary,
                   ),
                 ),
                 if (app.keyContribution != null)
                   Text(
                     app.keyContribution!,
                     style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.65),
+                      fontSize: PortfolioFontSizes.caption,
+                      color: p.textMuted,
                     ),
                   ),
               ],
@@ -850,7 +843,7 @@ class _ProductionMiniCard extends StatelessWidget {
           ),
           TextButton(
             onPressed: () => context.go('/work?section=apps'),
-            child: const Text('View', style: TextStyle(fontSize: 12)),
+            child: const Text('View', style: TextStyle(fontSize: PortfolioFontSizes.label)),
           ),
         ],
       ),
@@ -874,12 +867,12 @@ class _CollapsibleEducationSectionState
 
   @override
   Widget build(BuildContext context) {
+    final p = context.portfolio;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFF3B82F6).withValues(alpha: 0.22),
-        ),
+        border: Border.all(color: p.border),
+        color: p.cardBg.withValues(alpha: 0.5),
       ),
       child: Column(
         children: [
@@ -890,7 +883,7 @@ class _CollapsibleEducationSectionState
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               child: Row(
                 children: [
-                  const Icon(Icons.school_outlined, color: Color(0xFF93C5FD)),
+                  const Icon(Icons.school_outlined, color: AppColors.primaryLight),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
@@ -898,20 +891,20 @@ class _CollapsibleEducationSectionState
                       style: TextStyle(
                         fontSize: widget.isMobile ? 13 : 14,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                        color: p.textPrimary,
                       ),
                     ),
                   ),
                   Icon(
                     _expanded ? Icons.expand_less : Icons.expand_more,
-                    color: Colors.white54,
+                    color: p.textMuted,
                   ),
                 ],
               ),
             ),
           ),
           if (_expanded) ...[
-            const Divider(height: 1, color: Color(0xFF1E293B)),
+            Divider(height: 1, color: p.border),
             Padding(
               padding: const EdgeInsets.all(16),
               child: widget.isMobile
@@ -965,48 +958,38 @@ class _UniCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.portfolio;
     return ShimmerCard(
-      glowColor: _accent,
+      glowColor: AppColors.primary,
       enableEffects: true,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            _accent.withValues(alpha: 0.08),
-            Colors.white.withValues(alpha: 0.02),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _accent.withValues(alpha: 0.3)),
-      ),
+      decoration: _eduCardDecoration(context),
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _logoBox('assets/images/computer_university.jpg'),
           const SizedBox(height: 14),
-          const Text(
+          Text(
             'University of Computer, Mandalay',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF60A5FA),
+              color: AppColors.primaryLight,
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
+          Text(
             'Computer Science Major',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: p.textPrimary,
             ),
           ),
           const SizedBox(height: 6),
-          _dateRow('2018 – 2021'),
+          _dateRow(context, '2018 – 2021'),
           const SizedBox(height: 8),
           _pill('2nd Year Completed', _accent),
           const SizedBox(height: 8),
@@ -1030,7 +1013,7 @@ class _UniCard extends StatelessWidget {
                   child: Text(
                     'Studies were paused due to COVID-19 and national circumstances in Myanmar.',
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: PortfolioFontSizes.caption,
                       color: Colors.orange.withValues(alpha: 0.8),
                       fontStyle: FontStyle.italic,
                       height: 1.4,
@@ -1042,6 +1025,7 @@ class _UniCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _academicDocStrip(
+            context: context,
             accent: _accent,
             onTap: () => _launchUrl(AppStrings.universityFirstYearDocUrl),
           ),
@@ -1055,7 +1039,7 @@ class _UniCard extends StatelessWidget {
             'Object-Oriented Programming',
             'Computer Architecture',
             'Web Development Foundations',
-          ].map(_checkItem),
+          ].map((item) => _checkItem(context, item)),
         ],
       ),
     );
@@ -1092,49 +1076,39 @@ class _KMDCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.portfolio;
     final allImages = _certs.map((c) => c['image']!).toList();
     return ShimmerCard(
-      glowColor: _accent,
+      glowColor: AppColors.primary,
       enableEffects: true,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            _accent.withValues(alpha: 0.07),
-            Colors.white.withValues(alpha: 0.02),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _accent.withValues(alpha: 0.3)),
-      ),
+      decoration: _eduCardDecoration(context),
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _logoBox('assets/images/kmd_logo.jpg'),
           const SizedBox(height: 14),
-          const Text(
+          Text(
             'KMD Education Center',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF60A5FA),
+              color: AppColors.primaryLight,
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
+          Text(
             'Technical Certifications',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: p.textPrimary,
             ),
           ),
           const SizedBox(height: 6),
-          _dateRow('Multiple Dates'),
+          _dateRow(context, 'Multiple Dates'),
           const SizedBox(height: 8),
           _pill('5 Verified Certificates', _accent),
           const SizedBox(height: 20),
@@ -1177,48 +1151,38 @@ class _WebDevCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.portfolio;
     return ShimmerCard(
-      glowColor: _accent,
+      glowColor: AppColors.primary,
       enableEffects: true,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            _accent.withValues(alpha: 0.07),
-            Colors.white.withValues(alpha: 0.02),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _accent.withValues(alpha: 0.3)),
-      ),
+      decoration: _eduCardDecoration(context),
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _logoBox('assets/images/computer_university.jpg'),
           const SizedBox(height: 14),
-          const Text(
+          Text(
             'University of Computer, Mandalay',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF60A5FA),
+              color: AppColors.primaryLight,
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
+          Text(
             'Web Development Foundation',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: p.textPrimary,
             ),
           ),
           const SizedBox(height: 6),
-          _dateRow('Certified'),
+          _dateRow(context, 'Certified'),
           const SizedBox(height: 8),
           _pill('Certification Completed', _accent),
           const SizedBox(height: 14),
@@ -1229,7 +1193,7 @@ class _WebDevCard extends StatelessWidget {
             'Bootstrap Framework',
             'JavaScript Fundamentals',
             'Responsive Web Design',
-          ].map(_checkItem),
+          ].map((item) => _checkItem(context, item)),
           const SizedBox(height: 16),
           _CertCard(
             title: 'Web Dev Foundation Certificate',
@@ -1373,7 +1337,7 @@ class _CertCardState extends State<_CertCard> {
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: PortfolioFontSizes.caption,
                           color: Colors.white.withValues(alpha: 0.85),
                           fontWeight: FontWeight.w500,
                           height: 1.3,

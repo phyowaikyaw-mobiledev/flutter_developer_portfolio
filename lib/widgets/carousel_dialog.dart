@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/constants.dart';
 
 class CarouselDialog extends StatefulWidget {
   final List<String> images;
@@ -63,7 +64,7 @@ class _CarouselDialogState extends State<CarouselDialog> {
                 ))),
               const SizedBox(height: 10),
               Text('${_cur + 1} / $total',
-                style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 13)),
+                style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: PortfolioFontSizes.secondary)),
             ]),
           )),
           Positioned(top: 16, right: 16,

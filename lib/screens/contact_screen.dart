@@ -401,7 +401,7 @@ class ContactScreen extends StatelessWidget {
                     Text(
                       subtitle,
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: PortfolioFontSizes.label,
                         color: Colors.white.withValues(alpha: 0.6),
                       ),
                     ),
@@ -541,7 +541,7 @@ class ContactScreen extends StatelessWidget {
                 child: Text(
                   'Preferred stack: Flutter, Firebase, Dio, BLoC, REST API',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: PortfolioFontSizes.label,
                     color: Colors.white.withValues(alpha: 0.72),
                     height: 1.4,
                   ),
@@ -586,7 +586,7 @@ class ContactScreen extends StatelessWidget {
                   'Opens Gmail with a pre-filled professional subject',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: PortfolioFontSizes.caption,
                     color: Colors.white.withValues(alpha: 0.5),
                   ),
                 ),

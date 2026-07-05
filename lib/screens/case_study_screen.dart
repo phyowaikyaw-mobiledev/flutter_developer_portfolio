@@ -96,7 +96,7 @@ class CaseStudyScreen extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Deliver patient-facing healthcare flows for Myanmar and Thailand — hospital referrals, medical records, appointments, and localized content — with maintainable modules ready for long-term feature growth.',
+            'Deliver patient-facing healthcare flows for Myanmar and English — hospital referrals, medical records, appointments, and localized content — with maintainable modules ready for long-term feature growth.',
             style: TextStyle(
               fontSize: isMobile ? 13 : 14,
               color: Colors.white.withValues(alpha: 0.78),
@@ -114,7 +114,7 @@ class CaseStudyScreen extends StatelessWidget {
       ('State', 'BLoC / Cubit for feature-level state and side effects'),
       ('Domain', 'Repository interfaces and use-case boundaries'),
       ('Data', 'Dio REST client, DTO mapping, error handling'),
-      ('l10n', 'ARB-based localization for MM/TH market content'),
+      ('l10n', 'ARB-based localization for MM/English market content'),
     ];
 
     return ShimmerCard(
@@ -261,7 +261,7 @@ class CaseStudyScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'Store builds validated on Android and iOS · l10n strings reviewed for MM/TH · API error states handled in patient flows · code reviewed under senior-led sprint standards before release.',
+            'Store builds validated on Android and iOS · l10n strings reviewed for MM/English · API error states handled in patient flows · code reviewed under senior-led sprint standards before release.',
             style: TextStyle(
               fontSize: isMobile ? 13 : 14,
               color: Colors.white.withValues(alpha: 0.78),

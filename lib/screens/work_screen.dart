@@ -97,7 +97,7 @@ class _WorkScreenState extends State<WorkScreen>
                 Text(
                   _tabLabels[_tab.index],
                   style: const TextStyle(
-                    fontSize: 12,
+                    fontSize: PortfolioFontSizes.label,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF93C5FD),
                   ),
@@ -122,11 +122,11 @@ class _WorkScreenState extends State<WorkScreen>
               unselectedLabelColor: Colors.white54,
               labelStyle: const TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 13,
+                fontSize: PortfolioFontSizes.secondary,
               ),
               unselectedLabelStyle: const TextStyle(
                 fontWeight: FontWeight.w500,
-                fontSize: 13,
+                fontSize: PortfolioFontSizes.secondary,
               ),
               tabs: const [
                 Tab(text: 'Production apps'),

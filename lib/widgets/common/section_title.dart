@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'reveal_animator.dart';
+import '../../theme/portfolio_theme.dart';
+import '../../utils/constants.dart';
 
 class SectionTitle extends StatelessWidget {
   final String title;
@@ -14,25 +16,22 @@ class SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.portfolio;
+
     return RevealAnimator(
       child: Column(
         children: [
-          ShaderMask(
-            shaderCallback: (b) => const LinearGradient(
-              colors: [Color(0xFF1E40AF), Color(0xFF3B82F6), Color(0xFF60A5FA)],
-            ).createShader(b),
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              softWrap: true,
-              maxLines: isMobile ? 3 : 4,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: isMobile ? 32 : 48,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                letterSpacing: 1.2,
-              ),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            softWrap: true,
+            maxLines: isMobile ? 3 : 4,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: isMobile ? 32 : 48,
+              fontWeight: FontWeight.bold,
+              color: p.textPrimary,
+              letterSpacing: 0.5,
             ),
           ),
           if (subtitle != null) ...[
@@ -43,30 +42,18 @@ class SectionTitle extends StatelessWidget {
               softWrap: true,
               style: TextStyle(
                 fontSize: isMobile ? 13 : 15,
-                color: Colors.white.withValues(alpha: 0.62),
+                color: p.textMuted,
                 height: 1.5,
               ),
             ),
           ],
           SizedBox(height: isMobile ? 16 : 24),
           Container(
-            width: isMobile ? 80 : 120,
-            height: 4,
+            width: isMobile ? 64 : 80,
+            height: 3,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFF1E40AF),
-                  Color(0xFF3B82F6),
-                  Color(0xFF60A5FA),
-                ],
-              ),
+              color: AppColors.primary,
               borderRadius: BorderRadius.circular(2),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF3B82F6).withValues(alpha: 0.5),
-                  blurRadius: 8,
-                ),
-              ],
             ),
           ),
         ],

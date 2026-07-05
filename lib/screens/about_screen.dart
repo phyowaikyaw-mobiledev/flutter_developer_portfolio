@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../theme/portfolio_theme.dart';
 import '../utils/constants.dart';
 import 'profile_screen.dart';
-import 'skills_screen.dart';
 import 'testimonials_screen.dart';
 
-/// Profile, skills, and testimonials in one recruiter-friendly hub.
-/// Deep links: /about?section=profile | skills | testimonials
+/// Profile and testimonials hub.
+/// Deep links: /about?section=profile | testimonials
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
 
@@ -16,8 +16,8 @@ class AboutScreen extends StatefulWidget {
 
 class _AboutScreenState extends State<AboutScreen>
     with SingleTickerProviderStateMixin {
-  static const _sectionKeys = ['profile', 'skills', 'testimonials'];
-  static const _tabLabels = ['Profile', 'Skills', 'Testimonials'];
+  static const _sectionKeys = ['profile', 'testimonials'];
+  static const _tabLabels = ['Profile', 'Testimonials'];
   static const _shellAppBarHeight = 70.0;
 
   late final TabController _tab;
@@ -25,7 +25,7 @@ class _AboutScreenState extends State<AboutScreen>
   @override
   void initState() {
     super.initState();
-    _tab = TabController(length: 3, vsync: this);
+    _tab = TabController(length: 2, vsync: this);
     _tab.addListener(_onTabChanged);
   }
 
@@ -43,6 +43,10 @@ class _AboutScreenState extends State<AboutScreen>
 
   void _applySectionFromRoute() {
     final sec = GoRouterState.of(context).uri.queryParameters['section'];
+    if (sec == 'skills') {
+      context.go('/skills');
+      return;
+    }
     final idx = _sectionKeys.indexOf(sec ?? '');
     final i = idx >= 0 ? idx : 0;
     if (_tab.index != i) _tab.index = i;
@@ -60,9 +64,10 @@ class _AboutScreenState extends State<AboutScreen>
   Widget build(BuildContext context) {
     final underAppBar =
         MediaQuery.paddingOf(context).top + _shellAppBarHeight - 10;
+    final p = context.portfolio;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: p.background,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -83,23 +88,23 @@ class _AboutScreenState extends State<AboutScreen>
                     fontSize: 10,
                     letterSpacing: 1.5,
                     fontWeight: FontWeight.w800,
-                    color: Colors.white.withValues(alpha: 0.42),
+                    color: p.textMuted,
                   ),
                 ),
                 const Spacer(),
                 Text(
                   _tabLabels[_tab.index],
                   style: const TextStyle(
-                    fontSize: 12,
+                    fontSize: PortfolioFontSizes.label,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF93C5FD),
+                    color: AppColors.primaryLight,
                   ),
                 ),
               ],
             ),
           ),
           Material(
-            color: const Color(0xFF0D1530),
+            color: p.cardBg,
             child: TabBar(
               controller: _tab,
               isScrollable: true,
@@ -110,11 +115,10 @@ class _AboutScreenState extends State<AboutScreen>
               },
               indicatorColor: AppColors.primary,
               indicatorWeight: 3,
-              labelColor: const Color(0xFF93C5FD),
-              unselectedLabelColor: Colors.white54,
+              labelColor: AppColors.primaryLight,
+              unselectedLabelColor: p.textMuted,
               tabs: const [
                 Tab(text: 'Profile'),
-                Tab(text: 'Skills'),
                 Tab(text: 'Testimonials'),
               ],
             ),
@@ -128,7 +132,6 @@ class _AboutScreenState extends State<AboutScreen>
               controller: _tab,
               children: const [
                 ProfileScreen(embeddedInAbout: true),
-                SkillsScreen(embeddedInAbout: true),
                 TestimonialsScreen(embeddedInAbout: true),
               ],
             ),

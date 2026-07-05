@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/portfolio_project.dart';
+import '../utils/constants.dart';
 
 const kPortfolioProjects = <PortfolioProject>[
   PortfolioProject(
@@ -12,7 +13,7 @@ const kPortfolioProjects = <PortfolioProject>[
     github: 'https://github.com/phyowaikyaw-mobiledev/e_commerce',
     icon: Icons.shopping_cart,
     status: 'Individual Project',
-    statusColor: Colors.orange,
+    statusColor: AppColors.statusLaunching,
     featured: true,
     gallery: [
       'assets/images/ecommerce_1.png',
@@ -30,7 +31,7 @@ const kPortfolioProjects = <PortfolioProject>[
     github: 'https://github.com/phyowaikyaw-mobiledev/food_monkey',
     icon: Icons.fastfood,
     status: 'Individual Project',
-    statusColor: Colors.orange,
+    statusColor: AppColors.statusLaunching,
     gallery: [
       'assets/images/food_monkey_1.png',
       'assets/images/food_monkey_2.png',
@@ -49,7 +50,7 @@ const kPortfolioProjects = <PortfolioProject>[
     github: 'https://github.com/phyowaikyaw-mobiledev/yin_store',
     icon: Icons.store,
     status: 'Live Demo',
-    statusColor: Colors.green,
+    statusColor: AppColors.statusLive,
     featured: true,
     gallery: [],
   ),
@@ -65,7 +66,7 @@ const kPortfolioProjects = <PortfolioProject>[
         'https://github.com/phyowaikyaw-mobiledev/learners_gateway_website',
     icon: Icons.web,
     status: 'Live',
-    statusColor: Colors.green,
+    statusColor: AppColors.statusLive,
     featured: true,
     gallery: [],
   ),
@@ -79,7 +80,7 @@ const kPortfolioProjects = <PortfolioProject>[
     github: 'https://github.com/phyowaikyaw-mobiledev/resume_tailor_ai',
     icon: Icons.auto_awesome,
     status: 'Individual Project',
-    statusColor: Colors.orange,
+    statusColor: AppColors.statusLaunching,
     featured: true,
     gallery: [
       'assets/images/resume_1.png',
@@ -98,7 +99,7 @@ const kPortfolioProjects = <PortfolioProject>[
     github: 'https://github.com/phyowaikyaw-mobiledev/music_app',
     icon: Icons.music_note,
     status: 'Individual Project',
-    statusColor: Colors.orange,
+    statusColor: AppColors.statusLaunching,
     featured: true,
     gallery: [
       'assets/images/music_1.png',
@@ -118,7 +119,7 @@ const kPortfolioProjects = <PortfolioProject>[
         'https://github.com/phyowaikyaw-mobiledev/flutter-hls-streamkit-demo',
     icon: Icons.play_circle,
     status: 'Open source demo',
-    statusColor: Colors.teal,
+    statusColor: AppColors.statusLive,
     featured: true,
     gallery: [
       'assets/images/streamkit_home_live.png',
@@ -137,7 +138,7 @@ const kPortfolioProjects = <PortfolioProject>[
     github: 'https://github.com/phyowaikyaw-mobiledev/eduhub_lms',
     icon: Icons.school,
     status: 'Individual Project',
-    statusColor: Colors.orange,
+    statusColor: AppColors.statusLaunching,
     gallery: [
       'assets/images/lms_1.png',
       'assets/images/lms_2.png',
@@ -158,7 +159,7 @@ const kPortfolioProjects = <PortfolioProject>[
     github: 'https://github.com/phyowaikyaw-mobiledev/pardon_diary-note',
     icon: Icons.note_alt,
     status: 'Individual Project',
-    statusColor: Colors.orange,
+    statusColor: AppColors.statusLaunching,
     gallery: [
       'assets/images/note_1.png',
       'assets/images/note_2.png',
@@ -177,7 +178,7 @@ const kPortfolioProjects = <PortfolioProject>[
         'https://github.com/phyowaikyaw-mobiledev/social_media_ui_clone',
     icon: Icons.people,
     status: 'UI Study',
-    statusColor: Colors.blueGrey,
+    statusColor: AppColors.statusArchived,
     learningArchive: true,
     gallery: [
       'assets/images/social_1.png',
@@ -197,7 +198,7 @@ const kPortfolioProjects = <PortfolioProject>[
     github: 'https://github.com/phyowaikyaw-mobiledev/flutter_quizz_app',
     icon: Icons.quiz,
     status: 'Learning Project',
-    statusColor: Colors.blueGrey,
+    statusColor: AppColors.statusArchived,
     learningArchive: true,
     gallery: [
       'assets/images/quiz_1.png',
@@ -215,7 +216,7 @@ const kPortfolioProjects = <PortfolioProject>[
     github: 'https://github.com/phyowaikyaw-mobiledev/healthcare_plus',
     icon: Icons.local_hospital,
     status: 'Individual Project',
-    statusColor: Colors.orange,
+    statusColor: AppColors.statusLaunching,
     gallery: [
       'assets/images/healthcare_1.png',
       'assets/images/healthcare_2.png',
@@ -235,7 +236,7 @@ const kPortfolioProjects = <PortfolioProject>[
     github: 'https://github.com/phyowaikyaw-mobiledev/roll_dice_app',
     icon: Icons.casino,
     status: 'Learning Project',
-    statusColor: Colors.blueGrey,
+    statusColor: AppColors.statusArchived,
     learningArchive: true,
     gallery: [
       'assets/images/dice_1.png',

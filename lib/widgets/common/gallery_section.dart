@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../../utils/constants.dart';
 import '../carousel_dialog.dart';
 
 class GallerySection extends StatelessWidget {
@@ -39,7 +40,7 @@ class GallerySection extends StatelessWidget {
           ).createShader(b),
           child: const Text('GALLERY',
             style: TextStyle(
-              fontSize: 11, fontWeight: FontWeight.w800,
+              fontSize: PortfolioFontSizes.caption, fontWeight: FontWeight.w800,
               color: Colors.white, letterSpacing: 2.0,
             )),
         ),

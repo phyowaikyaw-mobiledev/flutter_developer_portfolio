@@ -26,7 +26,7 @@ Live: [https://phyowaikyaw-portfolio.web.app](https://phyowaikyaw-portfolio.web.
 
 ## Highlights
 
-- 3 apps live on Google Play and the App Store (Myanmar / Thailand markets)
+- 3 apps live on Google Play and the App Store (Myanmar / English — MM/English)
 - Paid production work at Root Studio (Jan 2026–present)
 - Architecture case study: DrZon — presentation → BLoC → repository → Dio API layer
 - Curated project showcase (featured work + learning archive)

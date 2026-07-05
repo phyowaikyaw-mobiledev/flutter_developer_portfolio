@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../data/portfolio_projects.dart';
 import '../models/portfolio_project.dart';
 import '../utils/constants.dart';
+import '../theme/portfolio_theme.dart';
 import '../widgets/common/section_title.dart';
 import '../widgets/common/shimmer_card.dart';
 import '../widgets/common/reveal_animator.dart';
@@ -282,21 +283,12 @@ class _ProjectCard extends StatelessWidget {
     final showLiveBanner = liveUrl != null && gallery.isEmpty;
 
     return ShimmerCard(
-      glowColor: color,
+      glowColor: AppColors.primary,
       enableEffects: true,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withValues(alpha: 0.06),
-            Colors.white.withValues(alpha: 0.02),
-          ],
-        ),
+        color: context.portfolio.cardBg,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: const Color(0xFF3B82F6).withValues(alpha: 0.25),
-        ),
+        border: Border.all(color: context.portfolio.border),
       ),
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -366,7 +358,7 @@ class _ProjectCard extends StatelessWidget {
                     Text(
                       project.subtitle,
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: PortfolioFontSizes.label,
                         color: Colors.white.withValues(alpha: 0.5),
                       ),
                     ),
@@ -384,7 +376,7 @@ class _ProjectCard extends StatelessWidget {
             child: Text(
               project.desc,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: PortfolioFontSizes.secondary,
                 color: Colors.white.withValues(alpha: 0.72),
                 height: 1.6,
               ),
@@ -418,7 +410,7 @@ class _ProjectCard extends StatelessWidget {
                 child: Text(
                   project.tags[i],
                   style: const TextStyle(
-                    fontSize: 11,
+                    fontSize: PortfolioFontSizes.caption,
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
                   ),
@@ -433,7 +425,7 @@ class _ProjectCard extends StatelessWidget {
           if (gallery.isNotEmpty)
             GallerySection(
               images: gallery,
-              accentColor: color,
+              accentColor: AppColors.primary,
               isMobile: isMobile,
             )
           else if (showLiveBanner)
@@ -533,7 +525,7 @@ class _LivePreviewBannerState extends State<_LivePreviewBanner> {
               child: const Text(
                 'LIVE PREVIEW',
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: PortfolioFontSizes.caption,
                   fontWeight: FontWeight.w800,
                   color: Colors.white,
                   letterSpacing: 2.0,
@@ -686,7 +678,7 @@ class _LivePreviewBannerState extends State<_LivePreviewBanner> {
                         Text(
                           Uri.parse(widget.url).host,
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: PortfolioFontSizes.caption,
                             color: widget.color.withValues(alpha: 0.8),
                             fontWeight: FontWeight.w500,
                           ),
@@ -806,7 +798,7 @@ class _BtnState extends State<_Btn> {
               Text(
                 widget.label,
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: PortfolioFontSizes.secondary,
                   fontWeight: FontWeight.w600,
                   color: widget.filled ? Colors.white : widget.color,
                 ),
