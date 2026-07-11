@@ -84,6 +84,7 @@ flutter:
       - assets/icons/skills/provider.png
       - assets/icons/skills/retrofit.png
       - assets/icons/skills/get_it.png
+      - assets/icons/contact/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -17,7 +17,7 @@ class MilestonesSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Text('🚀', style: TextStyle(fontSize: 22)),
+            Icon(Icons.timeline, size: 22, color: p.accentTeal),
             const SizedBox(width: 8),
             Text(
               'Production Milestones',

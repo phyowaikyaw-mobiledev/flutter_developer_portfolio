@@ -20,8 +20,8 @@ const kLetterOfRecommendationAsset =
     'assets/images/letter_of_recommendation.png';
 
 const kShippedWorkRow1Titles = [
-  'Phone King Plus — Customer',
-  'Phone King Plus — Admin',
+  'Phone King Plus Customer',
+  'Phone King Plus Admin',
   'DrZon Medical Service',
 ];
 

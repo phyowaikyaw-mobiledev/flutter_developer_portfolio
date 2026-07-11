@@ -31,7 +31,8 @@ void main() {
     expect(teeXpress.playUrl, isNull);
     expect(teeXpress.appStoreUrl, isNull);
     expect(teeXpress.isLive, isFalse);
-    expect(teeXpress.gallery, contains('assets/images/teexpress_1.png'));
+    expect(teeXpress.gallery.length, 6);
+    expect(teeXpress.gallery, contains('assets/images/teexpress_3.png'));
   });
 
   test('three production apps are live on stores', () {

@@ -34,7 +34,7 @@ class SkillChip extends StatelessWidget {
     final p = context.portfolio;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         color: p.cardBg,
         borderRadius: BorderRadius.circular(8),
@@ -44,21 +44,26 @@ class SkillChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            width: 18,
-            height: 18,
+            width: 15,
+            height: 15,
             child: _SkillLogo(
               asset: item.logoAsset,
+              size: 15,
               mutedColor: p.textMuted,
               isDarkMode: themeController.isDark,
             ),
           ),
-          const SizedBox(width: 8),
-          Text(
-            item.name,
-            style: TextStyle(
-              fontSize: PortfolioFontSizes.label,
-              fontWeight: FontWeight.w500,
-              color: p.textPrimary,
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              item.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: PortfolioFontSizes.caption,
+                fontWeight: FontWeight.w500,
+                color: p.textPrimary,
+              ),
             ),
           ),
         ],
@@ -70,11 +75,13 @@ class SkillChip extends StatelessWidget {
 class _SkillLogo extends StatelessWidget {
   const _SkillLogo({
     required this.asset,
+    required this.size,
     required this.mutedColor,
     required this.isDarkMode,
   });
 
   final String asset;
+  final double size;
   final Color mutedColor;
   final bool isDarkMode;
 
@@ -86,8 +93,8 @@ class _SkillLogo extends StatelessWidget {
     if (lower.endsWith('.svg')) {
       return _SafeSvgAsset(
         asset: asset,
-        width: 18,
-        height: 18,
+        width: size,
+        height: size,
         fallback: fallback,
         isDarkMode: isDarkMode,
       );
@@ -95,8 +102,8 @@ class _SkillLogo extends StatelessWidget {
 
     return Image.asset(
       asset,
-      width: 18,
-      height: 18,
+      width: size,
+      height: size,
       fit: BoxFit.contain,
       errorBuilder: (_, __, ___) => fallback,
     );

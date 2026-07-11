@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../utils/constants.dart';
 import '../../models/production_app.dart';
 import '../../theme/portfolio_theme.dart';
 
@@ -54,36 +53,11 @@ class _StorePlatformBadgesState extends State<StorePlatformBadges> {
     final p = context.portfolio;
 
     if (widget.releaseStatus == AppReleaseStatus.inReview) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _storeBadgeImage(
-            asset: StorePlatformBadges.appStoreAsset,
-            p: p,
-            dimmed: true,
-          ),
-          const SizedBox(width: _iconGap),
-          _storeBadgeImage(
-            asset: StorePlatformBadges.playStoreAsset,
-            p: p,
-            dimmed: true,
-          ),
-          const SizedBox(width: 10),
-          _statusPill(
-            p,
-            icon: Icons.hourglass_top_outlined,
-            label: 'In Review',
-          ),
-        ],
-      );
+      return _dimmedStorePair(p);
     }
 
     if (widget.releaseStatus == AppReleaseStatus.launchingSoon || !_hasLiveUrls) {
-      return _statusPill(
-        p,
-        icon: Icons.schedule_outlined,
-        label: 'Launching Soon',
-      );
+      return _dimmedStorePair(p);
     }
 
     final badges = <Widget>[];
@@ -112,16 +86,33 @@ class _StorePlatformBadgesState extends State<StorePlatformBadges> {
     }
 
     if (badges.isEmpty) {
-      return _statusPill(
-        p,
-        icon: Icons.schedule_outlined,
-        label: 'Launching Soon',
-      );
+      return _dimmedStorePair(p);
     }
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: badges,
+    );
+  }
+
+  Widget _dimmedStorePair(PortfolioColors p) {
+    return IgnorePointer(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _storeBadgeImage(
+            asset: StorePlatformBadges.appStoreAsset,
+            p: p,
+            dimmed: true,
+          ),
+          const SizedBox(width: _iconGap),
+          _storeBadgeImage(
+            asset: StorePlatformBadges.playStoreAsset,
+            p: p,
+            dimmed: true,
+          ),
+        ],
+      ),
     );
   }
 
@@ -148,36 +139,6 @@ class _StorePlatformBadgesState extends State<StorePlatformBadges> {
             color: p.textMuted,
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _statusPill(
-    PortfolioColors p, {
-    required IconData icon,
-    required String label,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: p.border.withValues(alpha: 0.35),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: p.border),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: p.textMuted),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: PortfolioFontSizes.label,
-              fontWeight: FontWeight.w500,
-              color: p.textMuted,
-            ),
-          ),
-        ],
       ),
     );
   }

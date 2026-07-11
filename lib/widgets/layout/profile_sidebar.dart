@@ -16,6 +16,8 @@ class ProfileSidebar extends StatefulWidget {
 }
 
 class _ProfileSidebarState extends State<ProfileSidebar> {
+  bool _expanded = false;
+
   Future<void> _launch(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) await launchUrl(uri);
@@ -26,39 +28,74 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
     final p = context.portfolio;
     final compact = widget.compact;
 
-    return Container(
+    final card = Container(
       width: compact ? double.infinity : 300,
-      padding: EdgeInsets.all(compact ? 20 : 28),
+      padding: EdgeInsets.all(compact ? 16 : 28),
       decoration: BoxDecoration(
         color: p.cardBg,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: p.border),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _avatar(p, compact),
-          SizedBox(height: compact ? 16 : 22),
-          Text(
-            AppStrings.name,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: compact ? 22 : 24,
-              fontWeight: FontWeight.bold,
-              color: p.textPrimary,
-              letterSpacing: 0.3,
-            ),
+      child: compact ? _compactContent(p) : _fullContent(p),
+    );
+
+    if (!compact) return card;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        card,
+        Positioned(
+          top: 10,
+          right: 10,
+          child: _ExpandToggleButton(
+            p: p,
+            expanded: _expanded,
+            onTap: () => setState(() => _expanded = !_expanded),
           ),
-          const SizedBox(height: 6),
-          Text(
-            AppStrings.role,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 15,
-              color: p.textMuted,
-            ),
+        ),
+      ],
+    );
+  }
+
+  Widget _compactContent(PortfolioColors p) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 36),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _avatar(p, true),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      AppStrings.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: p.textPrimary,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    _RolePill(p: p),
+                  ],
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: compact ? 18 : 24),
+        ),
+        if (_expanded) ...[
+          const SizedBox(height: 16),
           _SidebarInfoRow(
             p: p,
             icon: Icons.email_outlined,
@@ -73,7 +110,7 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
             label: 'LOCATION',
             value: AppStrings.location,
           ),
-          SizedBox(height: compact ? 18 : 24),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -99,33 +136,99 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
               ),
             ],
           ),
-          if (!compact) ...[
-            const SizedBox(height: 20),
-            ListenableBuilder(
-              listenable: themeController,
-              builder: (context, _) {
-                final isDark = themeController.isDark;
-                return IconButton(
-                  onPressed: themeController.toggle,
-                  tooltip: isDark ? 'Light Mode' : 'Dark Mode',
-                  icon: Icon(
-                    isDark
-                        ? Icons.light_mode_outlined
-                        : Icons.dark_mode_outlined,
-                    color: p.textMuted,
-                    size: 20,
-                  ),
-                );
-              },
+        ],
+      ],
+    );
+  }
+
+  Widget _fullContent(PortfolioColors p) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _avatar(p, false),
+        const SizedBox(height: 22),
+        Text(
+          AppStrings.name,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: p.textPrimary,
+            letterSpacing: 0.3,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          AppStrings.role,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 15,
+            color: p.textMuted,
+          ),
+        ),
+        const SizedBox(height: 24),
+        _SidebarInfoRow(
+          p: p,
+          icon: Icons.email_outlined,
+          label: 'EMAIL',
+          value: AppStrings.email,
+          onTap: () => _launch('mailto:${AppStrings.email}'),
+        ),
+        const SizedBox(height: 10),
+        _SidebarInfoRow(
+          p: p,
+          icon: Icons.location_on_outlined,
+          label: 'LOCATION',
+          value: AppStrings.location,
+        ),
+        const SizedBox(height: 24),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _SocialIconBtn.fa(
+              p: p,
+              url: AppStrings.github,
+              faIcon: FontAwesomeIcons.github,
+              onLaunch: _launch,
+            ),
+            const SizedBox(width: 12),
+            _SocialIconBtn.fa(
+              p: p,
+              url: AppStrings.linkedin,
+              faIcon: FontAwesomeIcons.linkedin,
+              onLaunch: _launch,
+            ),
+            const SizedBox(width: 12),
+            _SocialIconBtn.material(
+              p: p,
+              url: 'mailto:${AppStrings.email}',
+              materialIcon: Icons.email_outlined,
+              onLaunch: _launch,
             ),
           ],
-        ],
-      ),
+        ),
+        const SizedBox(height: 20),
+        ListenableBuilder(
+          listenable: themeController,
+          builder: (context, _) {
+            final isDark = themeController.isDark;
+            return IconButton(
+              onPressed: themeController.toggle,
+              tooltip: isDark ? 'Light Mode' : 'Dark Mode',
+              icon: Icon(
+                isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                color: p.textMuted,
+                size: 20,
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 
   Widget _avatar(PortfolioColors p, bool compact) {
-    final size = compact ? 100.0 : 160.0;
+    final size = compact ? 56.0 : 160.0;
     return SizedBox(
       width: size,
       height: size,
@@ -148,15 +251,84 @@ class _ProfileSidebarState extends State<ProfileSidebar> {
             ),
           ),
           Positioned(
-            right: compact ? 6 : 8,
-            bottom: compact ? 6 : 8,
+            right: compact ? 3 : 8,
+            bottom: compact ? 3 : 8,
             child: RadarActiveDot(
               color: p.activeGreen,
               borderColor: p.cardBg,
-              dotSize: compact ? 13 : 14,
+              dotSize: compact ? 9 : 14,
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _RolePill extends StatelessWidget {
+  const _RolePill({required this.p});
+
+  final PortfolioColors p;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: p.border.withValues(alpha: 0.35),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: p.border),
+      ),
+      child: Text(
+        AppStrings.role,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: PortfolioFontSizes.caption,
+          fontWeight: FontWeight.w600,
+          color: p.textMuted,
+        ),
+      ),
+    );
+  }
+}
+
+class _ExpandToggleButton extends StatelessWidget {
+  const _ExpandToggleButton({
+    required this.p,
+    required this.expanded,
+    required this.onTap,
+  });
+
+  final PortfolioColors p;
+  final bool expanded;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          width: 28,
+          height: 28,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: p.border),
+          ),
+          child: AnimatedRotation(
+            turns: expanded ? 0.5 : 0,
+            duration: const Duration(milliseconds: 200),
+            child: Icon(
+              Icons.keyboard_arrow_down,
+              size: 18,
+              color: p.textMuted,
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -22,13 +22,18 @@ class AppStrings {
   static const name = 'PHYO WAI KYAW';
   static const role = 'Flutter Developer';
   static const location = 'Chonburi, Thailand';
-  static const avatarAsset = 'assets/images/phyo.jpg';
+  static const avatarAsset = 'assets/images/avatar.png';
   static const email    = 'phyowalkyawdeveloper@gmail.com';
   static const phone    = '+66-626-509163';
   static const phoneTel = 'tel:+66626509163';
   static const github   = 'https://github.com/phyowaikyaw-mobiledev';
   static const linkedin = 'https://www.linkedin.com/in/phyowaikyaw-dev';
   static const facebook = 'https://facebook.com/learnersgateway30';
+  static const telegramUsername = 'andrew_mobiledev';
+  static const telegram = 'https://t.me/andrew_mobiledev';
+  static const teamsEmail = 'phyowaikyawdeveloper@gmail.com';
+  static const teamsChat =
+      'https://teams.microsoft.com/l/chat/0/0?users=phyowaikyawdeveloper@gmail.com';
   static const cvUrl    = 'https://drive.google.com/file/d/1ZeB1Dbe9t7l79XY_vOO1INeplqLwX-LO/view?usp=drive_link';
   static const universityFirstYearDocUrl =
       'https://drive.google.com/file/d/1j2ehBE5y-GhenuZbmv2N7wBQi4e6wolK/view?usp=drive_link';

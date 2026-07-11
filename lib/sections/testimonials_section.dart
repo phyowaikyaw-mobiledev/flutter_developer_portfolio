@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../models/testimonial_model.dart';
 import '../../services/firestore_service.dart';
 import '../../theme/portfolio_theme.dart';
@@ -47,6 +48,25 @@ class _TestimonialsSectionState extends State<TestimonialsSection> {
               'From teammates, clients, mentors, and peers I have shipped with.',
         ),
         const SizedBox(height: 20),
+        OutlinedButton.icon(
+          onPressed: () => context.go('/testimonials'),
+          icon: Icon(Icons.rate_review_outlined, color: p.accentTeal, size: 18),
+          label: Text(
+            'Worked with me? Share your feedback',
+            style: TextStyle(
+              color: p.accentTeal,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(color: p.accentTeal.withValues(alpha: 0.5)),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
         if (_loading)
           const Center(
             child: Padding(

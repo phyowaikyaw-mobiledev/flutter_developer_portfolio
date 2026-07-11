@@ -61,6 +61,9 @@ final kSkillCategories = <SkillCategory>[
       _asset('Postman', 'postman.svg'),
       _asset('Swagger UI', 'swagger.svg'),
       _asset('Google Sheets', 'googlesheets.svg'),
+      _asset('go_router', 'go_router.png'),
+      _asset('json_serializable', 'dart.svg'),
+      _asset('connectivity_plus', 'flutter.svg'),
     ],
   ),
   SkillCategory(
@@ -72,6 +75,7 @@ final kSkillCategories = <SkillCategory>[
       _asset('SQLite', 'sqlite.svg'),
       _asset('Realm DB', 'mongodb.svg'),
       _asset('Local Storage', 'sqlite.svg'),
+      _asset('flutter_secure_storage', 'flutter.svg'),
     ],
   ),
   SkillCategory(
@@ -141,6 +145,7 @@ final kSkillCategories = <SkillCategory>[
       _asset('VS Code', 'vscode.svg'),
       _asset('Terminal / CLI', 'gnubash.svg'),
       _asset('l10n / ARB', 'googletranslate.svg'),
+      _asset('easy_localization', 'flutter.svg'),
     ],
   ),
   SkillCategory(
@@ -158,6 +163,30 @@ final kSkillCategories = <SkillCategory>[
       _asset('Claude Code', 'anthropic.svg'),
       _asset('Cursor', 'cursor.svg'),
       _asset('Prompt Engineering', 'anthropic.svg'),
+    ],
+  ),
+  SkillCategory(
+    title: 'Device & Media',
+    filter: SkillFilter.mobile,
+    skills: [
+      _asset('mobile_scanner', 'flutter.svg'),
+      _asset('qr_flutter', 'flutter.svg'),
+      _asset('pinput', 'flutter.svg'),
+      _asset('cached_network_image', 'flutter.svg'),
+      _asset('Cloudinary', 'cloudinary.svg'),
+      _asset('WebView Flutter', 'flutter.svg'),
+      _asset('YouTube Player', 'youtube.svg'),
+      _asset('Syncfusion PDF Viewer', 'adobeacrobatreader.svg'),
+      _asset('excel', 'microsoftexcel.svg'),
+      _asset('pdf', 'adobeacrobatreader.svg'),
+    ],
+  ),
+  SkillCategory(
+    title: 'Maps & Location',
+    filter: SkillFilter.mobile,
+    skills: [
+      _asset('flutter_map', 'flutter.svg'),
+      _asset('OpenStreetMap (Nominatim)', 'openstreetmap.svg'),
     ],
   ),
 ];

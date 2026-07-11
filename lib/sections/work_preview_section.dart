@@ -42,7 +42,7 @@ class _WorkPreviewSectionState extends State<WorkPreviewSection> {
         const ZeelSectionHeader(
           title: "Here's Some Of My Work",
           subtitle:
-              "Don't just take my word for it — here's a look at what I've built 🚀",
+              "Don't just take my word for it — here's a look at what I've built",
         ),
         SizedBox(height: isMobile ? 16 : 24),
         SizedBox(
@@ -101,10 +101,25 @@ class _PreviewCard extends StatelessWidget {
   final ProductionApp app;
   final Future<void> Function(String url) onLaunch;
 
+  String? _workPreviewScreenshot() {
+    if (app.gallery.isEmpty) return null;
+    final index = switch (app.slug) {
+      'secure-plus-cctv' => 1,
+      'teexpress' => 3,
+      'drzon-medical-service' => 1,
+      'phone-king-plus-customer' => 5,
+      'phone-king-plus-admin' => 1,
+      'vie-pharma' => 1,
+      'pan-aesthetic' => 9,
+      _ => 0,
+    };
+    return index < app.gallery.length ? app.gallery[index] : app.gallery.first;
+  }
+
   @override
   Widget build(BuildContext context) {
     final p = context.portfolio;
-    final screenshot = app.gallery.isNotEmpty ? app.gallery.first : null;
+    final screenshot = _workPreviewScreenshot();
 
     return Container(
       padding: const EdgeInsets.all(16),

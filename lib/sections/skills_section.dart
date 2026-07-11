@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/skills_data.dart';
 import '../../theme/portfolio_theme.dart';
-import '../../utils/constants.dart';
 import '../../widgets/common/zeel_section_header.dart';
 import '../../widgets/common/zeel_text_filters.dart';
 import '../../widgets/skills/skill_chip.dart';
@@ -34,14 +33,18 @@ class _SkillsSectionState extends State<SkillsSection> {
         const SizedBox(height: 20),
         Row(
           children: [
-            Icon(Icons.menu_book_outlined, size: 18, color: p.accentTeal),
+            Icon(Icons.menu_book_outlined, size: 16, color: p.accentTeal),
             const SizedBox(width: 8),
-            Text(
-              'Mobile Application Development',
-              style: TextStyle(
-                fontSize: PortfolioFontSizes.body,
-                fontWeight: FontWeight.w600,
-                color: p.textPrimary,
+            Expanded(
+              child: Text(
+                'Mobile Application Development',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: p.textPrimary,
+                ),
               ),
             ),
           ],
@@ -121,7 +124,7 @@ class _TimelineCategory extends StatelessWidget {
                 Text(
                   category.title,
                   style: TextStyle(
-                    fontSize: PortfolioFontSizes.body,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: p.textPrimary,
                   ),

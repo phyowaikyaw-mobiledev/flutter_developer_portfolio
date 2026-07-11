@@ -224,7 +224,11 @@ class ProductionAppDetailScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _section(p, 'Overview', app.description),
-        if (app.keyContribution != null) ...[
+        if (app.keyContributionPoints != null &&
+            app.keyContributionPoints!.isNotEmpty) ...[
+          const SizedBox(height: 24),
+          _bulletSection(p, 'My Contribution', app.keyContributionPoints!),
+        ] else if (app.keyContribution != null) ...[
           const SizedBox(height: 24),
           _section(p, 'My Contribution', app.keyContribution!),
         ],
@@ -249,6 +253,14 @@ class ProductionAppDetailScreen extends StatelessWidget {
               .map((t) => TechTag(label: t, isMobile: isMobile))
               .toList(),
         ),
+        if (app.challenges != null && app.challenges!.isNotEmpty) ...[
+          const SizedBox(height: 24),
+          _challengesSection(p, app.challenges!),
+        ],
+        if (app.keyFeatures != null && app.keyFeatures!.isNotEmpty) ...[
+          const SizedBox(height: 24),
+          _bulletSection(p, 'Key Features', app.keyFeatures!),
+        ],
         if (app.gallery.isNotEmpty) ...[
           const SizedBox(height: 32),
           Text(
@@ -316,6 +328,102 @@ class ProductionAppDetailScreen extends StatelessWidget {
             fontSize: PortfolioFontSizes.secondary,
             color: p.textMuted,
             height: 1.6,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _bulletSection(PortfolioColors p, String title, List<String> items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: p.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        ...items.map(
+          (item) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8, right: 10),
+                  child: Container(
+                    width: 5,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: p.accentTeal,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    item,
+                    style: TextStyle(
+                      fontSize: PortfolioFontSizes.secondary,
+                      color: p.textMuted,
+                      height: 1.6,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _challengesSection(
+    PortfolioColors p,
+    List<ProductionAppChallenge> challenges,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Challenges & Solutions',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: p.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 12),
+        ...challenges.map(
+          (c) => Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  c.title,
+                  style: TextStyle(
+                    fontSize: PortfolioFontSizes.secondary,
+                    fontWeight: FontWeight.w600,
+                    color: p.textPrimary,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  c.solution,
+                  style: TextStyle(
+                    fontSize: PortfolioFontSizes.secondary,
+                    color: p.textMuted,
+                    height: 1.6,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

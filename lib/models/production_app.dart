@@ -26,6 +26,16 @@ extension AppIndustryLabels on AppIndustry {
       };
 }
 
+class ProductionAppChallenge {
+  const ProductionAppChallenge({
+    required this.title,
+    required this.solution,
+  });
+
+  final String title;
+  final String solution;
+}
+
 class ProductionApp {
   const ProductionApp({
     required this.slug,
@@ -37,10 +47,13 @@ class ProductionApp {
     required this.tags,
     required this.gallery,
     required this.releaseStatus,
-    required this.industry,
+    required this.industries,
     this.iconAsset,
     this.impact,
     this.keyContribution,
+    this.keyContributionPoints,
+    this.challenges,
+    this.keyFeatures,
     this.playUrl,
     this.appStoreUrl,
     this.companyBadge,
@@ -59,11 +72,14 @@ class ProductionApp {
   final List<String> tags;
   final String? impact;
   final String? keyContribution;
+  final List<String>? keyContributionPoints;
+  final List<ProductionAppChallenge>? challenges;
+  final List<String>? keyFeatures;
   final String? playUrl;
   final String? appStoreUrl;
   final List<String> gallery;
   final AppReleaseStatus releaseStatus;
-  final AppIndustry industry;
+  final List<AppIndustry> industries;
   final bool fullWidth;
   final bool fullBleedIcon;
 

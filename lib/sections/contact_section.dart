@@ -202,8 +202,10 @@ class _ContactSectionState extends State<ContactSection> {
             child: FilledButton.icon(
               onPressed: _submitting ? null : _submit,
               style: FilledButton.styleFrom(
-                backgroundColor: p.border,
-                foregroundColor: p.textPrimary,
+                backgroundColor: p.accentTeal,
+                foregroundColor: AppColors.background,
+                disabledBackgroundColor: p.border,
+                disabledForegroundColor: p.textMuted,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 14,
@@ -213,10 +215,13 @@ class _ContactSectionState extends State<ContactSection> {
                 ),
               ),
               icon: _submitting
-                  ? const SizedBox(
+                  ? SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.background,
+                      ),
                     )
                   : const Icon(Icons.send_outlined, size: 18),
               label: const Text('Send Message'),

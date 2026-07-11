@@ -82,6 +82,12 @@ class _LandingScreenState extends State<LandingScreen> {
     return Scaffold(
       backgroundColor: p.background,
       floatingActionButton: const ContactSpeedDial(),
+      bottomNavigationBar: isDesktop
+          ? null
+          : SafeArea(
+              top: false,
+              child: SectionBottomNav(active: _active, onTap: _switchTab),
+            ),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -134,12 +140,12 @@ class _LandingScreenState extends State<LandingScreen> {
             ),
           ],
         ),
-        Expanded(child: _contentCard(p)),
+        Expanded(child: _contentCard(p, showNav: false)),
       ],
     );
   }
 
-  Widget _contentCard(PortfolioColors p) {
+  Widget _contentCard(PortfolioColors p, {bool showNav = true}) {
     return Container(
       decoration: BoxDecoration(
         color: p.cardBg,
@@ -148,16 +154,19 @@ class _LandingScreenState extends State<LandingScreen> {
       ),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: PillSectionNav(
-                active: _active,
-                onTap: _switchTab,
+          if (showNav)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: PillSectionNav(
+                  active: _active,
+                  onTap: _switchTab,
+                ),
               ),
-            ),
-          ),
+            )
+          else
+            const SizedBox(height: 12),
           Expanded(
             child: IndexedStack(
               index: _tabIndex,

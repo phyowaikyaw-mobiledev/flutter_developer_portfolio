@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 import '../../models/testimonial_model.dart';
 import '../../theme/portfolio_theme.dart';
-import '../../utils/testimonial_relationship.dart';
 
 void showTestimonialFullReviewDialog(
   BuildContext context,
   TestimonialModel testimonial,
 ) {
   final p = context.portfolio;
-  final relationship = testimonialRelationshipLabel(testimonial);
+  final subtitle = [
+    if (testimonial.role.isNotEmpty) testimonial.role,
+    if (testimonial.company.isNotEmpty) testimonial.company,
+  ].join(' · ');
 
   showDialog<void>(
     context: context,
@@ -48,19 +50,17 @@ void showTestimonialFullReviewDialog(
                 ),
               ],
             ),
-            const SizedBox(height: 4),
-            Text(
-              [
-                relationship,
-                if (testimonial.role.isNotEmpty) testimonial.role,
-                if (testimonial.company.isNotEmpty) testimonial.company,
-              ].join(' · '),
-              style: TextStyle(
-                color: p.accentTeal,
-                fontSize: PortfolioFontSizes.label,
-                fontWeight: FontWeight.w600,
+            if (subtitle.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  color: p.accentTeal,
+                  fontSize: PortfolioFontSizes.label,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
+            ],
             const SizedBox(height: 12),
             Divider(color: p.border, height: 1),
             const SizedBox(height: 12),
@@ -72,7 +72,6 @@ void showTestimonialFullReviewDialog(
                     color: p.textMuted,
                     fontSize: 14,
                     height: 1.65,
-                    fontStyle: FontStyle.italic,
                   ),
                 ),
               ),
@@ -93,20 +92,28 @@ void showTestimonialFullReviewDialog(
   );
 }
 
-Widget testimonialAvatar(TestimonialModel testimonial, PortfolioColors p) {
+Widget testimonialAvatar(
+  TestimonialModel testimonial,
+  PortfolioColors p, {
+  double radius = 16,
+}) {
   final base64 = testimonial.avatarBase64;
   if (base64 != null && base64.isNotEmpty) {
     return CircleAvatar(
-      radius: 16,
+      radius: radius,
       backgroundImage: MemoryImage(base64Decode(base64)),
     );
   }
   return CircleAvatar(
-    radius: 16,
-    backgroundColor: p.accentTeal.withValues(alpha: 0.2),
+    radius: radius,
+    backgroundColor: p.accentTeal.withValues(alpha: 0.15),
     child: Text(
       testimonial.initials,
-      style: TextStyle(color: p.accentTeal, fontSize: PortfolioFontSizes.caption),
+      style: TextStyle(
+        color: p.accentTeal,
+        fontSize: radius * 0.45,
+        fontWeight: FontWeight.w600,
+      ),
     ),
   );
 }

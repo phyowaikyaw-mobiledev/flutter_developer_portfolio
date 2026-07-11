@@ -35,11 +35,11 @@ class PortfolioColors extends ThemeExtension<PortfolioColors> {
   );
 
   static const light = PortfolioColors(
-    background: Color(0xFFF4F4F5),
-    cardBg: Color(0xFFFFFFFF),
-    border: Color(0xFFE4E4E7),
+    background: Color(0xFFE7E8EA),
+    cardBg: Color(0xFFF4F4F5),
+    border: Color(0xFFD4D4D8),
     textPrimary: Color(0xFF18181B),
-    textMuted: Color(0xFF71717A),
+    textMuted: Color(0xFF5B5B63),
     navBarBg: Color(0xFFF4F4F5),
     accentTeal: Color(0xFF0D9488),
     activeGreen: Color(0xFF16A34A),

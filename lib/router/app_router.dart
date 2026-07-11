@@ -3,6 +3,7 @@ import '../utils/constants.dart';
 import 'package:go_router/go_router.dart';
 import '../screens/landing_screen.dart';
 import '../screens/production_app_detail_screen.dart';
+import '../screens/testimonials_screen.dart';
 import '../theme/portfolio_theme.dart';
 
 final appRouter = GoRouter(
@@ -65,7 +66,10 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/testimonials',
-      redirect: (_, __) => '/?section=contact',
+      pageBuilder: (c, s) => NoTransitionPage<void>(
+        key: s.pageKey,
+        child: const TestimonialsScreen(),
+      ),
     ),
     GoRoute(
       path: '/awards',

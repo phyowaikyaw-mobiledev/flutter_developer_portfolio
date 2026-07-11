@@ -33,7 +33,7 @@ class _PortfolioGridSectionState extends State<PortfolioGridSection> {
     final industry = AppIndustry.values.firstWhere(
       (i) => i.filterLabel == _filter,
     );
-    return kProductionApps.where((a) => a.industry == industry).toList();
+    return kProductionApps.where((a) => a.industries.contains(industry)).toList();
   }
 
   @override

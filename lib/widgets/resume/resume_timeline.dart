@@ -441,11 +441,11 @@ class ResumeShippedChip extends StatelessWidget {
 
   String get _shortTitle {
     final t = app.title;
-    if (t.contains('Phone King Plus — Customer')) return 'PK Customer';
-    if (t.contains('Phone King Plus — Admin')) return 'PK Admin';
+    if (t.contains('Phone King Plus Customer')) return 'PK Customer';
+    if (t.contains('Phone King Plus Admin')) return 'PK Admin';
     if (t.contains('DrZon')) return 'DrZon Medical Service';
     if (t.contains('TeeXpress')) return 'TeeXpress';
-    if (t.contains('PAN Aesthetic')) return 'PAN';
+    if (t.contains('PAN Aesthetic')) return 'PAN Aesthetic';
     if (t.contains('VIE Pharma')) return 'VIE Pharma';
     return t.split(' ').take(2).join(' ');
   }
@@ -456,7 +456,7 @@ class ResumeShippedChip extends StatelessWidget {
 
     return Container(
       width: expanded ? double.infinity : null,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       decoration: BoxDecoration(
         color: p.cardBg,
         borderRadius: BorderRadius.circular(8),
@@ -470,19 +470,19 @@ class ResumeShippedChip extends StatelessWidget {
             children: [
               if (app.iconAsset != null)
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(6),
                   child: Image.asset(
                     app.iconAsset!,
-                    width: 16,
-                    height: 16,
+                    width: 24,
+                    height: 24,
                     fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) =>
-                        Icon(app.icon, size: 14, color: p.textMuted),
+                        Icon(app.icon, size: 18, color: p.textMuted),
                   ),
                 )
               else
-                Icon(app.icon, size: 14, color: p.textMuted),
-              const SizedBox(width: 5),
+                Icon(app.icon, size: 18, color: p.textMuted),
+              const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   _shortTitle,

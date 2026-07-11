@@ -20,7 +20,27 @@ class ThemeController extends ChangeNotifier {
     } else if (stored == 'dark') {
       _mode = ThemeMode.dark;
     }
+
+    // Flutter web hash URLs put ?query= in the fragment (/#/?theme=light),
+    // so Uri.base.queryParameters is empty — parse from the fragment too.
+    final themeQuery = _queryParam('theme');
+    if (themeQuery == 'light') {
+      _mode = ThemeMode.light;
+    } else if (themeQuery == 'dark') {
+      _mode = ThemeMode.dark;
+    }
     notifyListeners();
+  }
+
+  String? _queryParam(String key) {
+    final direct = Uri.base.queryParameters[key];
+    if (direct != null) return direct;
+    final fragment = Uri.base.fragment;
+    if (fragment.isEmpty) return null;
+    final q = fragment.indexOf('?');
+    if (q < 0) return null;
+    return Uri.parse('http://local/?${fragment.substring(q + 1)}')
+        .queryParameters[key];
   }
 
   Future<void> toggle() async {
